@@ -7,9 +7,9 @@ import NavLinks from './NavLinks';
 const Header = () => {
   return (
     <>
-      <div className='w-full bg-mine-shaft-950 font-["poppins"] text-white h-20 flex justify-between px-6 items-center'>
+      <div className='w-full bg-blueRibbon-600 font-["poppins"] text-white h-20 flex justify-between px-6 items-center'>
         
-          <div className='flex gap-3 items-center text-cyan-400'>
+          <div className='flex gap-3 items-center text-blueRibbon-950'>
             <IconAdCircle className='h-10 w-10 stroke={1.25}'/>
             <div className='text-3xl font-semibold'>RC Tennis Academy</div>
           </div>
@@ -33,7 +33,7 @@ const Header = () => {
            </div>
 
            <div className='bg-mine-shaft-900 p-1.5 rounded-full'> 
-              <Indicator  color="cyanAqua.4"  offset={5} size={12} withBorder processing>
+              <Indicator  color="blueRibbon.6"  offset={5} size={12} withBorder processing>
                     <IconBell stroke={1.5}/>
               </Indicator>
            </div>

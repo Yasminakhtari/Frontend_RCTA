@@ -4,7 +4,7 @@ import { journey,coaches } from "../Data/Data";
 
 const AboutUs = () => {
   return (
-    <div className="px-20 py-10 bg-mine-shaft-900 text-mine-shaft-100 font-['Poppins']">
+    <div className="px-20 py-10 bg-blueRibbon-500 text-mine-shaft-100 font-['Poppins']">
       
       {/* Hero Section */}
       <div className="text-center mb-12">
@@ -21,7 +21,7 @@ const AboutUs = () => {
         </Title>
         <div className="flex flex-wrap justify-center gap-8">
           {coaches.map((coach, index) => (
-            <Card key={index} shadow="md" className="bg-mine-shaft-800 text-center p-6 w-60 rounded-xl hover:bg-mine-shaft-700 transition-all">
+            <Card key={index} shadow="md" className="bg-blueRibbon-400 text-center p-6 w-60 rounded-xl hover:bg-blueRibbon-700 transition-all">
               <Avatar src={coach.avatar} size="xl" radius="50%" className="mb-4 mx-auto" />
               <Text size="lg" className="text-cyanAqua-400 font-bold">
                 {coach.name}

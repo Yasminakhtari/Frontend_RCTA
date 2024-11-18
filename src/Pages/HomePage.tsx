@@ -6,7 +6,8 @@ import Testimonials from "../LandingPage/Testimonials"
 
 const HomePage = () => {
   return (
-    <div className='min-h[100vh] bg-mine-shaft-950 font-["poppins"]'>
+    // <div className='min-h[100vh] bg-mine-shaft-950 font-["poppins"]'>
+    <div className='min-h[100vh] bg-blueRibbon-600 font-["poppins"]'>
         <Home1/>
         <Clubs/>
         <LandingMediumSection/>

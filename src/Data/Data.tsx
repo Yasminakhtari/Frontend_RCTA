@@ -70,8 +70,8 @@ const tennisSteps = [
 
 const coaches = [
     {
-      name: "Raj Malhotra",
-      title: "Head Coach",
+      name: "Rafael Carbungco",
+      title: "Owner/Head Coach",
       avatar: "",
       bio: "An experienced coach with over 20 years in the tennis world, specializing in advanced techniques."
     },
