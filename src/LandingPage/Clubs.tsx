@@ -9,7 +9,7 @@ const Clubs = () => {
       </div>
       <Marquee pauseOnHover>
         {clubs.map((club: string, index: number) => (
-          <div key={index} className="mx-8 px-2 py-1 hover:bg-blueRibbon-900 rounded-xl cursor-pointer ">
+          <div key={index} className="mx-8 px-2 py-1 hover:bg-blueRibbon-950 rounded-xl cursor-pointer ">
             <img
               className="h-14"
               src={`/Clubs/${club}.png`}
