@@ -3,10 +3,15 @@ import {IconAdCircle, IconBell, IconSettings} from "@tabler/icons-react";
 // IconAsset
 import { Avatar, Indicator } from '@mantine/core';
 import NavLinks from './NavLinks';
+import { useLocation } from 'react-router-dom';
 
 const Header = () => {
+
+  const location = useLocation();
+
   return (
-    <>
+  
+    location.pathname !== "/signup" && location.pathname !=="/login" ?
       <div className='w-full bg-blueRibbon-600 font-["poppins"] text-white h-20 flex justify-between px-6 items-center'>
         
           <div className='flex gap-3 items-center text-blueRibbon-950'>
@@ -39,8 +44,8 @@ const Header = () => {
            </div>
             
           </div>
-      </div>
-    </> 
+      </div> : <></>
+    
   )
 }
  

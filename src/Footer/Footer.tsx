@@ -1,8 +1,12 @@
 import { IconAdCircle, IconBrandFacebook, IconBrandInstagram, IconBrandX } from '@tabler/icons-react';
 import { footerLinks } from '../Data/Data';
+import { useLocation } from 'react-router-dom';
 
 const Footer = () => {
+  const location = useLocation();
   return (
+
+    location.pathname !== "/signup" && location.pathname !== "/login" && location.pathname !== "/gallery"? 
     <div className='pt-20 pb-5 flex gap-2 justify-around bg-blueRibbon-600 font-["poppins"]'>
       {/* LEFT - Academy Info */}
       <div className='w-1/4 flex flex-col gap-4'> 
@@ -35,7 +39,7 @@ const Footer = () => {
           </div>
         ))
       }
-    </div>
+    </div> : <></>
   );
 }
 
