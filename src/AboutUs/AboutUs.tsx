@@ -47,7 +47,7 @@ const AboutUs = () => {
                 title={<Text size="lg" className="text-cyanAqua-400 font-semibold">{event.year}</Text>}
                 bullet={<IconTrophy size={20} />}
               >
-                <Text size="sm" color="dimmed">{event.description}</Text>
+                <Text size="sm" color="white">{event.description}</Text>
               </Timeline.Item>
             ))}
           </Timeline>

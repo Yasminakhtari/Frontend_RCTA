@@ -9,6 +9,8 @@ import HomePage from './Pages/HomePage';
 import Footer from './Footer/Footer';
 import About from './Pages/About';
 import SignUpPage from './Pages/SignUpPage';
+import MediaGalleryPage from './Pages/MediaGalleryPage';
+
 
 function App() {
 
@@ -34,9 +36,10 @@ function App() {
         <Header/>
           <Routes>
             <Route path="/about-us" element={<About/>}/>
-            <Route path='*' element={<HomePage/>}/>
             <Route path="/signup" element={<SignUpPage/>}/>
             <Route path="/login" element={<SignUpPage/>}/>
+            <Route path="/gallery" element={<MediaGalleryPage/>}/>
+            <Route path='*' element={<HomePage/>}/>
           </Routes>
         <Footer/>
       </BrowserRouter>
