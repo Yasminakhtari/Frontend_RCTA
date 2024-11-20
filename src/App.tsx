@@ -10,7 +10,7 @@ import Footer from './Footer/Footer';
 import About from './Pages/About';
 import SignUpPage from './Pages/SignUpPage';
 import MediaGalleryPage from './Pages/MediaGalleryPage';
-
+import ContactUs from './contactus/ContactUs';
 
 function App() {
 
@@ -40,6 +40,7 @@ function App() {
             <Route path="/login" element={<SignUpPage/>}/>
             <Route path="/gallery" element={<MediaGalleryPage/>}/>
             <Route path='*' element={<HomePage/>}/>
+            <Route path="/contact-us" element={<ContactUs />}/>
           </Routes>
         <Footer/>
       </BrowserRouter>
