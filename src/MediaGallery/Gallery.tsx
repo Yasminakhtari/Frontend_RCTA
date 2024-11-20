@@ -3,7 +3,8 @@ import Images from "./Images"
 const Gallery = () => {
   return (
     <div>
-      <Images/>
+      {/* <Images/> */}
+      
     </div>
   )
 }
