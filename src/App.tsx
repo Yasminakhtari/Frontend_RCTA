@@ -9,6 +9,7 @@ import HomePage from './Pages/HomePage';
 import Footer from './Footer/Footer';
 import About from './Pages/About';
 import SignUpPage from './Pages/SignUpPage';
+import ContactUs from './contactus/ContactUs';
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
             <Route path='*' element={<HomePage/>}/>
             <Route path="/signup" element={<SignUpPage/>}/>
             <Route path="/login" element={<SignUpPage/>}/>
+            <Route path="/contact-us" element={<ContactUs />}/>
           </Routes>
         <Footer/>
       </BrowserRouter>

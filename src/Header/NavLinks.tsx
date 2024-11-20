@@ -9,6 +9,7 @@ const NavLinks = () => {
         { name: "News", url: "news" },
         { name: "about us",url: "about-us"},
         {name:"Sign Up",url:"signup"},
+        {name:"Contact Us",url:"contact-us"}
     ];
 
     const location = useLocation( );
