@@ -1,5 +1,8 @@
 import { IconUserPlus, IconTarget, IconTrophy, IconChartLine, IconAward } from "@tabler/icons-react";
 const clubs : string[]= ["club1", "club7", "club3", "club4", "club5", "club6", "club7", "club8"];
+const coachess : string[]=["coach1","coach2","coach3","coach4","coach5","coach6","coach7","coach8","coach9","coach10"];
+const achievements : string[]= ["achievement1","achievement2","achievement3","achievement4","achievement5","achievement6","achievement7","achievement8","achievement9"];
+const students : string[] = ["tp1","tp2","tp3","tp4","tp5","tp6","tp7","tp8","tp9","tp10","tp11","tp12","tp13","tp14","tp15","tp16"];
 
 const testimonials = [
     {
@@ -98,4 +101,4 @@ const coaches = [
     { year: "2023", description: "Our players won 10+ regional championships." },
   ];
 
-export {clubs,testimonials,footerLinks,tennisSteps,coaches,journey};
+export {clubs,testimonials,footerLinks,tennisSteps,coaches,journey,students,coachess,achievements};
