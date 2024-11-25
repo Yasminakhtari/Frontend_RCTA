@@ -5,23 +5,45 @@ import { Link } from "react-router-dom";
 const Login = () => {
   const icon = <IconUser style={{ width: rem(16), height: rem(16) }} />;
   const iconn = <IconLock style={{ width: rem(16), height: rem(16) }} />;
-  
+
   return (
-    <div className="w-1/2 px-20 flex flex-col justify-center items-center gap-3 ">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4 sm:px-8">
+      <div className="w-full max-w-md bg-white p-8 shadow-md rounded-lg flex flex-col gap-6">
+        <div className="text-2xl font-semibold text-gray-800 text-center">
+          Create Account
+        </div>
 
-      <div className=" border-white border-[2px] w-2/3  shadow-xl rounded-2xl bg-white/20 p-6">
-          <div className="text-2xl font-semibold   flex items-center justify-center text-white bg-blue-700/70 p-4">SignIn Account</div>
+        <TextInput
+          withAsterisk
+          leftSection={icon}
+          label="Email"
+          placeholder="Your email"
+          className="w-full"
+        />
+        <PasswordInput
+          withAsterisk
+          leftSection={iconn}
+          label="Password"
+          placeholder="Password"
+          className="w-full"
+        />
 
-          <TextInput withAsterisk  leftSection={icon} label="Username"   placeholder="Your username" />
-          <PasswordInput  withAsterisk leftSection={iconn}  label="Password"  placeholder="Password"/> 
+        <Button autoContrast variant="filled" className="w-full bg-blueRibbon-600 hover:bg-blueRibbon-500">
+          Signin
+        </Button>
 
-          <div className="mt-4 bg-blueRibbon-600">
-            <Button autoContrast fullWidth variant="filled" color="rgba(30 80 207)">Signin</Button>
-          </div>
-          <div className="mx-auto mt-2">Don't have an account ?<Link to="/signup" className="text-blueRibbon-900 hover:underline">SignUp</Link></div>
+        <div className="text-center text-sm text-gray-600">
+          Don't have an account?{" "}
+          <Link
+            to="/signup"
+            className="text-blueRibbon-600 hover:underline font-medium"
+          >
+            Sign Up
+          </Link>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
