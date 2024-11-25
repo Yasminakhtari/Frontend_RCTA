@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Avatar, Card, Timeline, Text, Divider, Title } from "@mantine/core";
 import { IconTrophy, IconArrowUp } from "@tabler/icons-react";
 import { journey, coaches } from "../Data/Data";
-import './AboutUs.css';
 
 const AboutUs = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
