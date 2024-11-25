@@ -1,16 +1,46 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
+// import './ContactUs.css';
+
 
 const ContactUs: FC = () => {
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show the scroll button if the user scrolls down 200px or more
+      if (window.scrollY > 200) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    // Cleanup the event listener on component unmount
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden relative">
       {/* Header Section */}
       <div
         className="w-full h-48 sm:h-64 bg-cover bg-center flex justify-center items-center shadow-lg"
         style={{ backgroundImage: "url('/contactUs.jpg')" }}
       >
         <h1 className="text-white text-3xl sm:text-4xl font-bold drop-shadow-lg">Contact Us</h1>
+        {/* <h1 className="header-title">Contact Us</h1> */}
+
       </div>
 
       <div className="container mx-auto flex flex-col justify-center items-center bg-white min-h-screen py-8 px-4">
@@ -102,6 +132,16 @@ const ContactUs: FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Scroll to Top Button */}
+      {showScrollButton && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-5 right-5 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition duration-300"
+        >
+          <FontAwesomeIcon icon={faArrowUp} size="lg" />
+        </button>
+      )}
     </div>
   );
 };
