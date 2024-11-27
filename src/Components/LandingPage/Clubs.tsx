@@ -1,5 +1,5 @@
 import Marquee from "react-fast-marquee";
-import { clubs } from "../Data/Data";
+import { clubs } from "../../Data/Data";
 
 const Clubs = () => {
   return (

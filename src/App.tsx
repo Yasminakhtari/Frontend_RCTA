@@ -1,16 +1,24 @@
-import './App.css';
+// import './App.css';
 import { createTheme, MantineProvider } from '@mantine/core';
 import { BrowserRouter, Routes,Route } from 'react-router-dom';
 import '@mantine/core/styles.css';
-//import '@mantine/carousel/styles.css';
+import '@mantine/notifications/styles.css';
+import '@mantine/carousel/styles.css';
 
-import Header from './Header/Header';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+
+import Header from './Components/Header/Header';
 import HomePage from './Pages/HomePage';
-import Footer from './Footer/Footer';
+
 import About from './Pages/About';
 import SignUpPage from './Pages/SignUpPage';
 import MediaGalleryPage from './Pages/MediaGalleryPage';
-import ContactUs from './contactus/ContactUs';
+import ContactUs from './Components/contactus/ContactUs';
+import Footer from './Components/Footer/Footer';
+import { Notifications } from '@mantine/notifications';
+import ProductsPage from './Pages/ProductsPage';
 
 function App() {
 
@@ -30,8 +38,9 @@ function App() {
    })
 
   return (
+    <div className='w-[100%] overflow-hidden'>
     <MantineProvider theme={theme} >
-    
+      <Notifications />
       <BrowserRouter>
         <Header/>
           <Routes>
@@ -39,12 +48,15 @@ function App() {
             <Route path="/signup" element={<SignUpPage/>}/>
             <Route path="/login" element={<SignUpPage/>}/>
             <Route path="/gallery" element={<MediaGalleryPage/>}/>
+            <Route path='/home' element={<HomePage/>}/>
             <Route path='*' element={<HomePage/>}/>
             <Route path="/contact-us" element={<ContactUs />}/>
+            <Route path="/products" element={<ProductsPage/>}/>
           </Routes>
         <Footer/>
       </BrowserRouter>
     </MantineProvider>
+    </div>
   );
 }
 

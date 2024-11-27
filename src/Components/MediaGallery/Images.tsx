@@ -7,13 +7,11 @@ import image4 from  "../../src/assets/images/tenis2.jpeg"
 interface ImageProps {
       src: string;
       alt: string;
-      colSpan: number;
-      rowSpan: number;
     }
     
 
-const Images = ({ src, alt, colSpan, rowSpan }: ImageProps) => {
-      
+
+  const Images = ({ src, alt }: ImageProps) => { 
   return (
 //     <div className='grid gap-4 grid-rows-12 grid-cols-12 lg:h-[600px] px-5 lg:px-20'>
         
@@ -42,17 +40,14 @@ const Images = ({ src, alt, colSpan, rowSpan }: ImageProps) => {
  
   
 //     </div>
-            <div
-            className={`col-span-${colSpan} row-span-${rowSpan} text-white  justify-center`}
-            // style={{ maxWidth: "200px", maxHeight: "300px" }} 
-            >
-            <img
-            className="w-full h-full object-cover object-top rounded-md"
-            src={src}
-            alt={alt}
-            style={{ borderRadius: "8px" }} 
-            />
-            </div>
+    <div className="relative w-full h-48 sm:h-52 md:h-60 lg:h-64">
+    <img
+      className="w-full h-full object-cover rounded-md"
+      src={src}
+      alt={alt}
+      loading="lazy" 
+    />
+    </div>
   )
 }
 

@@ -1,6 +1,6 @@
 import { Avatar, Card, Timeline, Text, Divider, Title } from "@mantine/core";
 import { IconTrophy } from "@tabler/icons-react";
-import { journey,coaches } from "../Data/Data";
+import { journey,coaches } from "../../Data/Data";
 
 const AboutUs = () => {
   return (

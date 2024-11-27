@@ -1,5 +1,5 @@
 import { Avatar } from "@mantine/core";
-import { tennisSteps } from "../Data/Data"; 
+import { tennisSteps } from "../../Data/Data"; 
 
 const LandingMediumSection = () => {
   return (
@@ -13,10 +13,10 @@ const LandingMediumSection = () => {
       </div>
 
       {/* Steps Section */}
-      <div className="flex px-16 justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between md:items-center">
         {/* Left Section */}
-        <div className="relative">
-          <img className="w-[28rem]" src="/lawntenis.png" alt="Tennis Player" />
+        <div className="relative md:w-[28rem] w-full mb-8 md:mb-0">
+          <img className="w-full h-auto" src="/lawntenis.png" alt="Tennis Player" />
           <div className="w-40 flex flex-col items-center gap-1 border border-blueRibbon-900 rounded-xl py-3 px-1 backdrop-blur-md absolute top-[18%] right-0">
             <Avatar className="!h-16 !w-16" src="player-avatar.jpg" alt="Player Avatar" />
             <div className="text-sm font-semibold text-mine-shaft-200 text-center">Create Your Profile</div>
@@ -25,15 +25,21 @@ const LandingMediumSection = () => {
         </div>
 
         {/* Right Section */}
-        <div className="flex flex-col gap-10 w-1/2">
+        <div className="w-full md:w-1/2">
           {tennisSteps.map((step, index) => (
-            <div key={index} className="flex items-center gap-4">
+            <div key={index} className="flex items-center gap-4 mb-4 md:mb-0">
               <div className="p-2.5 bg-blueRibbon-300 rounded-full">
                 <step.icon className="h-12 w-12 text-mine-shaft-100" />
               </div>
               <div>
-                <div className="text-mine-shaft-200 text-xl font-semibold">{step.name}</div>
-                <div className="text-mine-shaft-300">{step.desc}</div>
+                {/* Step Name */}
+                <div className="text-mine-shaft-200 text-xl sm:text-2xl md:text-xl font-semibold">
+                  {step.name}
+                </div>
+                {/* Step Description */}
+                <div className="text-mine-shaft-300 text-base sm:text-lg md:text-base">
+                  {step.desc}
+                </div>
               </div>
             </div>
           ))}
