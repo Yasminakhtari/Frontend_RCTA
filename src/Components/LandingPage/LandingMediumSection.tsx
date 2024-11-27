@@ -17,9 +17,9 @@ const LandingMediumSection = () => {
         {/* Left Section */}
         <div className="relative md:w-[28rem] w-full mb-8 md:mb-0">
           <img className="w-full h-auto" src="/lawntenis.png" alt="Tennis Player" />
-          <div className="w-40 flex flex-col items-center gap-1 border border-blueRibbon-900 rounded-xl py-3 px-1 backdrop-blur-md absolute top-[18%] right-0">
-            <Avatar className="!h-16 !w-16" src="player-avatar.jpg" alt="Player Avatar" />
-            <div className="text-sm font-semibold text-mine-shaft-200 text-center">Create Your Profile</div>
+          <div className="w-40 flex flex-col items-center gap-1 border border-blueRibbon-900 rounded-xl py-3 px-1 backdrop-blur-md absolute top-[60%] md:top-[18%] right-0">
+            <Avatar className="h-6 w-6 md:h-16 md:w-16" src="player-avatar.jpg" alt="Player Avatar" />
+            <div className="md:text-sm  text-xs font-semibold text-mine-shaft-200 text-center">Create Your Profile</div>
             <div className="text-xs text-mine-shaft-300">75% Completed</div>
           </div>
         </div>

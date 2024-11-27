@@ -72,7 +72,7 @@ const form={
     <div className=" w-[95%] md:w-1/2  md:px-20 flex justify-center items-center gap-3 ">
       
       <div className=" border-white border-[2px] md:w-2/3 w-[90%]  shadow-xl rounded-2xl bg-white/20 p-6">
-          <div className="text-2xl font-semibold   flex items-center justify-center text-white bg-blue-700/70 p-4">Login Account</div>
+          <div className="text-2xl font-semibold   flex items-center justify-center text-white bg-blue-700/70 p-4">Login </div>
 
           <TextInput value={data.username} onChange={handleChange} name="username" error={formError.username}   withAsterisk  leftSection={icon} label="Username"   placeholder="Your username" />
           <PasswordInput value={data.password} onChange={handleChange} name="password"  error={formError.password}   withAsterisk leftSection={iconn}  label="Password"  placeholder="Password"/> 
