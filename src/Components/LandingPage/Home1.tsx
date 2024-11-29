@@ -28,7 +28,7 @@ const Home1 = () => {
     };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center min-h-[90vh] gap-10 lg:gap-5 pt-4  px-5">
+    <div className="flex flex-col lg:flex-row items-center min-h-[90vh] gap-10 lg:gap-5 pt-4  px-5 mt-14 md:mt-5">
       {/* Left Section */}
       <div className="flex flex-col lg:w-[45%]">
         <div className="text-5xl lg:text-6xl font-bold text-mine-shaft-100 leading-tight [&>span]:text-blueRibbon-900">

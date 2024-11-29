@@ -81,7 +81,7 @@ const form={
       <div className=" w-[95%] md:w-1/2  md:px-20 flex justify-center items-center gap-3 ">
       
         <div className=" border-white border-[2px] md:w-2/3 w-[90%]  shadow-xl rounded-2xl bg-white/20 p-6">
-            <div className="text-2xl font-semibold   flex items-center justify-center text-white bg-blue-700/70 p-4">Login </div>
+            <div className="text-2xl font-semibold   flex items-center justify-center text-white bg-blue-700/70 p-4">Log in</div>
 
             <TextInput value={data.username} onChange={handleChange} name="username" error={formError.username}   withAsterisk  leftSection={icon} label="Username"   placeholder="Your username" />
             <PasswordInput value={data.password} onChange={handleChange} name="password"  error={formError.password}   withAsterisk leftSection={iconn}  label="Password"  placeholder="Password"/> 
@@ -89,9 +89,9 @@ const form={
             <div className="mt-4 bg-blueRibbon-600">
               <Button autoContrast fullWidth variant="filled" color="rgba(30 80 207)" onClick={handleSubmit}>Sign in</Button>
             </div>
-            <div className="mx-auto mt-2">Don't have an account ?<span  className="text-blueRibbon-900 hover:underline cursor-pointer ml-3" onClick={()=>{navigate("/signup");setFormError(form);setData(form)}}>SignUp</span></div>
+            <div className="mx-auto mt-2">Don't have an account ?<span  className="text-blueRibbon-900 hover:underline cursor-pointer ml-3" onClick={()=>{navigate("/signup");setFormError(form);setData(form)}}>Sign Up</span></div>
 
-            <div onClick={open} className="text-blueRibbon-950 hover:underline cursor-pointer text-center mt-5"> Forget Password ?</div>
+            <div onClick={open} className="text-blueRibbon-950 hover:underline cursor-pointer text-center mt-5"> Forgot Password ?</div>
         </div>
         
       </div>
