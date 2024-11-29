@@ -4,6 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 const ContactUs: FC = () => {
+
+ 
+
   return (
     <div style={{ overflowX: 'hidden' }}>
       {/* Header Section */}
@@ -76,6 +79,7 @@ const ContactUs: FC = () => {
           </div>
         </div>
       </div>
+      
     </div>
   );
 };

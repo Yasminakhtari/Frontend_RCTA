@@ -1,12 +1,11 @@
 import { Badge, Tabs } from "@mantine/core";
-import Gallery from "./Gallery";
 import { students, coachess, achievements } from "../../Data/Data";
 import Images from "./Images";
 import Marquee from "react-fast-marquee";
-import ImageUpload from "../../common/ImageUpload";
+
 
 const GalleryTabs = () => {
-  // Combine all the data into a single array for easier mapping
+
   const studentImages = students.map((imageName) => ({
     src: `/Students/${imageName}.png`,
     alt: imageName,
@@ -23,7 +22,7 @@ const GalleryTabs = () => {
   }));
 
   return (
-    <div className="mt-5 w-full p-0 px-5">
+    <div className="mt-5 w-full p-0 px-5 mt-24 lg:mt-5">
       <div className="md:text-2xl font-semibold flex items-center">
         Media/Gallery
         <Badge ml="sm" variant="light" size="sm" color="blueRibbon.6">
@@ -42,9 +41,9 @@ const GalleryTabs = () => {
         </Tabs.List>
 
         {/* Upload Button */}
-        <div>
+        {/* <div>
           <ImageUpload onImageUpload={() => console.log("uploaded")} />
-        </div>
+        </div> */}
 
         {/* Tab Content */}
         <Tabs.Panel value="all">
@@ -84,7 +83,7 @@ const GalleryTabs = () => {
         </Tabs.Panel>
       </Tabs>
 
-      <Gallery />
+
     </div>
   );
 };

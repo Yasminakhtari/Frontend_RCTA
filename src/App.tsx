@@ -19,6 +19,7 @@ import ContactUs from './Components/contactus/ContactUs';
 import Footer from './Components/Footer/Footer';
 import { Notifications } from '@mantine/notifications';
 import ProductsPage from './Pages/ProductsPage';
+import ScrollUp from './Components/Common/ScrollUp';
 
 function App() {
 
@@ -53,6 +54,7 @@ function App() {
             <Route path="/contact-us" element={<ContactUs />}/>
             <Route path="/products" element={<ProductsPage/>}/>
           </Routes>
+          <ScrollUp/>
         <Footer/>
       </BrowserRouter>
     </MantineProvider>

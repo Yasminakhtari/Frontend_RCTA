@@ -214,7 +214,7 @@ const SignUp = (props:any) => {
           <div className="mt-4 bg-blueRibbon-600">
             <Button autoContrast fullWidth variant="filled" color="rgba(30 80 207)" disabled={!captchaVerified} onClick={handleSubmit}>SignUp</Button>
           </div>
-          <div className="mx-auto mt-2 ">Have an account ?<span className="text-blueRibbon-900 hover:underline cursor-pointer" onClick={()=>{navigate("/login");setFormError(form);setData(form)}}>Login</span></div>
+          <div className="mx-auto mt-2 ">Have an account ?<span className="text-blueRibbon-900 hover:underline cursor-pointer ml-3" onClick={()=>{navigate("/login");setFormError(form);setData(form)}}>Login</span></div>
       </div>
     </div>
   )
