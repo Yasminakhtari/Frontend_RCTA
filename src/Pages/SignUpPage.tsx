@@ -51,9 +51,9 @@ const SignUpPage = () => {
               From Practice to Podium.
             </p>
             {/* Center Button */}
-            <div className="mt-8 flex justify-between items-center ">
+            {/* <div className="mt-8 flex justify-between items-center ">
             <Button leftSection={<IconHome size={20}/>}  my="md" className=" w-56 h-14" color="blueRibbon.9" variant="filled" onClick={() => navigate("/")}>Home</Button>
-            </div>
+            </div> */}
           </div>
         </div>
 

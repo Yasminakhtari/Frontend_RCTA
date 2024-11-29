@@ -1,7 +1,7 @@
 import { Avatar, Card, Timeline, Text, Divider, Title } from "@mantine/core";
-import { IconArrowUp, IconTrophy } from "@tabler/icons-react";
 import { journey,coaches } from "../../Data/Data";
-import { useEffect, useState } from "react";
+import { IconTrophy } from "@tabler/icons-react";
+
 
 const AboutUs = () => {
 
@@ -10,7 +10,7 @@ const AboutUs = () => {
     <div className="px-20 py-10 bg-blueRibbon-500 text-mine-shaft-100 font-['Poppins'] mt-14 lg:mt-5">
       
       {/* Hero Section */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-12 mt-14 md:mt-5">
         <Title order={1} className="text-5xl font-bold text-cyanAqua-400">About Us</Title>
         <Text size="lg" className="mt-3 text-mine-shaft-200 font-semibold">
           Discover our journey, meet our dedicated coaches, and see how we’re shaping the future of tennis.

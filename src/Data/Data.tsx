@@ -1,8 +1,8 @@
 import { IconUserPlus, IconTarget, IconTrophy, IconChartLine, IconAward } from "@tabler/icons-react";
-const clubs : string[]= ["club1", "club7", "club3", "club4", "club5", "club6", "club7", "club8"];
-const coachess : string[]=["coach1","coach2","coach3","coach4","coach5","coach6","coach7","coach8","coach9","coach10"];
-const achievements : string[]= ["achievement1","achievement2","achievement3","achievement4","achievement5","achievement6","achievement7","achievement8","achievement9"];
-const students : string[] = ["tp1","tp2","tp3","tp4","tp5","tp6","tp7","tp8","tp9","tp10","tp11","tp12","tp13","tp14","tp15","tp16"];
+const clubs: string[] = ["club1", "club7", "club3", "club4", "club5", "club6", "club7", "club8"];
+const coachess: string[] = ["coach1", "coach2", "coach3", "coach4", "coach5", "coach6", "coach7", "coach8", "coach9", "coach10"];
+const achievements: string[] = ["achievement1", "achievement2", "achievement3", "achievement4", "achievement5", "achievement6", "achievement7", "achievement8", "achievement9"];
+const students: string[] = ["tp1", "tp2", "tp3", "tp4", "tp5", "tp6", "tp7", "tp8", "tp9", "tp10", "tp11", "tp12", "tp13", "tp14", "tp15", "tp16"];
 
 const testimonials = [
     {
@@ -24,21 +24,22 @@ const testimonials = [
         "name": "Sneha Malhotra",
         "testimonial": "As a parent, I appreciate how well the junior program is structured. My child loves it here!",
         "rating": 5
-    }   
+    }
 ];
 
 const footerLinks = [
-    { 
-        title: "Programs", 
-        links: ["Training Programs", "Youth Academy", "Adult Coaching", "Tournaments"] 
+    {
+        title: "Programs",
+        links: [{val:"Training Programs", url:''},{val: "Youth Academy",url:''},{val: "Adult Coaching",url:''},{ val:"Tournaments",url:''}],
+
     },
-    { 
-        title: "Academy", 
-        links: ["About Us", "Our Coaches", "Facilities", "Membership"] 
+    {
+        title: "Academy",
+        links: [{val: "About us",url: '/about-us'}, {val:"Our Coaches", url:''}, {val:"Facilities", url:''},{val: "Membership", url:''}]
     },
-    { 
-        title: "Support", 
-        links: ["Contact Us", "FAQs", "Health & Safety", "Terms & Conditions"] 
+    {
+        title: "Support",
+        links: [{val:"Contact Us", url:'contact-us'}, {val:"FAQs", url:''},{ val:"Health & Safety", url:''}, {val:"Terms & Conditions", url:''}]
     }
 ];
 
@@ -73,32 +74,32 @@ const tennisSteps = [
 
 const coaches = [
     {
-      name: "Rafael Carbungco",
-      title: "Owner/Head Coach",
-      avatar: "",
-      bio: "An experienced coach with over 20 years in the tennis world, specializing in advanced techniques."
+        name: "Rafael Carbungco",
+        title: "Owner/Head Coach",
+        avatar: "",
+        bio: "An experienced coach with over 20 years in the tennis world, specializing in advanced techniques."
     },
     {
-      name: "Jaya sethy",
-      title: "Assistant Coach",
-      avatar: "",
-      bio: "Passionate about training new talent and building strong fundamentals in young players."
+        name: "Jaya sethy",
+        title: "Assistant Coach",
+        avatar: "",
+        bio: "Passionate about training new talent and building strong fundamentals in young players."
     },
     {
-      name: "jame underson",
-      title: "Fitness Coach",
-      avatar: "",
-      bio: "Focused on physical conditioning to help athletes stay in peak form and prevent injuries."
+        name: "jame underson",
+        title: "Fitness Coach",
+        avatar: "",
+        bio: "Focused on physical conditioning to help athletes stay in peak form and prevent injuries."
     },
-  ];
-  
-  // Data for Journey Timeline
-  const journey = [
+];
+
+// Data for Journey Timeline
+const journey = [
     { year: "2015", description: "Founded the tennis academy with a mission to nurture talent." },
     { year: "2017", description: "Launched our first major tournament with players from all over the region." },
     { year: "2019", description: "Expanded facilities with 5 additional courts and training equipment." },
     { year: "2021", description: "Introduced a junior program that attracted 200+ young players." },
     { year: "2023", description: "Our players won 10+ regional championships." },
-  ];
+];
 
-export {clubs,testimonials,footerLinks,tennisSteps,coaches,journey,students,coachess,achievements};
+export { clubs, testimonials, footerLinks, tennisSteps, coaches, journey, students, coachess, achievements };

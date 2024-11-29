@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { IconAdCircle, IconBell, IconSettings, IconMenu2, IconX } from '@tabler/icons-react';
 import { Avatar, Indicator } from '@mantine/core';
 
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import NavLinks from './NavLinks';
 
 const Header = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
- 
+  const navigate = useNavigate();
   
   return (
     location.pathname !== "/signup" && location.pathname !== "/login" ? (
@@ -27,8 +27,8 @@ const Header = () => {
 
         {/* Actions */}
         <div className='flex gap-5 items-center'>
-          <div className='hidden lg:flex gap-2 items-center'>
-            <div>username</div>
+          <div className='hidden lg:flex gap-2 items-center' onClick={()=>navigate("/login")}>
+            {/* <div>username</div> */}
             <Avatar src="" alt="it's me" />
           </div>
 
@@ -56,8 +56,8 @@ const Header = () => {
             </div>
             <div className='border-t border-white/20 mt-2'>
               <div className='flex flex-col items-center gap-4 py-4'>
-                <div className='flex gap-2 items-center'>
-                  <div>username</div>
+                <div className='flex gap-2 items-center' onClick={()=>navigate("/login")}>
+                  {/* <div>username</div> */}
                   <Avatar src="" alt="it's me" />
                 </div>
                 <div className='flex gap-3'>

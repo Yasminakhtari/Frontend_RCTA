@@ -1,8 +1,9 @@
 import { IconAdCircle, IconBrandFacebook, IconBrandInstagram, IconBrandX } from '@tabler/icons-react';
 import { footerLinks } from '../../Data/Data';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-const Footer = () => {
+const Footer = ({onClick=()=>{}}) => {
+
   const location = useLocation();
   return (
     location.pathname !== "/signup" && location.pathname !== "/login" && location.pathname !== "/gallery" ? 
@@ -33,7 +34,8 @@ const Footer = () => {
                   <div className='text-lg font-semibold mb-4 text-blueRibbon-400'>{item.title}</div>
                   {item.links.map((link, index) => (
                     <div key={index} className='text-mine-shaft-100 text-sm hover:text-blueRibbon-400 cursor-pointer mb-1 hover:translate-x-2 transition duration-300 ease-in-out'>
-                      {link}
+                      {/* {link} */}
+                      <Link key={index} to={link.url} onClick={onClick} >{link.val}</Link>
                     </div>
                   ))}
                 </div>

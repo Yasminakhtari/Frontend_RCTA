@@ -3,14 +3,16 @@ import { Link, useLocation } from "react-router-dom";
 
 const NavLinks = ({onClick=()=>{}}) => { // Accept the onClick prop
     
+    //Menu - Home, Programs, About Us, Contact Us, Gallery
     const links = [
         // { name: "Players", url: "players" },
         // { name: "Session", url: "tournaments" },
         // { name: "Rankings", url: "rankings" },
         { name: "Home", url: "home" },
-        { name: "about us",url: "about-us"},
-        {name:"Sign Up",url:"signup"},
+        { name: "About us",url: "about-us"},
+        // {name:"Sign Up",url:"signup"},
         {name:"Gallery" , url:"gallery"},
+        {name:"Contact Us",url:"contact-us"}
         // {name:"Products",url:"products"}
     ];
 
