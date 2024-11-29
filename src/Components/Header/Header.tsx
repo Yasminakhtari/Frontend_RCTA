@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { IconAdCircle, IconBell, IconSettings, IconMenu2, IconX } from '@tabler/icons-react';
 import { Avatar, Indicator } from '@mantine/core';
-import NavLinks from './NavLinks'; 
+
 import { useLocation } from 'react-router-dom';
+import NavLinks from './NavLinks';
 
 const Header = () => {
   const location = useLocation();
@@ -21,7 +22,7 @@ const Header = () => {
 
        
         <div className='hidden lg:flex'>
-          <NavLinks /> {}
+          <NavLinks/> 
         </div>
 
         {/* Actions */}
@@ -49,8 +50,9 @@ const Header = () => {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className='absolute top-20 left-0 w-full bg-blueRibbon-500 text-white shadow-lg lg:hidden z-50'>
-            <div className='flex flex-col items-center p-4'>
-              <NavLinks /> 
+            <div className='flex flex-col items-center p-4'> 
+              <NavLinks onClick={()=> setIsMenuOpen(false)}/> 
+                {/* // Pass the setIsMenuOpen function to NavLinks so the menu closes when a link is clicked */}
             </div>
             <div className='border-t border-white/20 mt-2'>
               <div className='flex flex-col items-center gap-4 py-4'>

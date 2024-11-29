@@ -24,20 +24,20 @@ const SignUpPage = () => {
   return (
     <div style={divStyle} className='min-h-[90vh] font-["poppins"] overflow-hidden relative'>
      
-     <Button leftSection={<IconHome size={20}/>}  my="md" className="!absolute  bottom-2 md:top-2 left-10 md:left-5 z-10" color="blueRibbon.9" variant="filled" onClick={() => navigate("/")}>Home</Button>
+     <Button leftSection={<IconHome size={20}/>}  my="md" className="!absolute  bottom-24 md:top-2 left-10 md:left-5 z-10" color="blueRibbon.9" variant="filled" onClick={() => navigate("/")}>Back To Home</Button>
 
       <div
         className={`w-[100vw] h-[100vh] transition-all ease-in-out duration-1000 flex [&>*]:flex-shrink-0 ${
-          location.pathname === '/signup' ? '-translate-x-[91%] md:-translate-x-1/2' : 'translate-x-0'
+          location.pathname === '/login' ? '-translate-x-[91%] md:-translate-x-1/2' : 'translate-x-0'
         }`}
       >
-        {/* Login Component */}
-        <Login />
+        {/* SignUp Component */}
+        <SignUp />
 
         {/* Center Panel */}
         <div
           className={`w-1/2 h-full   hidden md:flex transition-all duration-1000 ease-in-out ${
-            location.pathname === '/signup'
+            location.pathname === '/login'
               ? 'rounded-r-[200px]'
               : 'rounded-l-[200px]'
           } bg-blueRibbon-800/60 flex items-center flex-col justify-center gap-5`}
@@ -57,8 +57,10 @@ const SignUpPage = () => {
           </div>
         </div>
 
-        {/* SignUp Component */}
-        <SignUp />
+        {/* Login Component */}
+        <Login />
+
+        
       </div>
     </div>
   );

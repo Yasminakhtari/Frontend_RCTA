@@ -1,10 +1,13 @@
 import { Avatar, Card, Timeline, Text, Divider, Title } from "@mantine/core";
-import { IconTrophy } from "@tabler/icons-react";
+import { IconArrowUp, IconTrophy } from "@tabler/icons-react";
 import { journey,coaches } from "../../Data/Data";
+import { useEffect, useState } from "react";
 
 const AboutUs = () => {
+
+
   return (
-    <div className="px-20 py-10 bg-blueRibbon-500 text-mine-shaft-100 font-['Poppins']">
+    <div className="px-20 py-10 bg-blueRibbon-500 text-mine-shaft-100 font-['Poppins'] mt-14 lg:mt-5">
       
       {/* Hero Section */}
       <div className="text-center mb-12">
@@ -53,6 +56,9 @@ const AboutUs = () => {
           </Timeline>
         </div>
       </div>
+     
+    
+
     </div>
   );
 };

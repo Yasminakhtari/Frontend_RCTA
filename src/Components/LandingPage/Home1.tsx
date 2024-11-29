@@ -1,7 +1,32 @@
 import { Avatar, TextInput } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { IconArrowUp, IconSearch } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 
 const Home1 = () => {
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  
+    useEffect(() => {
+      const handleScroll = () => {
+        if (window.scrollY > 200) {
+          setShowScrollButton(true);
+        } else {
+          setShowScrollButton(false);
+        }
+      };
+  
+      window.addEventListener("scroll", handleScroll);
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }, []);
+  
+    const scrollToTop = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    };
+
   return (
     <div className="flex flex-col lg:flex-row items-center min-h-[90vh] gap-10 lg:gap-5 pt-4  px-5">
       {/* Left Section */}
@@ -90,6 +115,16 @@ const Home1 = () => {
           </div>
         </div>
       </div>
+      {/* Scroll to Top Button */}
+      {showScrollButton && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-5 right-5 bg-blueRibbon-600 text-mine-shaft-100 p-3 rounded-full shadow-lg hover:bg-blueRibbon-500"
+        >
+          <IconArrowUp size={24} />
+        </button>
+      )}
+
     </div>
   );
 };
