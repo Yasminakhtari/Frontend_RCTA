@@ -1,4 +1,4 @@
-import { Button, PasswordInput, rem, TextInput } from "@mantine/core";
+import { Button, LoadingOverlay, PasswordInput, rem, TextInput } from "@mantine/core";
 import { IconCheck, IconLock, IconUser, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,10 +7,14 @@ import { LoginValidation } from "../../Services/FormValidation";
 import { notifications } from "@mantine/notifications";
 import ResetPassword from "./ResetPassword";
 import { useDisclosure } from "@mantine/hooks";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Slices/UserSlice";
 
 
 const Login = (props:any) => {
   
+  const [loading,setLoading] = useState(false);
+  const dispatch = useDispatch();
 const form={
   username:"",
   password:"",
@@ -31,6 +35,7 @@ const form={
  }
  ///
  const handleSubmit = async()=>{
+  setLoading(true);
   let valid = true , newFormError:{[key:string]:string}={};
   for(let key in data){
     newFormError[key] =LoginValidation(key,data[key]);
@@ -38,7 +43,7 @@ const form={
   }
   setFormError(newFormError);
   //now here i am passing data inside loginUser
-  if(valid == true){
+  if(valid === true){
     loginUser(data).then((res)=>{
       console.log(res);
       notifications.show({
@@ -51,10 +56,14 @@ const form={
         className:"!border-green-500"
       })
       setTimeout(()=>{
+        setLoading(false);
+        dispatch(setUser(res));
+        // dispatch(setUser(res.userDetails));
         navigate("/*")
       },4000)
       }).catch((err)=>
         {
+          setLoading(false);
           console.log(err);
           notifications.show({
             title: 'Login Failed',
@@ -75,9 +84,16 @@ const form={
   const iconn = <IconLock style={{ width: rem(16), height: rem(16) }} />;
   
   return (
-    
+     
       
     <>
+    <LoadingOverlay
+          visible={loading}
+          className="translate-x-[93%] md:translate-x-1/2"
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+          loaderProps={{ color: 'blueRibbon.9', type: 'bars' }}
+        />
       <div className=" w-[95%] md:w-1/2  md:px-20 flex justify-center items-center gap-3 ">
       
         <div className=" border-white border-[2px] md:w-2/3 w-[90%]  shadow-xl rounded-2xl bg-white/20 p-6">
@@ -87,7 +103,7 @@ const form={
             <PasswordInput value={data.password} onChange={handleChange} name="password"  error={formError.password}   withAsterisk leftSection={iconn}  label="Password"  placeholder="Password"/> 
 
             <div className="mt-4 bg-blueRibbon-600">
-              <Button autoContrast fullWidth variant="filled" color="rgba(30 80 207)" onClick={handleSubmit}>Sign in</Button>
+              <Button autoContrast fullWidth variant="filled" color="rgba(30 80 207)" loading={loading}  onClick={handleSubmit}>Sign in</Button>
             </div>
             <div className="mx-auto mt-2">Don't have an account ?<span  className="text-blueRibbon-900 hover:underline cursor-pointer ml-3" onClick={()=>{navigate("/signup");setFormError(form);setData(form)}}>Sign Up</span></div>
 

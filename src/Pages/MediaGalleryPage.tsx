@@ -1,27 +1,11 @@
-// import { Divider } from "@mantine/core"
-// import GalleryTabs from "../Components/MediaGallery/GalleryTabs"
-// import LeftSection from "../Components/MediaGallery/LeftSection"
 
-// const MediaGalleryPage = () => {
-//   return (
-//     <div className="min-h-[90vh] bg-white  px-4">
-//       <Divider size="xs"/>
-//         <div className="flex gap-5 ">
-//            <LeftSection/>
-//            <GalleryTabs/>
-//         </div>
-//     </div>
-//   )
-// }
-
-// export default MediaGalleryPage
 import { Divider } from "@mantine/core";
 import GalleryTabs from "../Components/MediaGallery/GalleryTabs";
 import LeftSection from "../Components/MediaGallery/LeftSection";
 
 const MediaGalleryPage = () => {
   return (
-    <div className="min-h-[90vh] bg-white px-4">
+    <div className="min-h-[90vh] bg-white px-4 mt-16">
       <Divider size="xs" />
 
       {/* Responsive Wrapper */}
