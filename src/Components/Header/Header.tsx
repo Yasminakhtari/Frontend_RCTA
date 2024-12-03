@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { IconAdCircle, IconBell, IconSettings, IconMenu2, IconX } from '@tabler/icons-react';
-import { Avatar, Indicator } from '@mantine/core';
+import { Avatar, Button, Indicator } from '@mantine/core';
 
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import NavLinks from './NavLinks';
+import ProfileMenu from './ProfileMenu';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const navigate = useNavigate();
+  const user = useSelector((state:any)=>state.user);//It allows functional React components to access and select data from the Redux store. 
+  console.log("ooook");
   
   return (
     location.pathname !== "/signup" && location.pathname !== "/login" ? (
@@ -27,14 +30,13 @@ const Header = () => {
 
         {/* Actions */}
         <div className='flex gap-5 items-center'>
-          <div className='hidden lg:flex gap-2 items-center' onClick={()=>navigate("/login")}>
-            {/* <div>username</div> */}
+          {/* <div className='hidden lg:flex gap-2 items-center' onClick={()=>navigate("/login")}>
+            <div>username</div>
             <Avatar src="" alt="it's me" />
-          </div>
-
-          <div className='bg-mine-shaft-900 p-1.5 rounded-full hidden lg:block'>
-            <IconSettings stroke={1.5} />
-          </div>
+          </div> */}
+          {/* <ProfileMenu/> */}
+          {user ? <ProfileMenu/>:<Link to="/login"><Button variant='filled' color="blueRibbon.9">Login</Button></Link>}
+           
 
           <div className='bg-mine-shaft-900 p-1.5 rounded-full hidden lg:block'>
             <Indicator color="blueRibbon.6" offset={5} size={12} withBorder processing>
@@ -56,14 +58,13 @@ const Header = () => {
             </div>
             <div className='border-t border-white/20 mt-2'>
               <div className='flex flex-col items-center gap-4 py-4'>
-                <div className='flex gap-2 items-center' onClick={()=>navigate("/login")}>
-                  {/* <div>username</div> */}
+                {/* <div className='flex gap-2 items-center' onClick={()=>navigate("/login")}>
+                  <div>username</div>
                   <Avatar src="" alt="it's me" />
-                </div>
+                </div> */}
+               
+                {user ? <ProfileMenu/>:<Link to="/login"><Button variant='filled' color="blueRibbon.9">Login</Button></Link>}
                 <div className='flex gap-3'>
-                  <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
-                    <IconSettings stroke={1.5} />
-                  </div>
                   <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
                     <Indicator color="blueRibbon.6" offset={5} size={12} withBorder processing>
                       <IconBell stroke={1.5} />

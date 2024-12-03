@@ -20,12 +20,16 @@ import Footer from './Components/Footer/Footer';
 import { Notifications } from '@mantine/notifications';
 import ProductsPage from './Pages/ProductsPage';
 import ScrollUp from './Components/Common/ScrollUp';
+import { Provider } from 'react-redux';
+import Store from './Store';
+import AppRoutes from './Pages/AppRoutes';
 
 function App() {
 
   const theme = createTheme({
     focusRing:"never",
     primaryColor: 'blueRibbon',
+    
     colors:{
       // 'cyanAqua':  ['#ebfffe','#ceffff','#a2fdff','#63f9fd','#1debf4','#00ceda','#03a4b7','#0a8294','#126878','#145665','#063a46',],
       // 'pigmentIndigo': ['#faf4ff','#f3e6ff','#ead2ff','#d9aeff','#c27bff', '#ab49ff','#9825f8','#8315db','#6f17b2','#5b148f','#4b0082'],
@@ -39,25 +43,14 @@ function App() {
    })
 
   return (
-    <div className='w-[100%] overflow-hidden'>
-    <MantineProvider theme={theme} >
-      <Notifications />
-      <BrowserRouter>
-        <Header/>
-          <Routes>
-            <Route path="/about-us" element={<About/>}/>
-            <Route path="/signup" element={<SignUpPage/>}/>
-            <Route path="/login" element={<SignUpPage/>}/>
-            <Route path="/gallery" element={<MediaGalleryPage/>}/>
-            <Route path='/home' element={<HomePage/>}/>
-            <Route path='*' element={<HomePage/>}/>
-            <Route path="/contact-us" element={<ContactUs />}/>
-            <Route path="/products" element={<ProductsPage/>}/>
-          </Routes>
-          <ScrollUp/>
-        <Footer/>
-      </BrowserRouter>
-    </MantineProvider>
+    <div className='w-[100%] defaulttheme={dark} overflow-hidden'>
+    <Provider store={Store}>
+        <MantineProvider   theme={theme} >
+          <Notifications position="top-right" zIndex={1000} />
+            <AppRoutes/>
+        </MantineProvider>
+    </Provider>
+    
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Anchor, Button,  PasswordInput, rem, TextInput } from "@mantine/core"
+import { Anchor, Button,  LoadingOverlay,  PasswordInput, rem, TextInput } from "@mantine/core"
 import { IconAt, IconCheck, IconLock, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import {  useNavigate } from "react-router-dom";
@@ -23,7 +23,7 @@ const SignUp = (props:any) => {
   const [data,setData] = useState<{[key:string]:string}>(form);
   const [formError,setFormError] = useState<{[key:string]:string}>(form);
   const navigate = useNavigate();
-
+  const [loading,setLoading] =useState(false);
   // CAPTCHA STATE
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null); // Store the reCAPTCHA token
@@ -139,6 +139,7 @@ const SignUp = (props:any) => {
           /////////////////////////////////////////////
 
             if(valid === true){//jadi valid false then request send karani
+              setLoading(true);
               let newdata={...data,roleId: 1,}
               registerUser(newdata)
               .then((res)=>{
@@ -154,10 +155,12 @@ const SignUp = (props:any) => {
                   className:"!border-green-500"
                 })
                 setTimeout(()=>{
+                  setLoading(false);
                   navigate("/login");
                 },4000)
               }).catch((err)=>
                 {
+                  setLoading(false);
                   console.log(err);
                   notifications.show({
                     title: 'Registration Failed',
@@ -178,7 +181,16 @@ const SignUp = (props:any) => {
   
   const icon = <IconAt style={{ width: rem(16), height: rem(16) }} />;
   const iconn = <IconLock style={{ width: rem(16), height: rem(16) }} />;
-  return (
+  return (<>
+    <LoadingOverlay
+          visible={loading}
+          // className="translate-x-1/2"
+          
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+          loaderProps={{ color: 'blueRibbon.9', type: 'bars' }}
+          
+        />
     <div className=" w-[95%] md:w-1/2 md:px-20 flex flex-col pt-2  md:pt-10 items-center gap-3">
 
       <div className="border-white border-[2px] w-[90%] md:w-2/3 shadow-xl rounded-2xl bg-white/20 p-6 ">
@@ -212,11 +224,12 @@ const SignUp = (props:any) => {
 
 
           <div className="mt-4 bg-blueRibbon-600">
-            <Button autoContrast fullWidth variant="filled" color="rgba(30 80 207)" disabled={!captchaVerified} onClick={handleSubmit}>Sign Up</Button>
+            <Button loading={loading} autoContrast fullWidth variant="filled" color="rgba(30 80 207)" disabled={!captchaVerified} onClick={handleSubmit}>Sign Up</Button>
           </div>
           <div className="mx-auto mt-2 ">Have an account ?<span className="text-blueRibbon-900 hover:underline cursor-pointer ml-3" onClick={()=>{navigate("/login");setFormError(form);setData(form)}}>Sign-In</span></div>
       </div>
     </div>
+    </>
   )
 }
 

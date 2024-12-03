@@ -24,7 +24,7 @@ const SignUpPage = () => {
   return (
     <div style={divStyle} className='min-h-[90vh] font-["poppins"] overflow-hidden relative'>
      
-     <Button leftSection={<IconHome size={20}/>}  my="md" className="!absolute  bottom-24 md:top-2 left-10 md:left-5 z-10" color="blueRibbon.9" variant="filled" onClick={() => navigate("/")}>Back To Home</Button>
+      <Button leftSection={<IconHome size={20}/>}  my="md" className="!absolute  bottom-24 md:top-2 left-10 md:left-5 z-10" color="blueRibbon.9" variant="filled" onClick={() => navigate("/")}>Back To Home</Button>
 
       <div
         className={`w-[100vw] h-[100vh] transition-all ease-in-out duration-1000 flex [&>*]:flex-shrink-0 ${
