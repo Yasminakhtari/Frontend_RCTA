@@ -2,13 +2,48 @@ import React, { FC, useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { sendEmail } from "../../Services/ContactService";
+
+
 
 const ContactUs: FC = () => {
+  // Form state
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+
+  const [loading, setLoading] = useState(false); // Loading indicator
+  const [responseMessage, setResponseMessage] = useState(''); // Success/error message
+
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
   
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Form submitted successfully!');
+    // alert('Form submitted successfully!');
+    setLoading(true); // Show loading indicator
+    setResponseMessage(''); // Reset response message
+
+    sendEmail(formData)
+      .then((response:any) => {
+        setResponseMessage('Form submitted successfully!');
+        alert('Form submitted successfully!');
+        console.log('Server response:', response);
+      })
+      .catch((error:any) => {
+        console.error('Error submitting form:', error);
+        setResponseMessage('Failed to submit the form. Please try again.');
+      })
+      .finally(() => {
+        setLoading(false); // Hide loading indicator
+      });
   };
 
   return (
@@ -36,6 +71,8 @@ const ContactUs: FC = () => {
                   type="text"
                   id="name"
                   name="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   className="w-full rounded-md border-gray-300 p-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-300"
                   onInput={(e) => {
                     e.currentTarget.value = e.currentTarget.value.replace(/[^a-zA-Z\s]/g, '');
@@ -49,6 +86,8 @@ const ContactUs: FC = () => {
                 type="text"
                 id="email"
                 name="email"
+                value={formData.email}
+                  onChange={handleChange}
                 className="w-full rounded-md border-gray-300 p-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-300"
                 onInput={(e) => {
                   // Prevent the first character from being a number
@@ -64,6 +103,8 @@ const ContactUs: FC = () => {
               <div className="mb-4">
                 <label htmlFor="subject" className="block font-bold mb-2"> Subject </label>
                 <input type="text" id="subject" name="subject"
+                 value={formData.subject}
+                 onChange={handleChange}
                   className="w-full rounded-md border-gray-300 p-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-300"
                   required />
               </div>
@@ -73,16 +114,20 @@ const ContactUs: FC = () => {
                   id="message"
                   name="message"
                   rows={3}
+                  value={formData.message}
+                  onChange={handleChange}
                   className="w-full rounded-md border-gray-300 p-2 text-black focus:outline-none focus:ring-2 focus:ring-blue-300"
                   required >
                 </textarea>
               </div>
               <button
                 type="submit"
+                disabled={loading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">
-                Submit
+                {loading ? 'Submitting...' : 'Submit'}
               </button>
             </form>
+            
 
             <div className="mt-6 text-center">
               <p className='text-lg sm:text-xl mb-2'>Email : support@ifaceh.com</p>
