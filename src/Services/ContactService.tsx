@@ -1,5 +1,5 @@
 import axios from "axios"
-export const  base_url = "http://localhost:8082/api/contact"
+export const  base_url = "https://backend-rcta.onrender.com/api/contact"
 
 
 const sendEmail=async (contact:any)=>{
