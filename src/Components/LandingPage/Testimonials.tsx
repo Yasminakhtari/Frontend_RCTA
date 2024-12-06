@@ -35,7 +35,7 @@ const Testimonials = () => {
                   <Rating value={items.rating} fractions={2} color="blueRibbon.10" readOnly />
                 </div>
               </div>
-              <div className="md:text-xs text-mine-shaft-300 text-xl">
+              <div className="md:text-xs text-mine-shaft-200 text-xl">
                 {items.testimonial}
               </div>
             </div>

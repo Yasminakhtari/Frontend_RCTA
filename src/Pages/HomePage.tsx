@@ -41,7 +41,7 @@ const HomePage = () => {
 
       
       {isFading && (
-        <div className="fixed bottom-0 left-0 w-full h-40 bg-gradient-to-t from-blueRibbon-600 to-transparent pointer-events-none z-10"></div>
+        <div className="fixed bottom-0 left-0 w-full h-30 bg-gradient-to-t from-blueRibbon-600 to-transparent pointer-events-none z-10"></div>
       )}
     </div>
   );
