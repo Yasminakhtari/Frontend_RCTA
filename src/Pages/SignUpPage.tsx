@@ -1,7 +1,7 @@
-import { IconAnchor, IconHome, IconHome2 } from "@tabler/icons-react";
+import { IconHome,} from "@tabler/icons-react";
 import SignUp from "../Components/SignUpLogin/SignUp";
 import Login from "../Components/SignUpLogin/Login";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import imageUrl from '../assets/images/tenisbg.jpg';
 import { Button } from "@mantine/core";
 

@@ -11,6 +11,8 @@ const Header = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const navigate = useNavigate();
+
   const user = useSelector((state:any)=>state.user);//It allows functional React components to access and select data from the Redux store. 
   console.log("ooook");
   
@@ -18,8 +20,9 @@ const Header = () => {
     location.pathname !== "/signup" && location.pathname !== "/login" ? (
       <div className='w-full md:px-16  fixed top-0 z-50 px-4 lg:px-20 bg-blueRibbon-600 font-["poppins"] text-white h-20 flex justify-between items-center lg:h-20 '>
         {/* Logo Section */}
+
         <div className='flex gap-3 items-center text-blueRibbon-950 f'>
-          <IconAdCircle className='h-10 w-10 stroke-1.25' />
+          <IconAdCircle className='h-10 w-10 stroke-1.25' onClick={() => navigate("/")} />
           <div className='text-2xl md:text-4xl font-extrabold'>RC Tennis Academy</div>
         </div>
 

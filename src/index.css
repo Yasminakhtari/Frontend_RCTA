@@ -15,3 +15,41 @@
         margin-left: 1em;
     }
 }
+
+
+@layer utilities {
+    @media (max-width: 768px) {
+      .testimonial-container {
+        @apply gap-4 p-4; 
+      }
+      .column:nth-child(3) {
+        display: none;
+      }
+      .column:hover .testimonials {
+        animation-play-state: running;
+      }
+
+      .animate-scrollUp, .animate-scrollDown {
+        animation-duration: 5s; /* Faster speed for mobile */
+      }
+    
+    }
+
+    @media (max-width: 64px) {
+        .column {
+          display: none;
+        }
+        .column:first-child {
+          display: block;
+        }
+
+        .animate-scrollUp {
+            animation: scrollUp 10s linear infinite;
+          }
+        
+          .animate-scrollDown {
+            animation: scrollDown 10s linear infinite;
+          }
+      }
+
+}

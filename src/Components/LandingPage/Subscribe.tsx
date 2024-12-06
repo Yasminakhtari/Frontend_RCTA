@@ -10,7 +10,7 @@ const Subscribe = () => {
         <div className="flex md:gap-4 bg-blueRibbon-700 px-1 md:px-3 py-2 items-center rounded-xl w-full lg:w-3/5 justify-between">
             <TextInput 
                 className="[&_input]:text-mine-shaft-100 font-semibold lg:text-lg text-sm"
-                placeholder="YourEmail@example.com"
+                placeholder="Email@example.com"
                 variant="unstyled"
                 // size="xl"
             />

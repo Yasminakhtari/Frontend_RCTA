@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      maskImage: {
+        'gradient': 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
+      },
       colors:{
         'mine-shaft': {
         '50': '#f6f6f6',
@@ -19,49 +22,48 @@ module.exports = {
         '900': '#3d3d3d',
         '950': '#2d2d2d',
       },
-    //     'cyanAqua': {
-    //     '50': '#ebfffe',
-    //     '100': '#ceffff',
-    //     '200': '#a2fdff',
-    //     '300': '#63f9fd',
-    //     '400': '#1debf4',
-    //     '500': '#00ceda',
-    //     '600': '#03a4b7',
-    //     '700': '#0a8294',
-    //     '800': '#126878',
-    //     '900': '#145665',
-    //     '950': '#063a46',
-    // },
-    // 'pigmentIndigo': {
-    //     '50': '#faf4ff',
-    //     '100': '#f3e6ff',
-    //     '200': '#ead2ff',
-    //     '300': '#d9aeff',
-    //     '400': '#c27bff',
-    //     '500': '#ab49ff',
-    //     '600': '#9825f8',
-    //     '700': '#8315db',
-    //     '800': '#6f17b2',
-    //     '900': '#5b148f',
-    //     '950': '#4b0082',
-    // },
-    'blueRibbon': {
-        '50': '#eef8ff',
-        '100': '#d8eeff',
-        '200': '#b9e0ff',
-        '300': '#89cfff',
-        '400': '#52b4ff',
-        '500': '#2a91ff',
-        '600': '#0d6efd',
-        '700': '#0c5ae9',
-        '800': '#1149bc',
-        '900': '#144194',
-        '950': '#11295a',
-    },
+      'blueRibbon': {
+          '50': '#eef8ff',
+          '100': '#d8eeff',
+          '200': '#b9e0ff',
+          '300': '#89cfff',
+          '400': '#52b4ff',
+          '500': '#2a91ff',
+          '600': '#0d6efd',
+          '700': '#0c5ae9',
+          '800': '#1149bc',
+          '900': '#144194',
+          '950': '#11295a',
+        },
     
-      }
+      },
+      animation: {
+        scrollUp: 'scrollUp 23s linear infinite',
+        scrollDown: 'scrollDown 50s linear infinite',
+      },
+      keyframes: {
+        scrollUp: {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(-50%)' },
+        },
+        scrollDown: {
+          '0%': { transform: 'translateY(-50%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+
+      },
+      screens: {
+        sm: '64px', // Mobile
+        md: '768px', // Tablet
+        lg: '1024px', // Desktop
+      },
+
+      
+      
     },
   },
-  plugins: [],
+  plugins: [
+    function({ addUtilities }) { const newUtilities = { '.mask-gradient-to-bottom': { 'mask-image': 'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)', }, }; addUtilities(newUtilities, ['responsive', 'hover']); }
+  ],
 }
 

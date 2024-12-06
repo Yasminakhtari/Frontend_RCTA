@@ -7,21 +7,25 @@ const students: string[] = ["tp1", "tp2", "tp3", "tp4", "tp5", "tp6", "tp7", "tp
 const testimonials = [
     {
         "name": "Riya Patel",
+        "role": "Player", // Added role
         "testimonial": "The club’s facilities are top-notch! I feel like a pro every time I play here.",
         "rating": 5
     },
     {
         "name": "Sonu Verma",
+        "role": "Player", // Added role
         "testimonial": "From beginner lessons to advanced training, this club offers everything a player needs.",
         "rating": 4
     },
     {
         "name": "Purnam Gupta",
+        "role": "Player", // Added role
         "testimonial": "Great environment and friendly members. It’s my go-to place for tennis practice!",
         "rating": 4
     },
     {
         "name": "Sneha Malhotra",
+        "role": "Parent", // Added role
         "testimonial": "As a parent, I appreciate how well the junior program is structured. My child loves it here!",
         "rating": 5
     }

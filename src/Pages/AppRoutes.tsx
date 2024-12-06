@@ -9,6 +9,8 @@ import SignUpPage from "./SignUpPage";
 import About from "./About";
 import ContactUs from "../Components/contactus/ContactUs";
 import { useSelector } from "react-redux";
+import AllTestiPage from "./AllTestiPage";
+
 
 const AppRoutes = () => {
     const user = useSelector((state:any)=>state.user);
@@ -23,6 +25,7 @@ const AppRoutes = () => {
       <Route path='*' element={<HomePage/>}/>
       <Route path="/contact-us" element={<ContactUs />}/>
       <Route path="/products" element={<ProductsPage/>}/>
+      <Route path="/testimonial" element={<AllTestiPage/>}/>
     </Routes>
     <ScrollUp/>
   <Footer/>
