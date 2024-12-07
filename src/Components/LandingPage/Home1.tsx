@@ -1,6 +1,7 @@
 import { Avatar, TextInput } from "@mantine/core";
 import { IconArrowUp, IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import raphel from "./raphael.png"
 
 const Home1 = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -61,7 +62,8 @@ const Home1 = () => {
         <div className="w-full lg:w-[30rem] relative">
           <img
             className="rounded-lg object-cover w-full lg:w-auto"
-            src="/tennis.png"
+            // src="/tennis.png"
+            src={raphel}
             alt="Tennis club"
           />
           
