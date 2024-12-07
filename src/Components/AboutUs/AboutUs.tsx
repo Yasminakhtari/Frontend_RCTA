@@ -22,7 +22,7 @@ const AboutUs = () => {
       
       {/* Hero Section */}
       <div className="text-center mb-12 mt-14 md:mt-10">
-        <Title  className="text-5xl lg:text-6xl font-bold text-cyanAqua-400 ">About Us</Title>
+        <Title  className="text-5xl lg:text-6xl font-bold text-cyanAqua-400  ">About Us</Title>
         <Text size="lg" className="mt-3 text-mine-shaft-200 font-semibold">
           Discover our journey, meet our dedicated coaches, and see how we’re shaping the future of tennis.
         </Text>
@@ -35,8 +35,8 @@ const AboutUs = () => {
         </Title>
         <div className="flex flex-wrap justify-center gap-8">
           {coaches.map((coach, index) => (
-            <div data-aos="flip-right">
-            <Card key={index} shadow="md" className="bg-blueRibbon-400 text-center p-6 w-60 rounded-xl hover:bg-blueRibbon-700 transition-all">
+            <div >
+            <Card key={index} shadow="md" className="bg-blueRibbon-400 text-center p-6 w-60 rounded-xl hover:bg-blueRibbon-700 transition-all "  data-aos="flip-right">
               <Avatar src={coach.avatar} size="xl" radius="50%" className="mb-4 mx-auto" />
               <Text size="lg" className="text-cyanAqua-400 font-bold">
                 {coach.name}
