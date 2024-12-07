@@ -10,6 +10,8 @@ import About from "./About";
 import ContactUs from "../Components/contactus/ContactUs";
 import { useSelector } from "react-redux";
 import AllTestiPage from "./AllTestiPage";
+import AddService from "../Components/admin/AdminService/AddService";
+import ServiceTable from "../Components/admin/AdminService/ServiceTable";
 
 
 const AppRoutes = () => {
@@ -26,6 +28,8 @@ const AppRoutes = () => {
       <Route path="/contact-us" element={<ContactUs />}/>
       <Route path="/products" element={<ProductsPage/>}/>
       <Route path="/testimonial" element={<AllTestiPage/>}/>
+      <Route path="/add-service" element={<AddService/>}/>
+      <Route path="/service-table" element={<ServiceTable/>}/>
     </Routes>
     <ScrollUp/>
   <Footer/>
