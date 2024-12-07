@@ -23,6 +23,8 @@ import ScrollUp from './Components/Common/ScrollUp';
 import { Provider } from 'react-redux';
 import Store from './Store';
 import AppRoutes from './Pages/AppRoutes';
+import AddService from './Components/admin/AdminService/AddService';
+import ServiceTable from './Components/admin/AdminService/ServiceTable';
 
 function App() {
 
@@ -49,6 +51,7 @@ function App() {
           <Notifications position="top-right" zIndex={1000} />
             <AppRoutes/>
         </MantineProvider>
+       
     </Provider>
     
     </div>

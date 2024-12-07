@@ -50,7 +50,7 @@ const Footer = ({onClick=()=>{}}) => {
         {/* RIGHT - Footer Links */}
         <div className='w-full lg:w-3/4'>
           <div className='overflow-hidden'>
-            <div className='flex  justify-between gap-8 lg:gap-10 lg:ml-20 lg:text-lg'>
+            <div className='flex  justify-between gap-8 lg:gap-10 lg:ml-20 '>
               {footerLinks.map((item, index) => (
                 <div key={index} className='w-fit '>
                   <div className='text-lg font-semibold mb-4 text-blueRibbon-400'>{item.title}</div>

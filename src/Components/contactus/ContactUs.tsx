@@ -68,11 +68,11 @@ const ContactUs: FC = () => {
       </div>
 
       {/* Main Section */}
-      <div className="container mx-auto flex flex-col justify-center items-center bg-white py-8 px-4">
+      <div className=" mx-auto flex flex-col justify-center items-center bg-white py-8 px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
           {/* Left Column */}
           <div className="flex flex-col justify-center bg-blue-500 text-white p-6 sm:p-8 rounded-lg shadow-lg">
-            <h2 className="text-center text-xl sm:text-2xl font-bold mb-6">RC Tennis Academy</h2>
+            {/* <h2 className="text-center text-xl sm:text-2xl font-bold mb-6">RC Tennis Academy</h2> */}
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="name" className="block font-bold mb-2">
@@ -137,6 +137,7 @@ const ContactUs: FC = () => {
               </div>
               <div className="mb-6">
                 <ReCAPTCHA sitekey="6Lf_TIoqAAAAAAXYolwSahryD09PcdLptCEnQaQH" onChange={handleCaptchaChange} />
+                
               </div>
               {/* <button
                 type="submit"
@@ -145,13 +146,15 @@ const ContactUs: FC = () => {
               >
                 {loading ? 'Submitting...' : 'Submit'}
               </button> */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-2 text-sm rounded-md transition duration-300">
-                {loading ? 'Submitting...' : 'Submit'}
-              </button>
-
+              <div className="flex justify-center items-center">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 text-lg rounded-md transition duration-300"
+                >
+                  {loading ? 'Submitting...' : 'Submit'}
+                </button>
+              </div>
             </form>
 
             {/* Contact Info */}
