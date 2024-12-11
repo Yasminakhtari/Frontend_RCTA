@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import AllTestiPage from "./AllTestiPage";
 import AddService from "../Components/admin/AdminService/AddService";
 import ServiceTable from "../Components/admin/AdminService/ServiceTable";
+import Classes from "../Components/classes/Classes";
 
 
 const AppRoutes = () => {
@@ -30,6 +31,7 @@ const AppRoutes = () => {
       <Route path="/testimonial" element={<AllTestiPage/>}/>
       <Route path="/add-service" element={<AddService/>}/>
       <Route path="/service-table" element={<ServiceTable/>}/>
+      <Route path="/classes" element={<Classes />} />
     </Routes>
     <ScrollUp/>
   <Footer/>
