@@ -26,6 +26,7 @@ import AppRoutes from './Pages/AppRoutes';
 import AddService from './Components/admin/AdminService/AddService';
 import ServiceTable from './Components/admin/AdminService/ServiceTable';
 import Classes from './Components/classes/Classes';
+import CoursePage from './Components/classes/CoursePage';
 
 function App() {
 
