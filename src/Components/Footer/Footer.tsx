@@ -7,7 +7,7 @@ const Footer = ({onClick=()=>{}}) => {
 
   const location = useLocation();
   return (
-    location.pathname !== "/signup" && location.pathname !== "/login" && location.pathname !== "/gallery" && location.pathname !== "/testimonial" ? 
+    location.pathname !== "/signup" && location.pathname !== "/login" && location.pathname !== "/gallery" && location.pathname !== "/testimonial" &&  location.pathname !== "/servicetable"? 
     <div className='pt-20 pb-10 bg-blueRibbon-600 font-["poppins"] px-5 lg:px-20'>
       <div className='flex flex-col lg:flex-row gap-5'>
         {/* LEFT - Academy Info */}

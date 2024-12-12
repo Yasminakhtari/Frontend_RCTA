@@ -10,8 +10,8 @@ import About from "./About";
 import ContactUs from "../Components/contactus/ContactUs";
 import { useSelector } from "react-redux";
 import AllTestiPage from "./AllTestiPage";
-import AddService from "../Components/admin/AdminService/AddService";
-import ServiceTable from "../Components/admin/AdminService/ServiceTable";
+import AddService from "../Components/admin/AdminService/AddService"; import ServiceTable from "../Components/admin/AdminService/ServiceTable";
+// import ListServices from "../Components/admin/AdminService/ListServices";
 
 
 const AppRoutes = () => {
@@ -26,12 +26,14 @@ const AppRoutes = () => {
       <Route path='/home' element={<HomePage/>}/>
       <Route path='*' element={<HomePage/>}/>
       <Route path="/contact-us" element={<ContactUs />}/>
-      <Route path="/products" element={<ProductsPage/>}/>
+      <Route path="/products" element={<ProductsPage/>}/> 
       <Route path="/testimonial" element={<AllTestiPage/>}/>
-      <Route path="/add-service" element={<AddService/>}/>
-      <Route path="/service-table" element={<ServiceTable/>}/>
+      <Route path="/servicetable" element={<ServiceTable/>}/>
+      <Route path="/addservice" element={<AddService/>}/>
     </Routes>
     <ScrollUp/>
+    {/* <ServiceTable/> */}
+  
   <Footer/>
 </BrowserRouter>
 }
