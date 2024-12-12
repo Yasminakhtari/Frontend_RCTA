@@ -1,31 +1,18 @@
 // import './App.css';
 import { createTheme, MantineProvider } from '@mantine/core';
-import { BrowserRouter, Routes,Route } from 'react-router-dom';
+
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/carousel/styles.css';
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-
-import Header from './Components/Header/Header';
-import HomePage from './Pages/HomePage';
-
-import About from './Pages/About';
-import SignUpPage from './Pages/SignUpPage';
-import MediaGalleryPage from './Pages/MediaGalleryPage';
-import ContactUs from './Components/contactus/ContactUs';
-import Footer from './Components/Footer/Footer';
 import { Notifications } from '@mantine/notifications';
-import ProductsPage from './Pages/ProductsPage';
-import ScrollUp from './Components/Common/ScrollUp';
+
 import { Provider } from 'react-redux';
 import Store from './Store';
 import AppRoutes from './Pages/AppRoutes';
-import AddService from './Components/admin/AdminService/AddService';
-import ServiceTable from './Components/admin/AdminService/ServiceTable';
-import Classes from './Components/classes/Classes';
+
 import CoursePage from './Components/classes/CoursePage';
 
 function App() {
@@ -55,7 +42,8 @@ function App() {
         </MantineProvider>
        
     </Provider>
-    
+
+
     </div>
   );
 }

@@ -29,14 +29,16 @@ const AppRoutes = () => {
       <Route path='/home' element={<HomePage/>}/>
       <Route path='*' element={<HomePage/>}/>
       <Route path="/contact-us" element={<ContactUs />}/>
-      <Route path="/products" element={<ProductsPage/>}/>
+      <Route path="/products" element={<ProductsPage/>}/> 
       <Route path="/testimonial" element={<AllTestiPage/>}/>
       <Route path="/add-service" element={<AddService/>}/>
-      <Route path="/service-table" element={<ServiceTable/>}/>
+      <Route path="/servicetable" element={<ServiceTable/>}/>
       <Route path="/classes" element={<Classes />} />
       <Route path="/coursepage/:id" element={<CoursePage />} />
     </Routes>
     <ScrollUp/>
+    {/* <ServiceTable/> */}
+  
   <Footer/>
 </BrowserRouter>
 }

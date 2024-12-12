@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import "react-quill/dist/quill.snow.css"; // Import the Quill editor styles
 import ReactQuill from "react-quill";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AddService: React.FC = () => {
-  const [group, setGroup] = useState("");
+  const [groups, setGroup] = useState("");
   const [category, setCategory] = useState("");
-  const [subCategory, setSubCategory] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [subcategory, setSubCategory] = useState("");
+  const [imgUrl, setImageUrl] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState("");
@@ -19,6 +20,30 @@ const AddService: React.FC = () => {
   const [status, setStatus] = useState("Active");
 
   const navigate = useNavigate();
+  const groupCategoryMap: { [key: string]: { categories: string[]; subCategories: { [key: string]: string[] } } } = {
+    "About-us": {
+      categories: ["Coaches"],
+      subCategories: {
+        Coaches: ["Owner/Head Coach", "Assistant Coach", "Fitness Coach"],
+      },
+    }, 
+    "Contact-us": {
+      categories: [""],
+      subCategories: {
+        "": ["Phone No", "Email", "Current Place"],
+      },
+    },
+    "Gallery": {
+      categories: ["Coaches", "Students", "Achievements"],
+      subCategories: {
+        Coaches: [],
+        Students: [],
+        Achievements: [],
+      },
+    },
+    
+    "Products": { categories: [], subCategories: {} },
+  };
 
   // Custom toolbar options for ReactQuill
   const toolbarOptions = [
@@ -31,24 +56,80 @@ const AddService: React.FC = () => {
     ["link"], // Add links
     ["clean"], // Clear formatting
   ];
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const categories = groups !== "All" ? groupCategoryMap[groups]?.categories || [] : [];
+  const subCategories = category !== "All" ? groupCategoryMap[groups]?.subCategories[category] || [] : [];
+  let token=JSON.parse(localStorage.getItem("token") || "")
+  console.log(categories)
+  console.log(subCategories)
+  console.log(token)
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    console.log({
-      group,
+    const tennis = {
+      groups,
       category,
-      subCategory,
-      imageUrl,
+      subcategory,
       name,
       description,
       duration,
       price,
-      discount,
-      discountBeginDate,
-      discountEndDate,
-      discountQuantity,
       status,
-    });
+      discount,
+      imgUrl
+      // disbegindate,
+      // disenddate,
+      // disquantity,
+      // phoneNumber: "1234567890"
+    };
+
+//console.log(tennis)
+    // Create a FormData object
+    const formData = new FormData();
+    
+
+    // Append the tennis as a string
+    await formData.append("tennis", JSON.stringify(tennis));
+    console.log(formData)
+    formData.forEach((value, key) => {
+      console.log(`${key}: ${value}`);
+  });
+ 
+  //   try {
+  //     const response = await fetch("http://localhost:8082/api/v1/createTennis", {
+  //         method: "POST",
+  //         body: formData,
+  //         headers: {
+  //           Authorization: `Bearer ${token}`, 
+  //       },
+  //     });
+
+  //     if (response.ok) {
+  //         const responseData = await response.json();
+  //         console.log("Success:", responseData);
+  //     } else {
+  //         console.error("Error:", response.statusText);
+  //     }
+  // } catch (error) {
+  //     console.error("Error:", error);
+  // }
+    try {
+      const response = await axios.post(
+        "http://localhost:8082/api/v1/createTennis",
+        tennis,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Service added successfully:", response.data);
+      // navigate("/servicetable");
+    } catch (error) {
+      console.error("Error adding service:", error);
+      alert("Failed to add service. Please try again.");
+    }
+
   };
 
   return (
@@ -67,16 +148,16 @@ const AddService: React.FC = () => {
             Groups (Optional)
           </label>
           <select
-            value={group}
+            value={groups}
             onChange={(e) => setGroup(e.target.value)}
             className="w-full border border-gray-300 p-2 rounded mt-1"
           >
             <option value="">Select a Group</option>
-            <option value="Group1">About-us</option>
-            <option value="Group2">Contact-us</option>
-            <option value="Group2">Products</option>
-            <option value="Group2">gallery</option>
-            <option value="Group2">New</option>
+            <option value="About-us">About-us</option>
+            <option value="Contact-us">Contact-us</option>
+            <option value="Products">Products</option>
+            <option value="Gallery">gallery</option>
+            {/* <option value="New">New</option> */}
           </select>
         </div>
 
@@ -90,11 +171,17 @@ const AddService: React.FC = () => {
             onChange={(e) => setCategory(e.target.value)}
             className="w-full border border-gray-300 p-2 rounded mt-1"
           >
-            <option value="">Select a Category</option>
-            <option value="Category1">Coaches</option>
-            <option value="Category2">Contact-us</option>
-            <option value="Category2">Students</option>
-            <option value="Category2">Achievements</option>
+            {/* <option value="">Select a Category</option>
+            <option value="Coaches">Coaches</option>
+            <option value="Contact-us">Contact-us</option>
+            <option value="students">Students</option>
+            <option value="Achievements">Achievements</option> */}
+            {categories.length > 0
+              ? categories.map((item) => (
+                  <option key={item} value={item}>{item}</option>
+                ))
+              : <option value="">No Options Available</option>}
+
           </select>
         </div>
 
@@ -104,17 +191,22 @@ const AddService: React.FC = () => {
             Sub-Category
           </label>
           <select
-            value={subCategory}
+            value={subcategory}
             onChange={(e) => setSubCategory(e.target.value)}
             className="w-full border border-gray-300 p-2 rounded mt-1"
           >
-            <option value="">Select a Subcategory</option>
-            <option value="SubCategory1">Owner/Headcoach</option>
-            <option value="SubCategory2">Assistant Coach</option>
-            <option value="SubCategory2">Fitnace coach</option>
-            <option value="SubCategory2">Phone no</option>
-            <option value="SubCategory2">Email</option>
-            <option value="SubCategory2">Current Place</option>
+            {/* <option value="">Select a Subcategory</option>
+            <option value="Owner/Head Coach">Owner/Headcoach</option>
+            <option value="Assistant Coach">Assistant Coach</option>
+            <option value="Fitnace Coach">Fitnace coach</option>
+            <option value="Phone no">Phone no</option>
+            <option value="Email">Email</option>
+            <option value="Current Place">Current Place</option> */}
+            {
+              subCategories.length>0 ?
+                subCategories.map((item)=>(<option key={item} value={item}>{item}</option>))
+                : <option value="">No Options Available</option>
+            }
           </select>
         </div>
 
@@ -126,7 +218,7 @@ const AddService: React.FC = () => {
           <input
             type="text"
             placeholder="Image URL"
-            value={imageUrl}
+            value={imgUrl}
             onChange={(e) => setImageUrl(e.target.value)}
             className="w-full border border-gray-300 p-2 rounded mt-1"
           />

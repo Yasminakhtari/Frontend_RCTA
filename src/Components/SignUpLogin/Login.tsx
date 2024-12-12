@@ -45,7 +45,8 @@ const form={
   //now here i am passing data inside loginUser
   if(valid === true){
     loginUser(data).then((res)=>{
-      console.log(res);
+      console.log(res.data.token);
+      localStorage.setItem("token",JSON.stringify(res?.data?.token))
       notifications.show({
         title: 'Login Sucessful',
         message: 'Redirecting to home Page...',
