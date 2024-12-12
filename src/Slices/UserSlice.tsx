@@ -9,7 +9,7 @@ import { getItem, removeItem, setItem } from "../Services/LocalStorageService";
 
 
 //creatSlice is function of redux toolkit
-const UserSlice = createSlice({
+const UserSlice = createSlice({  
     name: 'user',         // Name of the slice
     initialState:getItem("user"), // Initial state
     reducers: {              // Reducers to update state

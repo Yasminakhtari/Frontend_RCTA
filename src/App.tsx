@@ -54,7 +54,8 @@ function App() {
         </MantineProvider>
        
     </Provider>
-    
+
+
     </div>
   );
 }
