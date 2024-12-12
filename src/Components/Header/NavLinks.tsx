@@ -14,7 +14,8 @@ const NavLinks = ({onClick=()=>{}}) => { // Accept the onClick prop
         {name:"Gallery" , url:"gallery"},
         {name:"Contact Us",url:"contact-us"},
         {name:"Testimonials",url:"testimonial"},
-        {name:"ServiceTable",url:"servicetable"}
+        {name:"ServiceTable",url:"servicetable"},
+        {name:"Classes",url:"classes"},
         // {name:"Products",url:"products"}
     ];
 
