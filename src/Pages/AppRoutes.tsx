@@ -35,6 +35,7 @@ const AppRoutes = () => {
       <Route path="/servicetable" element={<ServiceTable/>}/>
       <Route path="/classes" element={<Classes />} />
       <Route path="/coursepage/:id" element={<CoursePage />} />
+      <Route path="/add-service/:id" element={<AddService/>}/>
     </Routes>
     <ScrollUp/>
     {/* <ServiceTable/> */}

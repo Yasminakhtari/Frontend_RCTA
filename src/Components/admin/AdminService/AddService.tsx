@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css"; // Import the Quill editor styles
 import ReactQuill from "react-quill";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const AddService: React.FC = () => {
@@ -20,6 +20,7 @@ const AddService: React.FC = () => {
   const [status, setStatus] = useState("Active");
 
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>(); // Extract `id` from URL
   const groupCategoryMap: { [key: string]: { categories: string[]; subCategories: { [key: string]: string[] } } } = {
     "About-us": {
       categories: ["Coaches"],
@@ -62,6 +63,38 @@ const AddService: React.FC = () => {
   console.log(categories)
   console.log(subCategories)
   console.log(token)
+  useEffect(() => {
+  if (id) {
+    axios
+      .get(`http://localhost:8082/api/v1/getTennis/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data.data)
+        const data = response.data.data;
+        setGroup(data.groups || "");
+        setCategory(data.category || "");
+        setSubCategory(data.subcategory || "");
+        setImageUrl(data.imgUrl || "");
+        setName(data.name || "");
+        setDescription(data.description || "");
+        setDuration(data.duration || "");
+        setPrice(data.price || "");
+        setDiscount(data.discount || 0);
+        setDiscountBeginDate(data.discountBeginDate || "");
+        setDiscountEndDate(data.discountEndDate || "");
+        setDiscountQuantity(data.discountQuantity || 0);
+        setStatus(data.status || "Active");
+      })
+      .catch((error) => {
+        console.error("Error fetching service details:", error);
+        // alert("Failed to fetch service details. Please try again.");
+      });
+  }
+}, [id, token]);
+
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     const tennis = {
@@ -87,11 +120,11 @@ const AddService: React.FC = () => {
     
 
     // Append the tennis as a string
-    await formData.append("tennis", JSON.stringify(tennis));
-    console.log(formData)
-    formData.forEach((value, key) => {
-      console.log(`${key}: ${value}`);
-  });
+  //   await formData.append("tennis", JSON.stringify(tennis));
+  //   console.log(formData)
+  //   formData.forEach((value, key) => {
+  //     console.log(`${key}: ${value}`);
+  // });
  
   //   try {
   //     const response = await fetch("http://localhost:8082/api/v1/createTennis", {
@@ -112,6 +145,22 @@ const AddService: React.FC = () => {
   //     console.error("Error:", error);
   // }
     try {
+      if (id) {
+        // Update existing service
+        const response = await axios.put(
+          `http://localhost:8082/api/v1/updateTennis/${id}`,
+          tennis,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log("Service updated successfully:", response.data);
+        alert("Service updated successfully!");
+      }
+      else{
       const response = await axios.post(
         "http://localhost:8082/api/v1/createTennis",
         tennis,
@@ -122,9 +171,10 @@ const AddService: React.FC = () => {
           },
         }
       );
-
+      alert("Service added successfully")
       console.log("Service added successfully:", response.data);
-      // navigate("/servicetable");
+    }
+      navigate("/servicetable");
     } catch (error) {
       console.error("Error adding service:", error);
       alert("Failed to add service. Please try again.");
@@ -140,7 +190,7 @@ const AddService: React.FC = () => {
       >
         ← Back
       </button>
-      <h1 className="text-center text-2xl font-bold mb-6">Add Service</h1>
+      <h1 className="text-center text-2xl font-bold mb-6">{id ? "Edit Service" : "Add Service"}</h1>
       <form onSubmit={handleSubmit} className="bg-white p-6 shadow rounded">
         {/* Group */}
         <div className="mb-4">
@@ -349,7 +399,7 @@ const AddService: React.FC = () => {
             type="submit"
             className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
           >
-            Add Service
+            {id ? "Update Service" : "Add Service"}
           </button>
         </div>
       </form>

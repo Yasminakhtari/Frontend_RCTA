@@ -154,6 +154,48 @@ const ServiceTable: React.FC = () => {
   
     fetchFilteredStatusData();
   }, [statusFilter, token]);
+
+
+
+   // Function to toggle the status of the service
+   const toggleStatus = async (id: number, status: string) => {
+    try {
+      // If the status is 'Active', send 'Inactive' and vice versa
+    const updatedStatus = status === 'Active' ? 'Inactive' : 'Active';
+
+      // Call the API to toggle the status
+      const response = await axios.post(
+        `http://localhost:8082/api/v1/toggleStatus/${id}?status=${updatedStatus}`, // Assuming the backend API path
+        // { status: validStatus }, 
+        null,
+        { 
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          // params: { status: validStatus }  // Add status as a query parameter
+        } // Send status as query parameter
+      );
+
+      // Handle success
+      console.log('Status updated:', response.data);
+      alert("Service status updated to"+" " + response.data.data.status)
+      // Optionally, navigate to the service detail page
+      // navigate(`/view-service/${id}`);
+      // Optionally, update the status in the state to reflect the change immediately
+     // Update the status in the table data to reflect the change immediately
+     setTableData(prevData => 
+      prevData.map(service => 
+        service.id === id ? { ...service, status: response.data.data.status } : service
+      )
+    );
+
+    } catch (error) {
+      // Handle error
+      console.error('Error updating service status:', error);
+    }
+  };
+  
   
   //////////////////////
   
@@ -166,7 +208,7 @@ const ServiceTable: React.FC = () => {
       {/* Add Service Button */}
       <div className="flex justify-end mb-4">
         <button
-          onClick={() => navigate("/addservice")}
+          onClick={() => navigate("/add-service")}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
           Add Service
@@ -282,10 +324,17 @@ const ServiceTable: React.FC = () => {
               <td className="border border-gray-300 p-2">
                 <button
                   className="text-blue-500 mr-2"
-                  onClick={() => navigate(`/edit-service/${service.id}`)}
+                  onClick={() => navigate(`/add-service/${service.id}`)}
                 >
                   Edit
                 </button>
+                <button
+                key={service.status}
+                className="text-blue-500"
+                onClick={() => toggleStatus(service.id, service.status ?? 'inactive')} // Pass serviceId and status
+              >
+               {service.status === 'Active' ? '👁️' : '👁️‍🗨️'}
+              </button>
                 {/* <button
                   onClick={() =>
                     setServices((prevServices) =>

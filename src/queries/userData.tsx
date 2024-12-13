@@ -63,7 +63,7 @@ export const useUserData = () => {
     staleTime: 60000, // Data stays fresh for 1 minute
     refetchInterval: 60000, // Refetch every 1 minute
     refetchOnWindowFocus: false,
-    onSuccess: (data) => {
+    onSuccess: (data:any) => {
       localStorage.setItem("userData", JSON.stringify(data));
     },
     initialData: () => {
