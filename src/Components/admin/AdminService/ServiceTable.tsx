@@ -95,7 +95,7 @@ const ServiceTable: React.FC = () => {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
-  let token = JSON.parse(localStorage.getItem("token") || "")
+  let token = JSON.parse(localStorage.getItem("token") || "") 
   const [tableData, setTableData] = useState<TennisData[]>([]);
 
 ////////////////////////////////////////
@@ -282,7 +282,7 @@ const ServiceTable: React.FC = () => {
               <td className="border border-gray-300 p-2">
                 <button
                   className="text-blue-500 mr-2"
-                  onClick={() => navigate(`/edit-service/${service.id}`)}
+                  onClick={() => navigate(`/editservice/${service.id}`)}
                 >
                   Edit
                 </button>

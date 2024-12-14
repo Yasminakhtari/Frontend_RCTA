@@ -44,8 +44,10 @@ const form={
   setFormError(newFormError);
   //now here i am passing data inside loginUser
   if(valid === true){
+
     loginUser(data).then((res)=>{
-      console.log(res.data.token);
+      console.log(res);
+      console.log(res?.data?.token);
       localStorage.setItem("token",JSON.stringify(res?.data?.token))
       notifications.show({
         title: 'Login Sucessful',
