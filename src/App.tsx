@@ -13,6 +13,7 @@ import { Provider } from 'react-redux';
 import Store from './Store';
 import AppRoutes from './Pages/AppRoutes';
 
+import CoursePage from './Components/classes/CoursePage';
 
 function App() {
 

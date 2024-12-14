@@ -14,6 +14,8 @@ import AddService from "../Components/admin/AdminService/AddService";
 import ServiceTable from "../Components/admin/AdminService/ServiceTable";
 import Classes from "../Components/classes/Classes";
 import EditService from "../Components/admin/AdminService/EditService";
+import CoursePage from "../Components/classes/CoursePage";
+
 
 
 const AppRoutes = () => {
@@ -34,6 +36,8 @@ const AppRoutes = () => {
       <Route path="/servicetable" element={<ServiceTable/>}/>
       <Route path="/classes" element={<Classes />} />
       <Route path="/editservice" element={<EditService/>}/>
+      <Route path="/coursepage/:id" element={<CoursePage />} />
+      <Route path="/add-service/:id" element={<AddService/>}/>
     </Routes>
     <ScrollUp/>
     {/* <ServiceTable/> */}
