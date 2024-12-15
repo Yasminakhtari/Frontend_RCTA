@@ -75,6 +75,10 @@ const ServiceTable: React.FC = () => {
   const [subCategoryFilter, setSubCategoryFilter] = useState<string>("All");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [statusFilter, setStatusFilter] = useState<string>("All");
+  const [groups, setGroups] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [subCategories, setSubCategories] = useState<string[]>([]);
+  const [responseData, setResponseData] = useState<[string, string[]][]>([]); // Holds the full API response
 
 
   const filteredServices = services.filter((service) => {
@@ -87,8 +91,8 @@ const ServiceTable: React.FC = () => {
   });
   
 
-  const categories = groupFilter !== "All" ? groupCategoryMap[groupFilter]?.categories || [] : [];
-  const subCategories = categoryFilter !== "All" ? groupCategoryMap[groupFilter]?.subCategories[categoryFilter] || [] : [];
+  // const categories = groupFilter !== "All" ? groupCategoryMap[groupFilter]?.categories || [] : [];
+  // const subCategories = categoryFilter !== "All" ? groupCategoryMap[groupFilter]?.subCategories[categoryFilter] || [] : [];
 
   const totalPages = Math.ceil(filteredServices.length / ITEMS_PER_PAGE);
   const paginatedServices = filteredServices.slice(
@@ -102,7 +106,8 @@ const ServiceTable: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get('http://localhost:8082/api/v1/getAllTennis', {
+        const res = await 
+        axios.get('http://localhost:8082/api/v1/getAllTennis', {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -112,6 +117,15 @@ const ServiceTable: React.FC = () => {
   
         if (res.data) {
           setTableData(res.data); // Update the state with fetched data
+          // Extract unique groups from the data
+          const uniqueGroups = Array.from(
+            new Set(
+              res.data.map((item: { groups: string }) => item.groups.toLowerCase())
+            )
+          ).map((group) =>
+            res.data.find((item: { groups: string }) => item.groups.toLowerCase() === group)?.groups
+          );
+          setGroups(uniqueGroups); // Update the groups state
         }
       } catch (error) {
         console.error("Error fetching tennis data:", error);
@@ -195,7 +209,71 @@ const ServiceTable: React.FC = () => {
       console.error('Error updating service status:', error);
     }
   };
+  // Get All Categories and sub categories data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // const token = JSON.parse(localStorage.getItem("token") || "null"); // Retrieve token
+        const response = await axios.get(`http://localhost:8082/api/v1/getAllCategoriesAndSubCategories`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data: [string, string[]][] = response.data;
+        setResponseData(data); // Save full response
+
+        // Extract categories from the response
+        const extractedCategories = data.map((item) => item[0]);
+        setCategories(["All", ...extractedCategories]); // Include "All" as default
+      } catch (error) {
+        console.error("Error fetching categories and subcategories:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Update Category when group change
+
+  useEffect(() => {
+    if (groupFilter === "All") {
+      // For "All" group filter, get all unique categories, excluding null
+      setCategories([
+        "All", 
+        ...Array.from(
+          new Set(
+            tableData
+              .filter(item => item.category != null) // Exclude null categories
+              .map(item => item.category as string) // Assert category as string
+          )
+        )
+      ]);
+    } else {
+      // Filter categories based on selected group and exclude null categories
+      const filteredCategories = tableData
+        .filter((item) => item.groups === groupFilter)
+        .filter(item => item.category != null) // Exclude null categories
+        .map((item) => item.category as string); // Assert category as string
   
+      setCategories(["All", ...Array.from(new Set(filteredCategories))]);
+    }
+  }, [groupFilter, tableData]); // Re-run effect when groupFilter or tableData changes
+  
+
+
+
+  // Update subcategories when category changes
+  useEffect(() => {
+    if (categoryFilter !== "All") {
+      const selectedCategory = responseData.find((item) => item[0] === categoryFilter);
+      setSubCategories(selectedCategory ? ["All", ...selectedCategory[1]] : ["All"]);
+    } else {
+      setSubCategories(["All"]);
+    }
+  }, [categoryFilter, responseData]);
+
   
   //////////////////////
   
@@ -241,11 +319,16 @@ const ServiceTable: React.FC = () => {
                 className="border border-gray-300 p-2 rounded w-40"
               >
                 <option value="All">All</option>
-                {Object.keys(groupCategoryMap).map((group) => (
+                {/* {Object.keys(groupCategoryMap).map((group) => (
                   <option key={group} value={group}>
                     {group}
                   </option>
-                ))}
+                ))} */}
+                {groups.map((group, index) => (
+                <option key={index} value={group}>
+                  {group}
+                </option>
+              ))}
               </select>
             </div>
 
@@ -261,11 +344,16 @@ const ServiceTable: React.FC = () => {
                 disabled={categories.length === 0}
               >
                 <option value="All">All</option>
-                {categories.map((cat) => (
+                {/* {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
                   </option>
-                ))}
+                ))} */}
+                {categories.map((category, index) => (
+            <option key={index} value={category}>
+              {category}
+            </option>
+          ))}
               </select>
             </div>
 
@@ -278,11 +366,16 @@ const ServiceTable: React.FC = () => {
                 disabled={subCategories.length === 0}
               >
                 <option value="All">All</option>
-                {subCategories.map((subCat) => (
+                {/* {subCategories.map((subCat) => (
                   <option key={subCat} value={subCat}>
                     {subCat}
                   </option>
-                ))}
+                ))} */}
+                {subCategories.map((subCategory, index) => (
+            <option key={index} value={subCategory}>
+              {subCategory}
+            </option>
+          ))}
               </select>
             </div>
         </div>
