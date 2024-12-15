@@ -8,6 +8,9 @@ const AddService: React.FC = () => {
   const [groups, setGroup] = useState("");
   const [category, setCategory] = useState("");
   const [subcategory, setSubCategory] = useState("");
+  const [customGroup, setCustomGroup] = useState(""); // New state for custom group
+  const [customCategory, setCustomCategory] = useState(""); // New state for custom category
+  const [customSubCategory, setCustomSubCategory] = useState(""); // New state for custom subcategory
   const [imgUrl, setImageUrl] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -27,7 +30,7 @@ const AddService: React.FC = () => {
       subCategories: {
         Coaches: ["Owner/Head Coach", "Assistant Coach", "Fitness Coach"],
       },
-    }, 
+    },
     "Contact-us": {
       categories: [""],
       subCategories: {
@@ -42,7 +45,6 @@ const AddService: React.FC = () => {
         Achievements: [],
       },
     },
-    
     "Products": { categories: [], subCategories: {} },
   };
 
@@ -57,93 +59,56 @@ const AddService: React.FC = () => {
     ["link"], // Add links
     ["clean"], // Clear formatting
   ];
+
   const categories = groups !== "All" ? groupCategoryMap[groups]?.categories || [] : [];
   const subCategories = category !== "All" ? groupCategoryMap[groups]?.subCategories[category] || [] : [];
-  let token=JSON.parse(localStorage.getItem("token") || "")
-  console.log(categories)
-  console.log(subCategories)
-  console.log(token)
-  useEffect(() => {
-  if (id) {
-    axios
-      .get(`http://localhost:8082/api/v1/getTennis/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data.data)
-        const data = response.data.data;
-        setGroup(data.groups || "");
-        setCategory(data.category || "");
-        setSubCategory(data.subcategory || "");
-        setImageUrl(data.imgUrl || "");
-        setName(data.name || "");
-        setDescription(data.description || "");
-        setDuration(data.duration || "");
-        setPrice(data.price || "");
-        setDiscount(data.discount || 0);
-        setDiscountBeginDate(data.discountBeginDate || "");
-        setDiscountEndDate(data.discountEndDate || "");
-        setDiscountQuantity(data.discountQuantity || 0);
-        setStatus(data.status || "Active");
-      })
-      .catch((error) => {
-        console.error("Error fetching service details:", error);
-        // alert("Failed to fetch service details. Please try again.");
-      });
-  }
-}, [id, token]);
+  let token = JSON.parse(localStorage.getItem("token") || "");
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`http://localhost:8082/api/v1/getTennis/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const data = response.data.data;
+          setGroup(data.groups || "");
+          setCategory(data.category || "");
+          setSubCategory(data.subcategory || "");
+          setImageUrl(data.imgUrl || "");
+          setName(data.name || "");
+          setDescription(data.description || "");
+          setDuration(data.duration || "");
+          setPrice(data.price || "");
+          setDiscount(data.discount || 0);
+          setDiscountBeginDate(data.discountBeginDate || "");
+          setDiscountEndDate(data.discountEndDate || "");
+          setDiscountQuantity(data.discountQuantity || 0);
+          setStatus(data.status || "Active");
+        })
+        .catch((error) => {
+          console.error("Error fetching service details:", error);
+        });
+    }
+  }, [id, token]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const tennis = {
-      groups,
-      category,
-      subcategory,
+      groups: customGroup || groups,
+      category: customCategory || category,
+      subcategory: customSubCategory || subcategory,
       name,
       description,
       duration,
       price,
       status,
       discount,
-      imgUrl
-      // disbegindate,
-      // disenddate,
-      // disquantity,
-      // phoneNumber: "1234567890"
+      imgUrl,
     };
 
-//console.log(tennis)
-    // Create a FormData object
-    const formData = new FormData();
-    
-
-    // Append the tennis as a string
-  //   await formData.append("tennis", JSON.stringify(tennis));
-  //   console.log(formData)
-  //   formData.forEach((value, key) => {
-  //     console.log(`${key}: ${value}`);
-  // });
- 
-  //   try {
-  //     const response = await fetch("http://localhost:8082/api/v1/createTennis", {
-  //         method: "POST",
-  //         body: formData,
-  //         headers: {
-  //           Authorization: `Bearer ${token}`, 
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //         const responseData = await response.json();
-  //         console.log("Success:", responseData);
-  //     } else {
-  //         console.error("Error:", response.statusText);
-  //     }
-  // } catch (error) {
-  //     console.error("Error:", error);
-  // }
     try {
       if (id) {
         // Update existing service
@@ -159,33 +124,31 @@ const AddService: React.FC = () => {
         );
         console.log("Service updated successfully:", response.data);
         alert("Service updated successfully!");
+      } else {
+        const response = await axios.post(
+          "http://localhost:8082/api/v1/createTennis",
+          tennis,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        alert("Service added successfully");
+        console.log("Service added successfully:", response.data);
       }
-      else{
-      const response = await axios.post(
-        "http://localhost:8082/api/v1/createTennis",
-        tennis,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      alert("Service added successfully")
-      console.log("Service added successfully:", response.data);
-    }
       navigate("/servicetable");
     } catch (error) {
       console.error("Error adding service:", error);
       alert("Failed to add service. Please try again.");
     }
-
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6  mt-24 lg:mt-20">
       <button
-        onClick={() => navigate("/servicetable")} // Replace "/servicetable" with the actual route for ServiceTable
+        onClick={() => navigate("/servicetable")}
         className="mb-4 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
       >
         ← Back
@@ -197,18 +160,30 @@ const AddService: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">
             Groups (Optional)
           </label>
-          <select
-            value={groups}
-            onChange={(e) => setGroup(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded mt-1"
-          >
-            <option value="">Select a Group</option>
-            <option value="About-us">About-us</option>
-            <option value="Contact-us">Contact-us</option>
-            <option value="Products">Products</option>
-            <option value="Gallery">gallery</option>
-            {/* <option value="New">New</option> */}
-          </select>
+          <div className="relative">
+              <select
+                value={groups}
+                onChange={(e) => setGroup(e.target.value)}
+                className="w-full border border-gray-300 p-2 mt-1 rounded focus:outline-none focus:ring focus:border-blue-500"
+              >
+                <option value="">Select a Group</option>
+                <option value="About-us">About-us</option>
+                <option value="Contact-us">Contact-us</option>
+                <option value="Products">Products</option>
+                <option value="Gallery">Gallery</option>
+                <option value="New">New</option> 
+              </select>
+              {groups === "New" && (
+                <input
+                  type="text"
+                  placeholder="Enter new group"
+                  value={customGroup}
+                  onChange={(e) => setCustomGroup(e.target.value)}
+                 className="absolute  inset-y-0 right-0 border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+                />
+              )}
+          
+          </div>
         </div>
 
         {/* Category */}
@@ -216,23 +191,33 @@ const AddService: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">
             Category*
           </label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded mt-1"
-          >
-            {/* <option value="">Select a Category</option>
-            <option value="Coaches">Coaches</option>
-            <option value="Contact-us">Contact-us</option>
-            <option value="students">Students</option>
-            <option value="Achievements">Achievements</option> */}
-            {categories.length > 0
-              ? categories.map((item) => (
-                  <option key={item} value={item}>{item}</option>
-                ))
-              : <option value="">No Options Available</option>}
-
-          </select>
+          <div className="relative">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full border border-gray-300 p-2 mt-1 rounded focus:outline-none focus:ring focus:border-blue-500"
+              >
+                {categories.length > 0 ? (
+                  categories.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))
+                ) : (
+                  <option value="">No Options Available</option>
+                )}
+                <option value="New">New</option>
+              </select>
+              {category === "New" && (
+                <input
+                  type="text"
+                  placeholder="Enter new category"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                  className="absolute  inset-y-0 right-0 border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+                />
+              )}
+          </div>
         </div>
 
         {/* Sub-Category */}
@@ -240,24 +225,34 @@ const AddService: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">
             Sub-Category
           </label>
+          <div className="relative">
           <select
             value={subcategory}
             onChange={(e) => setSubCategory(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded mt-1"
+            className="w-full border border-gray-300 p-2 mt-1 rounded focus:outline-none focus:ring focus:border-blue-500"
           >
-            {/* <option value="">Select a Subcategory</option>
-            <option value="Owner/Head Coach">Owner/Headcoach</option>
-            <option value="Assistant Coach">Assistant Coach</option>
-            <option value="Fitnace Coach">Fitnace coach</option>
-            <option value="Phone no">Phone no</option>
-            <option value="Email">Email</option>
-            <option value="Current Place">Current Place</option> */}
-            {
-              subCategories.length>0 ?
-                subCategories.map((item)=>(<option key={item} value={item}>{item}</option>))
-                : <option value="">No Options Available</option>
-            }
+            {subCategories.length > 0 ? (
+              subCategories.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))
+            ) : (
+              <option value="">No Options Available</option>
+            )}
+            <option value="New">New</option> 
           </select>
+          {subcategory === "New" && (
+            <input
+              type="text"
+              placeholder="Enter new subcategory"
+              value={customSubCategory}
+              onChange={(e) => setCustomSubCategory(e.target.value)}
+              className="absolute  inset-y-0 right-0 border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+            />
+          )}
+          
+          </div>
         </div>
 
         {/* Image URL */}

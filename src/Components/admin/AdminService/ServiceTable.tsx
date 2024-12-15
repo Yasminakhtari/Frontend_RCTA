@@ -95,7 +95,7 @@ const ServiceTable: React.FC = () => {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
-  let token = JSON.parse(localStorage.getItem("token") || "")
+  let token = JSON.parse(localStorage.getItem("token") || "") 
   const [tableData, setTableData] = useState<TennisData[]>([]);
 
 ////////////////////////////////////////
@@ -208,7 +208,7 @@ const ServiceTable: React.FC = () => {
       {/* Add Service Button */}
       <div className="flex justify-end mb-4">
         <button
-          onClick={() => navigate("/add-service")}
+          onClick={() => navigate("/addservice")}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
           Add Service

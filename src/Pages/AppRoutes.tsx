@@ -13,6 +13,7 @@ import AllTestiPage from "./AllTestiPage";
 import AddService from "../Components/admin/AdminService/AddService";
 import ServiceTable from "../Components/admin/AdminService/ServiceTable";
 import Classes from "../Components/classes/Classes";
+import EditService from "../Components/admin/AdminService/EditService";
 import CoursePage from "../Components/classes/CoursePage";
 
 
@@ -31,9 +32,10 @@ const AppRoutes = () => {
       <Route path="/contact-us" element={<ContactUs />}/>
       <Route path="/products" element={<ProductsPage/>}/> 
       <Route path="/testimonial" element={<AllTestiPage/>}/>
-      <Route path="/add-service" element={<AddService/>}/>
+      <Route path="/addservice" element={<AddService/>}/>
       <Route path="/servicetable" element={<ServiceTable/>}/>
       <Route path="/classes" element={<Classes />} />
+      {/* <Route path="/editservice" element={<EditService/>}/> */}
       <Route path="/coursepage/:id" element={<CoursePage />} />
       <Route path="/add-service/:id" element={<AddService/>}/>
     </Routes>
