@@ -35,7 +35,7 @@ const AppRoutes = () => {
       <Route path="/addservice" element={<AddService/>}/>
       <Route path="/servicetable" element={<ServiceTable/>}/>
       <Route path="/classes" element={<Classes />} />
-      <Route path="/editservice" element={<EditService/>}/>
+      {/* <Route path="/editservice" element={<EditService/>}/> */}
       <Route path="/coursepage/:id" element={<CoursePage />} />
       <Route path="/add-service/:id" element={<AddService/>}/>
     </Routes>
