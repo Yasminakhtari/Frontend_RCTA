@@ -1,48 +1,82 @@
-import React, { useRef } from 'react';
+
+import React, { useRef } from "react";
+import { useParams } from "react-router-dom";
+
+// Define a list of courses
+const courses = [
+  { id: "1", title: "Tennis Foundations (for beginners)" },
+  { id: "2", title: "Rally Ready (for intermediate)" },
+  { id: "3", title: "Game Mastery (for advanced)" },
+  { id: "4", title: "Swing and Sweat (cardio-Focused)" },
+  { id: "5", title: "Group Clinic (for adults)" },
+  { id: "6", title: "Junior Aces (for kids & teens)" },
+  { id: "7", title: "Private Lesson" },
+  { id: "8", title: "Semi-Private Lesson" },
+];
 
 const CoursePage: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // Retrieve course ID from URL
   const sessionRef = useRef<HTMLDivElement | null>(null);
+
+  // Find the course by ID
+  const course = courses.find((course) => course.id === id);
 
   const scrollToSessions = () => {
     if (sessionRef.current) {
-      sessionRef.current.scrollIntoView({ behavior: 'smooth' });
+      sessionRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
+  // If course is not found, display a fallback message
+  if (!course) {
+    return (
+      <div className="bg-gray-50 min-h-screen p-8 text-center">
+        <h1 className="text-4xl font-bold text-red-500">Course Not Found</h1>
+        <p className="text-gray-700 mt-4">The course you're looking for does not exist.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-gray-50 min-h-screen p-8">
+    <div className="bg-white-500 min-h-screen p-8">
       {/* Breadcrumb Navigation */}
       <nav className="text-gray-500 text-sm mb-4">
-        <span>Classes</span> <span className="mx-2">&gt;</span> <span>Tennis Foundations (for beginners)</span>
+        <span>Classes</span> <span className="mx-2">&gt;</span> <span>{course.title}</span>
       </nav>
 
       {/* Course Title Section */}
       <header className="mb-8 mt-16">
-        <h1 className="text-4xl font-extrabold text-gray-900">For Beginners: “Tennis Foundations”</h1>
+        <h1 className="text-4xl font-extrabold text-gray-900">{course.title}</h1>
+        <p className="text-white-700 text-lg mt-2">
+          Learn more about {course.title} and its sessions below.
+        </p>
       </header>
 
-      {/* Description and Sessions Tabs */}
+      {/* Tabs for Navigation */}
       <div className="flex space-x-4 border-b border-gray-300 mb-6">
         <button className="px-4 py-2 text-gray-900 border-b-2 border-blue-500 font-medium focus:outline-none">
           Description
         </button>
-        <button
+        {/* <button
           className="px-4 py-2 text-gray-500 hover:text-gray-900 focus:outline-none"
           onClick={scrollToSessions}
         >
           Sessions
-        </button>
+        </button> */}
       </div>
 
       {/* Course Description */}
       <div className="mb-12">
         <p className="text-gray-700 text-lg leading-relaxed">
-          Learn the basics of tennis in a fun and supportive environment! This class covers proper grips, strokes, footwork, and the fundamentals of scoring to build confidence and prepare you for match play.
+          {course.title} offers an immersive experience to help you grow your skills
+          in a supportive and engaging environment. Whether you're a beginner
+          or looking to refine your skills, this course has something for
+          everyone.
         </p>
       </div>
 
       {/* Session Details */}
-      <div ref={sessionRef} className="bg-white p-6 shadow rounded-lg">
+      <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Session Details:</h2>
 
         {/* Responsive Table Wrapper */}
@@ -104,3 +138,6 @@ const CoursePage: React.FC = () => {
 };
 
 export default CoursePage;
+
+
+
