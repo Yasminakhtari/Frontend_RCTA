@@ -21,7 +21,7 @@ const AboutUs = () => {
   }, []);
 
   //////////////////////////////////
-  let token = JSON.parse(localStorage.getItem("token") || "")
+  //let token = JSON.parse(localStorage.getItem("token") || "")
   //////////////////////
   useEffect(()=>{
     const fetchdata = async()=>{
