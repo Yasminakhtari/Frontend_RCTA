@@ -324,6 +324,33 @@ const ServiceTable: React.FC = () => {
 
   //////////////////////
 
+  //Delete Services
+  const deleteServiceData = async (serviceId: number) => {
+    try {
+      const response = await axios.delete(`http://localhost:8082/api/v1/deleteTennis/${serviceId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response.status === 200) {
+        // Remove the deleted service from the table data
+        setTableData((prevData) =>
+          prevData.filter((service) => service.id !== serviceId)
+        );
+  
+        // Show a success notification
+        alert("Service deleted successfully!");
+      }
+    } catch (error) {
+      // Handle any errors during the delete request
+      console.error("Error deleting service:", error);
+      alert("Failed to delete the service. Please try again.");
+    }
+  };
+
+
 
 
   return (
@@ -475,6 +502,14 @@ const ServiceTable: React.FC = () => {
                 >
                   {service.status === 'Active' ? '👁️' : '👁️‍🗨️'}
                 </button>
+                <button
+                // className="mr-4"
+                title="delete"
+                style={{ color: 'red', fontSize: '1rem' }}
+                onClick={() => deleteServiceData(service.id)}
+              >
+                🗑️
+              </button>
                 {/* <button
                   onClick={() =>
                     setServices((prevServices) =>
@@ -488,6 +523,15 @@ const ServiceTable: React.FC = () => {
                   {service.visible ? "Hide" : "Show"}
                 </button> */}
               </td>
+              {/* <td className="border border-gray-300 p-2">
+              {service.imgUrl ? (
+                <img 
+                  src={service.imgUrl} 
+                  alt="service" 
+                  style={{ width: '50px', height: '50px', borderRadius: '0%' }} 
+                />
+              ) : null}
+            </td> */}
               <td className="border border-gray-300 p-2">{service?.id}</td>
               <td className="border border-gray-300 p-2">{service?.groups}</td>
               <td className="border border-gray-300 p-2">{service.category}</td>
