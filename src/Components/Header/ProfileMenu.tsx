@@ -30,6 +30,8 @@ const ProfileMenu = () => {
     ////
     const handleLogout= () => {
       dispatch(removeUser());
+      
+      localStorage.removeItem("token")
     }
     ////
 

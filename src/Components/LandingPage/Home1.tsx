@@ -2,10 +2,59 @@ import { Avatar, TextInput } from "@mantine/core";
 import { IconArrowUp, IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import raphel from "./raphael.png"
+import axios from "axios";
+
+
+type Tournament = {
+  id: number;
+  groups: string;
+  category: string;
+  subcategory: "Location" | "select" | "message"; // Restrict to valid subcategories
+  imgUrl: string;
+  name: string;
+  description: string;
+  duration: number | null;
+  price: number | null;
+  status: string;
+  discount: number;
+  disbegindate: string | null;
+  disenddate: string | null;
+  disquantity: number | null;
+  phoneNumber: string | null;
+};
+
 
 const Home1 = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [homePageData,setHomePageData] = useState<Tournament[]>([]);
+    ////////////////////////////////////
+    useEffect(()=>{
+
+      const fetchData = async()=>{
+        try{
+          const response = await axios.get('http://localhost:8082/api/v1/getFilteredTennis',{
+            params:{
+              group:"HomePage"
+            },
+            headers:{
+              // Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            }
+            
+          })
+
+          console.log(response);
+          // setHomePage(response);
+          setHomePageData(response.data);
+        }catch(error){
+          console.log(error);
+        }
+      }
+
+      fetchData()
+    },[]);
   
+    ////////////////////////////////
     useEffect(() => {
       const handleScroll = () => {
         if (window.scrollY > 200) {
@@ -20,6 +69,7 @@ const Home1 = () => {
         window.removeEventListener("scroll", handleScroll);
       };
     }, []);
+    ////////////////////////
   
     const scrollToTop = () => {
       window.scrollTo({
@@ -81,20 +131,26 @@ const Home1 = () => {
           </div>
 
           <div className="hidden lg:block absolute -left-10 top-[28%] w-fit border-blueRibbon-900 border rounded-lg p-2 backdrop-blur-md mb-3 flex flex-col gap-3">
-            <div className="flex gap-2 items-center">
-              <div className="w-10 h-10 p-1 bg-blueRibbon-900 rounded-lg">
-                <img src="/tenis logo.png" alt="tennis logo" />
+          {
+            homePageData && (
+              <>
+                <div className="flex gap-2 items-center">
+                <div className="w-10 h-10 p-1 bg-blueRibbon-900 rounded-lg">
+                  <img src="/tenis logo.png" alt="tennis logo" />
+                </div>
+                <div className="text-sm text-mine-shaft-100">
+                  <div>Upcoming Tournament</div>
+                  <div className="text-mine-shaft-200 text-xs">{homePageData.find(item => item.subcategory === "Location")?.name || "USA"}</div>
+                </div>
               </div>
-              <div className="text-sm text-mine-shaft-100">
-                <div>Upcoming Tournament</div>
-                <div className="text-mine-shaft-200 text-xs"> Pleasant Hill, CA</div>
-              </div>
-            </div>
 
-            <div className="flex gap-2 text-mine-shaft-200 text-sm justify-between">
-              <span>Dec 25, 2024</span>
-              <span>Open to All Levels</span>
-            </div>
+              <div className="flex gap-2 text-mine-shaft-200 text-sm justify-between">
+                <span>Dec 25, 2024</span>
+                <span>{homePageData.find(item => item.subcategory === "message")?.name || "Open To"}</span>
+              </div>
+              </>
+            )
+          }
           </div>
 
           {/* Mobile version: Active Members and Upcoming Tournament (below image) */}

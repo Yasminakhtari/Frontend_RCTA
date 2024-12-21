@@ -1,8 +1,28 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { sendEmail } from '../../Services/ContactService';
 import ReCAPTCHA from 'react-google-recaptcha';
+import axios from 'axios';
+
+type ContactDataItem = {
+  id: number;
+  groups: string;
+  category: string;
+  subcategory: "Email" | "Phone" | "Location"; // Restrict to valid subcategories
+  imgUrl: string;
+  name: string;
+  description: string;
+  duration: number | null;
+  price: number | null;
+  status: string;
+  discount: number;
+  disbegindate: string | null;
+  disenddate: string | null;
+  disquantity: number | null;
+  phoneNumber: string | null;
+};
+
 
 const ContactUs: FC = () => {
   const [formData, setFormData] = useState({
@@ -11,15 +31,54 @@ const ContactUs: FC = () => {
     subject: '',
     message: '',
   });
+
   const [loading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState('');
   const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [contactData, setContactData] = useState<ContactDataItem[]>([]);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // const [contactusData,setContactusData] = useState<String[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  // let token = JSON.parse(localStorage.getItem("token") || "")
+
+  ///////////////////////////////////
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8082/api/v1/getFilteredTennis', {
+          params: {
+            group: "Contact-Us"
+
+          },
+          headers: {
+            // Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+
+        });
+        console.log(response)
+        setContactData(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+
+    // Only fetch data if `contactData` is empty
+      // if (contactData.length === 0) {
+      //   fetchData();
+      // }
+      fetchData();
+
+
+  }, [ contactData])
+  console.log(contactData[0]?.name)
+  
+  //////////////////////////////////
 
   const handleCaptchaChange = (token: string | null) => {
     if (token) {
@@ -56,7 +115,7 @@ const ContactUs: FC = () => {
       setLoading(false);
     }
   };
-
+  // console.log(contactData[1].name);
   return (
     <div className="min-h-screen overflow-x-hidden">
       {/* Header Section */}
@@ -137,7 +196,7 @@ const ContactUs: FC = () => {
               </div>
               <div className="mb-6">
                 <ReCAPTCHA sitekey="6Lf_TIoqAAAAAAXYolwSahryD09PcdLptCEnQaQH" onChange={handleCaptchaChange} />
-                
+
               </div>
               {/* <button
                 type="submit"
@@ -158,22 +217,40 @@ const ContactUs: FC = () => {
             </form>
 
             {/* Contact Info */}
-            <div className="mt-6 text-center">
-              <p className="text-lg sm:text-xl mb-2">Email: support@ifaceh.com</p>
-              <p className="text-lg sm:text-xl mb-2">Phone: 1-888-888-8888</p>
-              <p className="text-lg sm:text-xl mb-4">Based in: San Francisco, California</p>
-              <div className="flex justify-center space-x-4">
-                <a href="#" className="text-white hover:text-red-300 transition">
-                  <FontAwesomeIcon icon={faFacebook} size="2x" />
-                </a>
-                <a href="#" className="text-white hover:text-red-300 transition">
-                  <FontAwesomeIcon icon={faInstagram} size="2x" />
-                </a>
-                <a href="#" className="text-white hover:text-red-300 transition">
-                  <FontAwesomeIcon icon={faTwitter} size="2x" />
-                </a>
-              </div>
+            
+              <div className="mt-6 text-center">
+                  {contactData &&
+                  (
+                    <>
+                        <>
+                            <p className="text-lg sm:text-xl mb-2">
+                              Email: {contactData.find(item => item.subcategory === "Email")?.name || "Not available"}
+                            </p>
+                            <p className="text-lg sm:text-xl mb-2">
+                              Phone: {contactData.find(item => item.subcategory === "Phone")?.name || "Not available"}
+                            </p>
+                            <p className="text-lg sm:text-xl mb-4">
+                              Based in: {contactData.find(item => item.subcategory === "Location")?.name || "Not available"}
+                            </p>
+                        </>
+                    </>
+                  )
+                    
+                      
+                  }
+                <div className="flex justify-center space-x-4">
+                  <a href="#" className="text-white hover:text-red-300 transition">
+                      <FontAwesomeIcon icon={faFacebook} size="2x" />
+                  </a>
+                  <a href="#" className="text-white hover:text-red-300 transition">
+                      <FontAwesomeIcon icon={faInstagram} size="2x" />
+                  </a>
+                  <a href="#" className="text-white hover:text-red-300 transition">
+                    <FontAwesomeIcon icon={faTwitter} size="2x" />
+                  </a>
+                </div>
             </div>
+            
           </div>
 
           {/* Right Column */}

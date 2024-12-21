@@ -20,6 +20,6 @@ const getItem = (key: string) => {
   
 
 const removeItem =(key:string)=>{
-    localStorage.removeItem(key);//
+    localStorage.removeItem(key);
 }
 export {setItem,getItem,removeItem}

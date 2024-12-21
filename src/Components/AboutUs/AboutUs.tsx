@@ -3,9 +3,14 @@ import { journey,coaches } from "../../Data/Data";
 import { IconTrophy } from "@tabler/icons-react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
+import axios from "axios";
 
 const AboutUs = () => {
+
+  const [aboutusData,setAboutusData] = useState<String[]>([]);
+  const [coaches, setCoaches] = useState([]);
+  const [journeys, setJourney] = useState([]);
 
   useEffect(() => {
     AOS.init({
@@ -14,6 +19,42 @@ const AboutUs = () => {
     });
     AOS.refresh(); // To refresh the AOS library and detect new elements
   }, []);
+
+  //////////////////////////////////
+  let token = JSON.parse(localStorage.getItem("token") || "")
+  //////////////////////
+  useEffect(()=>{
+    const fetchdata = async()=>{
+      try{
+        const response =await axios.get('http://localhost:8082/api/v1/getFilteredTennis',{
+          params: {
+            group: "About-Us"
+          },
+          headers:{
+            // Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          }
+        });
+        console.log(response.data);
+
+       
+        setAboutusData(response.data)
+        const coachesData = response.data.filter((item:any) => item.category === "coach");
+        const journeyData = response.data.filter((item:any) => item.category === "Journey");
+
+        setCoaches(coachesData);
+        setJourney(journeyData);
+      }catch(error){
+        console.log(error);
+      }
+    }
+
+    fetchdata()
+  },[])
+
+  console.log(coaches)
+  console.log(journeys)
+  ///////////////////////////
   
 
 
@@ -30,20 +71,21 @@ const AboutUs = () => {
 
       {/* Coach Section */}
       <div className="my-16">
-        <Title order={2} className="text-4xl font-semibold text-cyanAqua-400 text-center mb-6">
+        <Title order={2} className="text-4xl font-semibold text-cyanAqua-400 text-center mb-9">
           Meet Our Coaches
         </Title>
-        <div className="flex flex-wrap justify-center gap-8">
-          {coaches.map((coach, index) => (
-            <div >
-            <Card key={index} shadow="md" className="bg-blueRibbon-400 text-center p-6 w-60 rounded-xl hover:bg-blueRibbon-700 transition-all "  data-aos="flip-right">
+        <div className="flex flex-wrap justify-center gap-8 mt-8">
+          {coaches.length !==0 && coaches.map((coach:any, index:any) => (
+            
+            <div className="" >
+            <Card key={coach.id || index} shadow="md" className="bg-blueRibbon-400 text-center h-80 p-6 w-60 rounded-xl hover:bg-blueRibbon-700 transition-all "  data-aos="flip-right">
               <Avatar src={coach.avatar} size="xl" radius="50%" className="mb-4 mx-auto" />
               <Text size="lg" className="text-cyanAqua-400 font-bold">
                 {coach.name}
               </Text>
               <Text size="sm" className="text-mine-shaft-200">{coach.title}</Text>
               <Divider my="sm" />
-              <Text size="sm" className="text-mine-shaft-300">{coach.bio}</Text>
+              <Text className="text-mine-shaft-300">{coach.description.replace(/<[^>]*>/g, "")}</Text>
             </Card>
           </div>
           
@@ -53,23 +95,23 @@ const AboutUs = () => {
 
       {/* Journey Section */}
       <div className="my-16">
-        <Title order={2} className="text-4xl font-semibold text-cyanAqua-400 text-center mb-6">
-          Our Journey
-        </Title>
-        <div className="mx-auto max-w-2xl">
-          <Timeline active={journey.length - 1} bulletSize={32} lineWidth={2}>
-            {journey.map((event, index) => (
-              <Timeline.Item
-                key={index}
-                title={<Text size="lg" className="text-cyanAqua-400 font-semibold">{event.year}</Text>}
-                bullet={<IconTrophy size={20} />}
-              >
-                <Text size="sm" color="white">{event.description}</Text>
-              </Timeline.Item>
-            ))}
-          </Timeline>
-        </div>
+      <Title order={2} className="text-4xl font-semibold text-cyanAqua-400 text-center mb-6">
+        Our Journey
+      </Title>
+      <div className="mx-auto max-w-2xl">
+        <Timeline active={journey.length - 1} bulletSize={32} lineWidth={2}>
+          {journeys.map((event:any, index) => (
+            <Timeline.Item
+              key={index}
+              title={<Text size="lg" className="text-cyanAqua-400 font-semibold">{event.subcategory}</Text>}
+              bullet={<IconTrophy size={20} />}
+            >
+              <Text size="sm" color="white">{event.nameu}</Text>
+            </Timeline.Item>
+          ))}
+        </Timeline>
       </div>
+    </div>
      
     
 

@@ -1,7 +1,74 @@
 import { Avatar } from "@mantine/core";
-import { tennisSteps } from "../../Data/Data"; 
+// import { tennisSteps } from "../../Data/Data"; 
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { IconUserPlus, IconTarget, IconTrophy, IconChartLine, IconAward } from "@tabler/icons-react";
+
+type tennisStepItem = {
+  id: number;
+  groups: string;
+  category: string;
+  subcategory: "one" | "two" | "three" | "four" | "five"; // Restrict to valid subcategories
+  imgUrl: string;
+  name: string;
+  description: string;
+  duration: number | null;
+  price: number | null;
+  status: string;
+  discount: number;
+  disbegindate: string | null;
+  disenddate: string | null;
+  disquantity: number | null;
+  phoneNumber: string | null;
+};
+
+
+const staticIcons = [
+  IconUserPlus,
+  IconTarget,
+  IconTrophy,
+  IconChartLine,
+  IconAward,
+];
+
+
 
 const LandingMediumSection = () => {
+
+
+  const [tennisStep,setTennisStep] = useState<tennisStepItem []>([]);
+
+   //////////////////////
+   useEffect(()=>{
+    const fetchdata = async()=>{
+      try{
+        const response =await axios.get('http://localhost:8082/api/v1/getFilteredTennis',{
+          params: {
+            group: "Tennis Steps"
+          },
+          headers:{
+            // Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            
+          }
+        });
+         // Clean up descriptions to remove HTML tags
+        const cleanedData = response.data.map((item: tennisStepItem) => ({
+          ...item,
+          description: item.description.replace(/<[^>]*>/g, "").trim(), // Strip HTML tags
+        }));
+
+        console.log(cleanedData);
+        setTennisStep(cleanedData);
+
+      }catch(error){
+        console.log(error);
+      }
+    }
+
+    fetchdata()
+  },[])
+  ///////////////////////////
   return (
     <div className="mt-20 pb-5">
       {/* Title Section */}
@@ -26,23 +93,23 @@ const LandingMediumSection = () => {
 
         {/* Right Section */}
         <div className="w-full md:w-1/2">
-          {tennisSteps.map((step, index) => (
-            <div key={index} className="flex items-center gap-4 mb-4 md:mb-0">
-              <div className="p-2.5 bg-blueRibbon-300 rounded-full mr-4 mt-6">
-                <step.icon className="h-12 w-12 text-mine-shaft-100 mb-2" />
-              </div>
-              <div>
-                {/* Step Name */}
-                <div className="text-mine-shaft-100 text-xl sm:text-2xl md:text-xl font-semibold">
-                  {step.name}
+          {tennisStep.map((step, index) => {
+            const Icon = staticIcons[index % staticIcons.length]; // Cycle through static icons
+            return (
+              <div key={step.id} className="flex items-start gap-4 mb-6">
+                {/* Icon Section */}
+                <div className="p-3 bg-blueRibbon-300 rounded-full flex items-center justify-center">
+                  <Icon className="text-white h-6 w-6" />
                 </div>
-                {/* Step Description */}
-                <div className="text-mine-shaft-200 text-base sm:text-lg md:text-base">
-                  {step.desc}
+
+                {/* Text Section */}
+                <div>
+                  <div className="text-mine-shaft-100 text-xl font-semibold">{step.name}</div>
+                  <div className="text-mine-shaft-200 text-base">{step.description}</div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

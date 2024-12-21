@@ -15,36 +15,36 @@ interface Service {
 }
 
 const initialServices: Service[] = [
-  { id: 1, group: "About-us", category: "", subCategory: "", name: "About Us Section", duration: 10, price: 0, status: "Active", visible: true },
-  { id: 2, group: "Contact-us", category: "", subCategory: "", name: "Contact Page", duration: 15, price: 0, status: "Inactive", visible: true },
+  { id: 1, group: "About-Us", category: "", subCategory: "", name: "About Us Section", duration: 10, price: 0, status: "Active", visible: true },
+  { id: 2, group: "Contact-Us", category: "", subCategory: "", name: "Contact Page", duration: 15, price: 0, status: "Inactive", visible: true },
   { id: 3, group: "Gallery", category: "", subCategory: "", name: "Image Gallery", duration: 30, price: 0, status: "Inactive", visible: false },
   { id: 4, group: "Products", category: "", subCategory: "", name: "Product Detail Page", duration: 45, price: 150, status: "Active", visible: true },
 ];
 
-const groupCategoryMap: { [key: string]: { categories: string[]; subCategories: { [key: string]: string[] } } } = {
-  "About-us": {
-    categories: ["Coaches"],
-    subCategories: {
-      Coaches: ["Owner/Head Coach", "Assistant Coach", "Fitness Coach"],
-    },
-  },
-  "Contact-us": {
-    categories: [""],
-    subCategories: {
-      "": ["Phone No", "Email", "Current Place"],
-    },
-  },
-  "Gallery": {
-    categories: ["Coaches", "Students", "Achievements"],
-    subCategories: {
-      Coaches: [],
-      Students: [],
-      Achievements: [],
-    },
-  },
+// const groupCategoryMap: { [key: string]: { categories: string[]; subCategories: { [key: string]: string[] } } } = {
+//   "About-us": {
+//     categories: ["Coaches"],
+//     subCategories: {
+//       Coaches: ["Owner/Head Coach", "Assistant Coach", "Fitness Coach"],
+//     },
+//   },
+//   "Contact-us": {
+//     categories: [""],
+//     subCategories: {
+//       "": ["Phone No", "Email", "Current Place"],
+//     },
+//   },
+//   "Gallery": {
+//     categories: ["Coaches", "Students", "Achievements"],
+//     subCategories: {
+//       Coaches: [],
+//       Students: [],
+//       Achievements: [],
+//     },
+//   },
   
-  "Products": { categories: [], subCategories: {} },
-};
+//   "Products": { categories: [], subCategories: {} },
+// };
 interface TennisData {
   id: number;
   groups: string | null;
@@ -80,6 +80,10 @@ const ServiceTable: React.FC = () => {
   const [subCategories, setSubCategories] = useState<string[]>([]);
   const [responseData, setResponseData] = useState<[string, string[]][]>([]); // Holds the full API response
 
+  const [data, setData] = useState([]);
+  const [group, setGroup] = useState('');
+  const [category, setCategory] = useState('');
+  const [subcategory, setSubcategory] = useState('');
 
   const filteredServices = services.filter((service) => {
     const matchesSearch = service.name.toLowerCase().includes(searchText.toLowerCase());
@@ -103,6 +107,38 @@ const ServiceTable: React.FC = () => {
   const [tableData, setTableData] = useState<TennisData[]>([]);
 
 ////////////////////////////////////////
+//For Filter Data//
+useEffect(()=>{
+  const fetchFilteredData = async() => {
+    try{
+      const response = await axios.get('http://localhost:8082/api/v1/getFilteredTennis',{
+        params: {
+          group: groupFilter !== "All" ? groupFilter : null,
+          category: categoryFilter !== "All" ? categoryFilter : null,
+          subcategory: subCategoryFilter !== "All" ? subCategoryFilter : null,
+          status: statusFilter !== "All" ? statusFilter : null,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        
+      });
+      console.log(response.data)
+      setTableData(response.data);//set The table data
+    }
+    catch(error){
+      console.error("Error Fetching Filtered Tennis Data:" ,error);
+    }
+
+  };
+  fetchFilteredData();
+},[groupFilter,categoryFilter,subCategoryFilter, statusFilter])// Re-fetch when filters change
+
+
+
+
+//////////////////////////////////////
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -126,6 +162,7 @@ const ServiceTable: React.FC = () => {
             res.data.find((item: { groups: string }) => item.groups.toLowerCase() === group)?.groups
           );
           setGroups(uniqueGroups); // Update the groups state
+          console.log(uniqueGroups)
         }
       } catch (error) {
         console.error("Error fetching tennis data:", error);
@@ -144,18 +181,23 @@ const ServiceTable: React.FC = () => {
       if (statusFilter !== "All") {
         try {
           const res = await axios.get(
-            `http://localhost:8082/api/v1/getAllByStatus?status=${statusFilter}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
+            // `http://localhost:8082/api/v1/getAllByStatus?status=${statusFilter}`,
+            `http://localhost:8082/api/v1/getAllByStatus`,{
+              params:{status:statusFilter},
+              headers:{Authorization: `Bearer ${token}`}
             }
+            // {
+            //   headers: {
+            //     Authorization: `Bearer ${token}`,
+            //     "Content-Type": "application/json",
+            //   },
+            // }
           );
 
-          if (res.data) {
-            setTableData(res.data); // Update the table data based on the API response
-          }
+          // if (res.data) {
+          //   setTableData(res.data); // Update the table data based on the API response
+          // }
+          setTableData(res.data)
         } catch (error) {
           console.error("Error fetching status-based data:", error);
         }
@@ -190,7 +232,7 @@ const ServiceTable: React.FC = () => {
           // params: { status: validStatus }  // Add status as a query parameter
         } // Send status as query parameter
       );
-
+      
       // Handle success
       console.log('Status updated:', response.data);
       alert("Service status updated to"+" " + response.data.data.status)
@@ -215,11 +257,14 @@ const ServiceTable: React.FC = () => {
       try {
         // const token = JSON.parse(localStorage.getItem("token") || "null"); // Retrieve token
         const response = await axios.get(`http://localhost:8082/api/v1/getAllCategoriesAndSubCategories`, {
+          
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
+
+        console.log("okkkkkkkkkk getAllcs" + response.data);
 
         const data: [string, string[]][] = response.data;
         setResponseData(data); // Save full response
@@ -233,7 +278,7 @@ const ServiceTable: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [token]);
 
   // Update Category when group change
 
@@ -350,9 +395,9 @@ const ServiceTable: React.FC = () => {
                   </option>
                 ))} */}
                 {categories.map((category, index) => (
-            <option key={index} value={category}>
-              {category}
-            </option>
+                <option key={index} value={category}>
+                    {category}
+                </option>
           ))}
               </select>
             </div>
@@ -372,8 +417,8 @@ const ServiceTable: React.FC = () => {
                   </option>
                 ))} */}
                 {subCategories.map((subCategory, index) => (
-            <option key={index} value={subCategory}>
-              {subCategory}
+              <option key={index} value={subCategory}>
+                {subCategory}
             </option>
           ))}
               </select>
@@ -389,7 +434,7 @@ const ServiceTable: React.FC = () => {
                   onChange={(e) => setStatusFilter(e.target.value)}
                   className="border border-gray-300 p-2 rounded w-40"
                 >
-                  <option value="All">All</option>
+                  <option  disabled value="All">All</option>
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
                 </select>
@@ -422,11 +467,11 @@ const ServiceTable: React.FC = () => {
                   Edit
                 </button>
                 <button
-                key={service.status}
-                className="text-blue-500"
-                onClick={() => toggleStatus(service.id, service.status ?? 'inactive')} // Pass serviceId and status
-              >
-               {service.status === 'Active' ? '👁️' : '👁️‍🗨️'}
+                  key={service.status}
+                  className="text-blue-500"
+                  onClick={() => toggleStatus(service.id, service.status ?? 'inactive')} // Pass serviceId and status
+                >
+                  {service.status === 'Active' ? '👁️' : '👁️‍🗨️'}
               </button>
                 {/* <button
                   onClick={() =>
@@ -456,6 +501,7 @@ const ServiceTable: React.FC = () => {
 
       {/* Pagination */}
       <div className="flex justify-between items-center mt-4">
+
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
@@ -463,9 +509,11 @@ const ServiceTable: React.FC = () => {
         >
           Previous
         </button>
+
         <span className="text-gray-600">
           Page {currentPage} of {totalPages}
         </span>
+
         <button
           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}

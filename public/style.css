@@ -1,0 +1,111 @@
+/* General Page Styles */
+body {
+  background-image: linear-gradient(to top right, #8B5CF6, #EC4899);
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Container for AboutUs */
+.about-us-container {
+  padding: 2rem 5rem;
+  background-color: #3e4d56;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Styling for the Coach Cards Carousel */
+.coach-slider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Style for each card */
+.coach-card {
+  position: absolute;
+  width: 240px;
+  height: 320px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.5s, filter 0.5s, opacity 0.5s;
+}
+
+.coach-card img {
+  border-radius: 50%;
+}
+
+.coach-card.active {
+  transform: scale(1);
+  z-index: 1;
+  filter: none;
+  opacity: 1;
+}
+
+.coach-card.inactive {
+  transform: scale(0.8);
+  z-index: 0;
+  filter: blur(5px);
+  opacity: 0.6;
+}
+
+/* Navigation buttons */
+.coach-nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+}
+
+.coach-nav-button-left {
+  left: 10px;
+}
+
+.coach-nav-button-right {
+  right: 10px;
+}
+
+/* For Journey Section */
+.timeline-item {
+  margin-bottom: 1rem;
+}
+
+/* For Section Titles */
+.title-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title-section h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #1d9bf0;
+}
+
+/* Adding Transition Effects to Cards */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-aos="flip-right"] {
+  animation: fadeInUp 1s ease-out;
+}

@@ -4,13 +4,56 @@ import ReactQuill from "react-quill";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
+interface Service {
+  id: number;
+  group: string;
+  category: string;
+  subCategory: string;
+  name: string;
+  duration: number;
+  price: number;
+  status: string;
+  visible: boolean;
+}
+interface TennisData {
+  id: number;
+  groups: string | null;
+  category: string | null;
+  subcategory: string | null;
+  imgUrl: string | null;
+  name: string | null;
+  description: string | null;
+  duration: number | null;
+  price: number | null;
+  status: string | null;
+  discount: number;
+  disbegindate: string | null; // Using string to represent ISO date format
+  disenddate: string | null;   // Using string to represent ISO date format
+  disquantity: number | null;
+  phoneNumber: string | null;
+}
+const initialServices: Service[] = [
+  { id: 1, group: "About-us", category: "", subCategory: "", name: "About Us Section", duration: 10, price: 0, status: "Active", visible: true },
+  { id: 2, group: "Contact-us", category: "", subCategory: "", name: "Contact Page", duration: 15, price: 0, status: "Inactive", visible: true },
+  { id: 3, group: "Gallery", category: "", subCategory: "", name: "Image Gallery", duration: 30, price: 0, status: "Inactive", visible: false },
+  { id: 4, group: "Products", category: "", subCategory: "", name: "Product Detail Page", duration: 45, price: 150, status: "Active", visible: true },
+];
+
 const AddService: React.FC = () => {
-  const [groups, setGroup] = useState("");
+  //const [groups, setGroup] = useState("");
+   const [services, setServices] = useState<Service[]>(initialServices);
+  const [groups, setGroups] = useState<string[]>([]);
   const [category, setCategory] = useState("");
   const [subcategory, setSubCategory] = useState("");
+
   const [customGroup, setCustomGroup] = useState(""); // New state for custom group
   const [customCategory, setCustomCategory] = useState(""); // New state for custom category
   const [customSubCategory, setCustomSubCategory] = useState(""); // New state for custom subcategory
+
+  const [groupFilter, setGroupFilter] = useState<string>("select");
+    const [categoryFilter, setCategoryFilter] = useState<string>("select");
+    const [subCategoryFilter, setSubCategoryFilter] = useState<string>("select");
+
   const [imgUrl, setImageUrl] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -21,32 +64,125 @@ const AddService: React.FC = () => {
   const [discountEndDate, setDiscountEndDate] = useState("");
   const [discountQuantity, setDiscountQuantity] = useState(0);
   const [status, setStatus] = useState("Active");
-
+  const token = JSON.parse(localStorage.getItem("token") || "")
+  const [responseData, setResponseData] = useState<[string, string[]][]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+   const [subCategories, setSubCategories] = useState<string[]>([]);
+ //const [categoryFilter, setCategoryFilter] = useState<string>("All");
+ const [statusFilter, setStatusFilter] = useState<string>("All");
+ const [tableData, setTableData] = useState<TennisData[]>([]);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>(); // Extract `id` from URL
-  const groupCategoryMap: { [key: string]: { categories: string[]; subCategories: { [key: string]: string[] } } } = {
-    "About-us": {
-      categories: ["Coaches"],
-      subCategories: {
-        Coaches: ["Owner/Head Coach", "Assistant Coach", "Fitness Coach"],
-      },
-    },
-    "Contact-us": {
-      categories: [""],
-      subCategories: {
-        "": ["Phone No", "Email", "Current Place"],
-      },
-    },
-    "Gallery": {
-      categories: ["Coaches", "Students", "Achievements"],
-      subCategories: {
-        Coaches: [],
-        Students: [],
-        Achievements: [],
-      },
-    },
-    "Products": { categories: [], subCategories: {} },
-  };
+  
+  
+  const filteredServices = services.filter((service) => {
+   // const matchesSearch = service.name.toLowerCase().includes(searchText.toLowerCase());
+    const matchesGroup = groupFilter === "All" || service.group === groupFilter;
+    const matchesCategory = categoryFilter === "All" || service.category === categoryFilter;
+    const matchesSubCategory = subCategoryFilter === "All" || service.subCategory === subCategoryFilter;
+    const matchesStatus = statusFilter === "All" || service.status === statusFilter;
+    return matchesGroup && matchesCategory && matchesSubCategory && matchesStatus;
+  });
+
+  // const groupCategoryMap: { [key: string]: { categories: string[]; subCategories: { [key: string]: string[] } } } = {
+  //   "About-us": {
+  //     categories: ["Coaches"],
+  //     subCategories: {
+  //       Coaches: ["Owner/Head Coach", "Assistant Coach", "Fitness Coach"],
+  //     },
+  //   },
+  //   "Contact-us": {
+  //     categories: [""],
+  //     subCategories: {
+  //       "": ["Phone No", "Email", "Current Place"],
+  //     },
+  //   },
+  //   "Gallery": {
+  //     categories: ["Coaches", "Students", "Achievements"],
+  //     subCategories: {
+  //       Coaches: [],
+  //       Students: [],
+  //       Achievements: [],
+  //     },
+  //   },
+  //   "Products": { categories: [], subCategories: {} },
+  // };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await
+          axios.get('http://localhost:8082/api/v1/getAllTennis', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+        console.log(res)
+
+        if (res.data) {
+          setTableData(res.data);
+          const uniqueGroups = Array.from(
+            new Set(
+              res.data.map((item: { groups: string }) => item.groups.toLowerCase())
+            )
+          ).map((group) =>
+            res.data.find((item: { groups: string }) => item.groups.toLowerCase() === group)?.groups
+          );
+          setGroups(uniqueGroups); // Update the groups state
+          //console.log(uniqueGroups)
+        }
+      } catch (error) {
+        console.error("Error fetching tennis data:", error);
+      }
+    };
+
+    if (token) {
+      fetchData(); // Call the async function
+    }
+  }, [token]);
+
+
+  //categories
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // const token = JSON.parse(localStorage.getItem("token") || "null"); // Retrieve token
+        const response = await axios.get(`http://localhost:8082/api/v1/getAllCategoriesAndSubCategories`, {
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        console.log("okkkkkkkkkk getAllcs" + response.data);
+
+        const data: [string, string[]][] = response.data;
+        setResponseData(data); // Save full response
+
+        // Extract categories from the response
+        const extractedCategories = data.map((item) => item[0]);
+        setCategories([ ...extractedCategories]); // Include "All" as default
+      } catch (error) {
+        console.error("Error fetching categories and subcategories:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Update subcategories when category changes
+  useEffect(() => {
+    if (categoryFilter !== "All") {
+      const selectedCategory = responseData.find((item) => item[0] === categoryFilter);
+      setSubCategories(selectedCategory ? [ ...selectedCategory[1]] : []);
+    } else {
+      setSubCategories(["select"]);
+    }
+  }, [categoryFilter, responseData]);
+
+
 
   // Custom toolbar options for ReactQuill
   const toolbarOptions = [
@@ -60,10 +196,11 @@ const AddService: React.FC = () => {
     ["clean"], // Clear formatting
   ];
 
-  const categories = groups !== "All" ? groupCategoryMap[groups]?.categories || [] : [];
-  const subCategories = category !== "All" ? groupCategoryMap[groups]?.subCategories[category] || [] : [];
-  let token = JSON.parse(localStorage.getItem("token") || "");
+  //const categories = groups !== "All" ? groupCategoryMap[groups]?.categories || [] : [];
+  //const subCategories = category !== "All" ? groupCategoryMap[groups]?.subCategories[category] || [] : [];
+  //let token = JSON.parse(localStorage.getItem("token") || "");
 
+  console.log(token);
   useEffect(() => {
     if (id) {
       axios
@@ -74,9 +211,10 @@ const AddService: React.FC = () => {
         })
         .then((response) => {
           const data = response.data.data;
-          setGroup(data.groups || "");
-          setCategory(data.category || "");
-          setSubCategory(data.subcategory || "");
+          console.log(data)
+          setGroupFilter(data.groups || "");
+          setCategoryFilter(data.category || "");
+          setSubCategoryFilter(data.subcategory || "");
           setImageUrl(data.imgUrl || "");
           setName(data.name || "");
           setDescription(data.description || "");
@@ -97,9 +235,9 @@ const AddService: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const tennis = {
-      groups: customGroup || groups,
-      category: customCategory || category,
-      subcategory: customSubCategory || subcategory,
+      groups: customGroup || groupFilter,
+      category: customCategory || categoryFilter,
+      subcategory: customSubCategory || subCategoryFilter,
       name,
       description,
       duration,
@@ -125,6 +263,7 @@ const AddService: React.FC = () => {
         console.log("Service updated successfully:", response.data);
         alert("Service updated successfully!");
       } else {
+        console.log(tennis)
         const response = await axios.post(
           "http://localhost:8082/api/v1/createTennis",
           tennis,
@@ -144,6 +283,32 @@ const AddService: React.FC = () => {
       alert("Failed to add service. Please try again.");
     }
   };
+  
+    useEffect(() => {
+      if (groupFilter === "All") {
+        // For "All" group filter, get all unique categories, excluding null
+        setCategories([
+          // "All", 
+          ...Array.from(
+            new Set(
+              tableData
+                .filter(item => item.category != null) // Exclude null categories
+                .map(item => item.category as string) // Assert category as string
+            )
+          )
+        ]);
+      } else {
+        // Filter categories based on selected group and exclude null categories
+        const filteredCategories = tableData
+          .filter((item) => item.groups === groupFilter)
+          .filter(item => item.category != null) // Exclude null categories
+          .map((item) => item.category as string); // Assert category as string
+    
+        setCategories([ ...Array.from(new Set(filteredCategories))]);
+      }
+    }, [groupFilter,tableData]); // Re-run effect when groupFilter or tableData changes
+    
+  
 
   return (
     <div className="max-w-4xl mx-auto p-6  mt-24 lg:mt-20">
@@ -161,28 +326,33 @@ const AddService: React.FC = () => {
             Groups (Optional)
           </label>
           <div className="relative">
-              <select
-                value={groups}
-                onChange={(e) => setGroup(e.target.value)}
-                className="w-full border border-gray-300 p-2 mt-1 rounded focus:outline-none focus:ring focus:border-blue-500"
-              >
-                <option value="">Select a Group</option>
-                <option value="About-us">About-us</option>
-                <option value="Contact-us">Contact-us</option>
-                <option value="Products">Products</option>
-                <option value="Gallery">Gallery</option>
-                <option value="New">New</option> 
-              </select>
-              {groups === "New" && (
-                <input
-                  type="text"
-                  placeholder="Enter new group"
-                  value={customGroup}
-                  onChange={(e) => setCustomGroup(e.target.value)}
-                 className="absolute  inset-y-0 right-0 border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
-                />
-              )}
-          
+            <select
+                value={groupFilter}
+                onChange={(e) => {
+                  setGroupFilter(e.target.value);
+                  setCategoryFilter("select");
+                  setSubCategoryFilter("select");
+                }}
+              className="w-full border border-gray-300 p-2 mt-1 rounded focus:outline-none focus:ring focus:border-blue-500"
+            >
+                <option disabled value="select">Select</option>
+                <option value="New" className="text-amber-700">New</option>
+                {groups?.map((group, index) => (
+                <option key={index} value={group}>
+                  {group}
+                </option>
+              ))}
+            </select>
+            {groupFilter === "New" && (
+              <input
+                type="text"
+                placeholder="Enter new group"
+                value={customGroup}
+                onChange={(e) => setCustomGroup(e.target.value)}
+                className="absolute  inset-y-0 right-0 border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+              />
+            )}
+
           </div>
         </div>
 
@@ -192,31 +362,35 @@ const AddService: React.FC = () => {
             Category*
           </label>
           <div className="relative">
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full border border-gray-300 p-2 mt-1 rounded focus:outline-none focus:ring focus:border-blue-500"
-              >
-                {categories.length > 0 ? (
-                  categories.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))
-                ) : (
-                  <option value="">No Options Available</option>
-                )}
-                <option value="New">New</option>
-              </select>
-              {category === "New" && (
-                <input
-                  type="text"
-                  placeholder="Enter new category"
-                  value={customCategory}
-                  onChange={(e) => setCustomCategory(e.target.value)}
-                  className="absolute  inset-y-0 right-0 border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
-                />
+            <select
+             value={categoryFilter}
+             onChange={(e) => {
+               setCategoryFilter(e.target.value);
+               setSubCategoryFilter("select");
+             }}
+              className="w-full border border-gray-300 p-2 mt-1 rounded focus:outline-none focus:ring focus:border-blue-500"
+            >       <option disabled value="select">Select</option>
+                  <option value="New">New</option>
+              {categories?.length > 0 ? (
+                    categories?.map((category, index) => (
+                      <option key={index} value={category}>
+                        {category}
+                      </option>
+                    ))
+              ) : (
+                <option value="">No Options Available</option>
               )}
+          
+            </select>
+            {categoryFilter=== "New" && (
+              <input
+                type="text"
+                placeholder="Enter new category"
+                value={customCategory}
+                onChange={(e) => setCustomCategory(e.target.value)}
+                className="absolute  inset-y-0 right-0 border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+              />
+            )}
           </div>
         </div>
 
@@ -226,32 +400,33 @@ const AddService: React.FC = () => {
             Sub-Category
           </label>
           <div className="relative">
-          <select
-            value={subcategory}
-            onChange={(e) => setSubCategory(e.target.value)}
-            className="w-full border border-gray-300 p-2 mt-1 rounded focus:outline-none focus:ring focus:border-blue-500"
-          >
-            {subCategories.length > 0 ? (
-              subCategories.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))
-            ) : (
-              <option value="">No Options Available</option>
+            <select
+              value={subCategoryFilter}
+              onChange={(e) => setSubCategoryFilter(e.target.value)}
+              className="w-full border border-gray-300 p-2 mt-1 rounded focus:outline-none focus:ring focus:border-blue-500"
+            >       <option disabled value="select">Select</option>
+              <option value="New">New</option>
+              {subCategories?.length > 0 ? (
+                  subCategories?.map((subCategory, index) => (
+                    <option key={index} value={subCategory}>
+                      {subCategory}
+                    </option>
+                  ))
+              ) : (
+                <option value="">No Options Available</option>
+              )}
+              
+            </select>
+            {subCategoryFilter === "New" && (
+              <input
+                type="text"
+                placeholder="Enter new subcategory"
+                value={customSubCategory}
+                onChange={(e) => setCustomSubCategory(e.target.value)}
+                className="absolute  inset-y-0 right-0 border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
+              />
             )}
-            <option value="New">New</option> 
-          </select>
-          {subcategory === "New" && (
-            <input
-              type="text"
-              placeholder="Enter new subcategory"
-              value={customSubCategory}
-              onChange={(e) => setCustomSubCategory(e.target.value)}
-              className="absolute  inset-y-0 right-0 border border-gray-300 p-2 rounded focus:outline-none focus:ring focus:border-blue-500"
-            />
-          )}
-          
+
           </div>
         </div>
 
