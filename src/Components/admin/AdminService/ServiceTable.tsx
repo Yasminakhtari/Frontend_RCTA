@@ -42,7 +42,7 @@ const initialServices: Service[] = [
 //       Achievements: [],
 //     },
 //   },
-  
+
 //   "Products": { categories: [], subCategories: {} },
 // };
 interface TennisData {
@@ -93,7 +93,7 @@ const ServiceTable: React.FC = () => {
     const matchesStatus = statusFilter === "All" || service.status === statusFilter;
     return matchesSearch && matchesGroup && matchesCategory && matchesSubCategory && matchesStatus;
   });
-  
+
 
   // const categories = groupFilter !== "All" ? groupCategoryMap[groupFilter]?.categories || [] : [];
   // const subCategories = categoryFilter !== "All" ? groupCategoryMap[groupFilter]?.subCategories[categoryFilter] || [] : [];
@@ -103,54 +103,56 @@ const ServiceTable: React.FC = () => {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
-  let token = JSON.parse(localStorage.getItem("token") || "") 
+  let tokenString = localStorage.getItem("token");
+  let token = tokenString ? JSON.parse(tokenString) : null;
+  console.log("token===>", token);
   const [tableData, setTableData] = useState<TennisData[]>([]);
 
-////////////////////////////////////////
-//For Filter Data//
-useEffect(()=>{
-  const fetchFilteredData = async() => {
-    try{
-      const response = await axios.get('http://localhost:8082/api/v1/getFilteredTennis',{
-        params: {
-          group: groupFilter !== "All" ? groupFilter : null,
-          category: categoryFilter !== "All" ? categoryFilter : null,
-          subcategory: subCategoryFilter !== "All" ? subCategoryFilter : null,
-          status: statusFilter !== "All" ? statusFilter : null,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        
-      });
-      console.log(response.data)
-      setTableData(response.data);//set The table data
-    }
-    catch(error){
-      console.error("Error Fetching Filtered Tennis Data:" ,error);
-    }
-
-  };
-  fetchFilteredData();
-},[groupFilter,categoryFilter,subCategoryFilter, statusFilter])// Re-fetch when filters change
-
-
-
-
-//////////////////////////////////////
+  ////////////////////////////////////////
+  //For Filter Data//
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await 
-        axios.get('http://localhost:8082/api/v1/getAllTennis', {
+    const fetchFilteredData = async() => {
+      try{
+        const response = await axios.get('http://localhost:8082/api/v1/getFilteredTennis',{
+          params: {
+            group: groupFilter !== "All" ? groupFilter : null,
+            category: categoryFilter !== "All" ? categoryFilter : null,
+            subcategory: subCategoryFilter !== "All" ? subCategoryFilter : null,
+            status: statusFilter !== "All" ? statusFilter : null,
+          },
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+
         });
+        console.log(response.data)
+        setTableData(response.data);//set The table data
+      }
+      catch(error){
+        console.error("Error Fetching Filtered Tennis Data:" ,error);
+      }
+
+    };
+    fetchFilteredData();
+  }, [groupFilter, categoryFilter, subCategoryFilter, statusFilter])// Re-fetch when filters change
+
+
+
+
+  //////////////////////////////////////
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await
+          axios.get('http://localhost:8082/api/v1/getAllTennis', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
         console.log(res)
-  
+
         if (res.data) {
           setTableData(res.data); // Update the state with fetched data
           // Extract unique groups from the data
@@ -168,7 +170,7 @@ useEffect(()=>{
         console.error("Error fetching tennis data:", error);
       }
     };
-  
+
     if (token) {
       fetchData(); // Call the async function
     }
@@ -182,10 +184,10 @@ useEffect(()=>{
         try {
           const res = await axios.get(
             // `http://localhost:8082/api/v1/getAllByStatus?status=${statusFilter}`,
-            `http://localhost:8082/api/v1/getAllByStatus`,{
-              params:{status:statusFilter},
-              headers:{Authorization: `Bearer ${token}`}
-            }
+            `http://localhost:8082/api/v1/getAllByStatus`, {
+            params: { status: statusFilter },
+            headers: { Authorization: `Bearer ${token}` }
+          }
             // {
             //   headers: {
             //     Authorization: `Bearer ${token}`,
@@ -202,29 +204,29 @@ useEffect(()=>{
           console.error("Error fetching status-based data:", error);
         }
       }
-      
+
       else {
-        setTableData(tableData); 
+        setTableData(tableData);
       }
     };
-  
+
     fetchFilteredStatusData();
   }, [statusFilter, token]);
 
 
 
-   // Function to toggle the status of the service
-   const toggleStatus = async (id: number, status: string) => {
+  // Function to toggle the status of the service
+  const toggleStatus = async (id: number, status: string) => {
     try {
       // If the status is 'Active', send 'Inactive' and vice versa
-    const updatedStatus = status === 'Active' ? 'Inactive' : 'Active';
+      const updatedStatus = status === 'Active' ? 'Inactive' : 'Active';
 
       // Call the API to toggle the status
       const response = await axios.post(
         `http://localhost:8082/api/v1/toggleStatus/${id}?status=${updatedStatus}`, // Assuming the backend API path
         // { status: validStatus }, 
         null,
-        { 
+        {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -232,19 +234,19 @@ useEffect(()=>{
           // params: { status: validStatus }  // Add status as a query parameter
         } // Send status as query parameter
       );
-      
+
       // Handle success
       console.log('Status updated:', response.data);
-      alert("Service status updated to"+" " + response.data.data.status)
+      alert("Service status updated to" + " " + response.data.data.status)
       // Optionally, navigate to the service detail page
       // navigate(`/view-service/${id}`);
       // Optionally, update the status in the state to reflect the change immediately
-     // Update the status in the table data to reflect the change immediately
-     setTableData(prevData => 
-      prevData.map(service => 
-        service.id === id ? { ...service, status: response.data.data.status } : service
-      )
-    );
+      // Update the status in the table data to reflect the change immediately
+      setTableData(prevData =>
+        prevData.map(service =>
+          service.id === id ? { ...service, status: response.data.data.status } : service
+        )
+      );
 
     } catch (error) {
       // Handle error
@@ -257,7 +259,7 @@ useEffect(()=>{
       try {
         // const token = JSON.parse(localStorage.getItem("token") || "null"); // Retrieve token
         const response = await axios.get(`http://localhost:8082/api/v1/getAllCategoriesAndSubCategories`, {
-          
+
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -286,7 +288,7 @@ useEffect(()=>{
     if (groupFilter === "All") {
       // For "All" group filter, get all unique categories, excluding null
       setCategories([
-        "All", 
+        "All",
         ...Array.from(
           new Set(
             tableData
@@ -301,11 +303,11 @@ useEffect(()=>{
         .filter((item) => item.groups === groupFilter)
         .filter(item => item.category != null) // Exclude null categories
         .map((item) => item.category as string); // Assert category as string
-  
+
       setCategories(["All", ...Array.from(new Set(filteredCategories))]);
     }
   }, [groupFilter, tableData]); // Re-run effect when groupFilter or tableData changes
-  
+
 
 
 
@@ -319,10 +321,10 @@ useEffect(()=>{
     }
   }, [categoryFilter, responseData]);
 
-  
+
   //////////////////////
-  
-  
+
+
 
   return (
     <div className="bg-white p-4 rounded shadow mt-24 lg:mt-16">
@@ -341,103 +343,103 @@ useEffect(()=>{
       {/* Filters */}
       <div className="flex flex-wrap items-center justify-between mb-4 ">
         <div className="flex gap-4 items-center">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Search:</label>
-              <input
-                type="text"
-                placeholder="Search in records..."
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                className="border border-gray-300 p-2 rounded w-60"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Search:</label>
+            <input
+              type="text"
+              placeholder="Search in records..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="border border-gray-300 p-2 rounded w-60"
+            />
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Group:</label>
-              <select
-                value={groupFilter}
-                onChange={(e) => {
-                  setGroupFilter(e.target.value);
-                  setCategoryFilter("All");
-                  setSubCategoryFilter("All");
-                }}
-                className="border border-gray-300 p-2 rounded w-40"
-              >
-                <option value="All">All</option>
-                {/* {Object.keys(groupCategoryMap).map((group) => (
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Group:</label>
+            <select
+              value={groupFilter}
+              onChange={(e) => {
+                setGroupFilter(e.target.value);
+                setCategoryFilter("All");
+                setSubCategoryFilter("All");
+              }}
+              className="border border-gray-300 p-2 rounded w-40"
+            >
+              <option value="All">All</option>
+              {/* {Object.keys(groupCategoryMap).map((group) => (
                   <option key={group} value={group}>
                     {group}
                   </option>
                 ))} */}
-                {groups.map((group, index) => (
+              {groups.map((group, index) => (
                 <option key={index} value={group}>
                   {group}
                 </option>
               ))}
-              </select>
-            </div>
+            </select>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Category:</label>
-              <select
-                value={categoryFilter}
-                onChange={(e) => {
-                  setCategoryFilter(e.target.value);
-                  setSubCategoryFilter("All");
-                }}
-                className="border border-gray-300 p-2 rounded w-40"
-                disabled={categories.length === 0}
-              >
-                <option value="All">All</option>
-                {/* {categories.map((cat) => (
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Category:</label>
+            <select
+              value={categoryFilter}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value);
+                setSubCategoryFilter("All");
+              }}
+              className="border border-gray-300 p-2 rounded w-40"
+              disabled={categories.length === 0}
+            >
+              <option value="All">All</option>
+              {/* {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
                   </option>
                 ))} */}
-                {categories.map((category, index) => (
+              {categories.map((category, index) => (
                 <option key={index} value={category}>
-                    {category}
+                  {category}
                 </option>
-          ))}
-              </select>
-            </div>
+              ))}
+            </select>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Sub-Category:</label>
-              <select
-                value={subCategoryFilter}
-                onChange={(e) => setSubCategoryFilter(e.target.value)}
-                className="border border-gray-300 p-2 rounded w-40"
-                disabled={subCategories.length === 0}
-              >
-                <option value="All">All</option>
-                {/* {subCategories.map((subCat) => (
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Sub-Category:</label>
+            <select
+              value={subCategoryFilter}
+              onChange={(e) => setSubCategoryFilter(e.target.value)}
+              className="border border-gray-300 p-2 rounded w-40"
+              disabled={subCategories.length === 0}
+            >
+              <option value="All">All</option>
+              {/* {subCategories.map((subCat) => (
                   <option key={subCat} value={subCat}>
                     {subCat}
                   </option>
                 ))} */}
-                {subCategories.map((subCategory, index) => (
-              <option key={index} value={subCategory}>
-                {subCategory}
-            </option>
-          ))}
-              </select>
-            </div>
+              {subCategories.map((subCategory, index) => (
+                <option key={index} value={subCategory}>
+                  {subCategory}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-            {/* Check Status */}
+        {/* Check Status */}
 
-          <div className=" items-end">
-                <label className="block text-sm font-medium text-gray-700">Status:</label>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="border border-gray-300 p-2 rounded w-40"
-                >
-                  <option  disabled value="All">All</option>
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
+        <div className=" items-end">
+          <label className="block text-sm font-medium text-gray-700">Status:</label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="border border-gray-300 p-2 rounded w-40"
+          >
+            <option disabled value="All">All</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
         </div>
       </div>
 
@@ -472,7 +474,7 @@ useEffect(()=>{
                   onClick={() => toggleStatus(service.id, service.status ?? 'inactive')} // Pass serviceId and status
                 >
                   {service.status === 'Active' ? '👁️' : '👁️‍🗨️'}
-              </button>
+                </button>
                 {/* <button
                   onClick={() =>
                     setServices((prevServices) =>
