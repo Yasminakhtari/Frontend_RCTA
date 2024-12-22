@@ -478,7 +478,7 @@ const ServiceTable: React.FC = () => {
         <thead>
           <tr className="bg-gray-200">
             <th className="border border-gray-300 p-2">Action</th>
-            <th className="border border-gray-300 p-2">images</th>
+            <th className="border border-gray-300 p-2">Image</th>
             <th className="border border-gray-300 p-2">Service ID</th>
             <th className="border border-gray-300 p-2">Group</th>
             <th className="border border-gray-300 p-2">Category</th>
