@@ -526,7 +526,8 @@ const ServiceTable: React.FC = () => {
                   {service.visible ? "Hide" : "Show"}
                 </button> */}
               </td>
-              {/* <td className="border border-gray-300 p-2">
+              
+              <td className="border border-gray-300 p-2">
               {service.imgUrl ? (
                 <img 
                   src={service.imgUrl} 
@@ -534,7 +535,8 @@ const ServiceTable: React.FC = () => {
                   style={{ width: '50px', height: '50px', borderRadius: '0%' }} 
                 />
               ) : null}
-            </td> */}
+            </td>
+
               <td className="border border-gray-300 p-2">{service?.id}</td>
               <td className="border border-gray-300 p-2">{service?.groups}</td>
               <td className="border border-gray-300 p-2">{service.category}</td>

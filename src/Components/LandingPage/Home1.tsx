@@ -23,6 +23,8 @@ type Tournament = {
   phoneNumber: string | null;
 };
 
+export const base_url = "https://backend-rcta.onrender.com/api/v1";
+// export const base_url = "http://localhost:8082/api/v1";
 
 const Home1 = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -32,7 +34,7 @@ const Home1 = () => {
 
       const fetchData = async()=>{
         try{
-          const response = await axios.get('http://localhost:8082/api/v1/getFilteredTennis',{
+          const response = await axios.get(`${base_url}/getFilteredTennis`,{
             params:{
               group:"HomePage"
             },
@@ -146,7 +148,7 @@ const Home1 = () => {
 
               <div className="flex gap-2 text-mine-shaft-200 text-sm justify-between">
                 <span>Dec 25, 2024</span>
-                <span>{homePageData.find(item => item.subcategory === "message")?.name || "Open To"}</span>
+                <span>{homePageData.find(item => item.subcategory === "message")?.name || "Open To All "}</span>
               </div>
               </>
             )
