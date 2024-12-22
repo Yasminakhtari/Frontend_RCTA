@@ -478,6 +478,7 @@ const ServiceTable: React.FC = () => {
         <thead>
           <tr className="bg-gray-200">
             <th className="border border-gray-300 p-2">Action</th>
+            <th className="border border-gray-300 p-2">images</th>
             <th className="border border-gray-300 p-2">Service ID</th>
             <th className="border border-gray-300 p-2">Group</th>
             <th className="border border-gray-300 p-2">Category</th>
@@ -488,16 +489,19 @@ const ServiceTable: React.FC = () => {
             <th className="border border-gray-300 p-2">Status</th>
           </tr>
         </thead>
+
         <tbody>
           {tableData.length !== 0 && tableData.map((service) => (
             <tr key={service.id} className="hover:bg-gray-100">
               <td className="border border-gray-300 p-2">
+
                 <button
                   className="text-blue-500 mr-2"
                   onClick={() => navigate(`/add-service/${service.id}`)}
                 >
                   Edit
                 </button>
+
                 <button
                   key={service.status}
                   className="text-blue-500"
@@ -505,14 +509,15 @@ const ServiceTable: React.FC = () => {
                 >
                   {service.status === 'Active' ? '👁️' : '👁️‍🗨️'}
                 </button>
+
                 <button
                 // className="mr-4"
                 title="delete"
                 style={{ color: 'red', fontSize: '1rem' }}
                 onClick={() => deleteServiceData(service.id)}
-              >
+                >
                 🗑️
-              </button>
+                </button>
                 {/* <button
                   onClick={() =>
                     setServices((prevServices) =>
@@ -526,7 +531,6 @@ const ServiceTable: React.FC = () => {
                   {service.visible ? "Hide" : "Show"}
                 </button> */}
               </td>
-              
               <td className="border border-gray-300 p-2">
               {service.imgUrl ? (
                 <img 
@@ -536,7 +540,6 @@ const ServiceTable: React.FC = () => {
                 />
               ) : null}
             </td>
-
               <td className="border border-gray-300 p-2">{service?.id}</td>
               <td className="border border-gray-300 p-2">{service?.groups}</td>
               <td className="border border-gray-300 p-2">{service.category}</td>
