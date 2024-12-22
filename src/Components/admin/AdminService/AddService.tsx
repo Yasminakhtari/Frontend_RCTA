@@ -35,6 +35,16 @@ interface TennisData {
   disquantity: number | null;
   phoneNumber: string | null;
 }
+
+const isValidURL = (url: string): boolean => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const initialServices: Service[] = [
   { id: 1, group: "About-us", category: "", subCategory: "", name: "About Us Section", duration: 10, price: 0, status: "Active", visible: true },
   { id: 2, group: "Contact-us", category: "", subCategory: "", name: "Contact Page", duration: 15, price: 0, status: "Inactive", visible: true },
@@ -249,7 +259,7 @@ const AddService: React.FC = () => {
       discount,
       imgUrl,
     };
-
+    console.log(imgUrl)
     try {
       if (id) {
         // Update existing service
@@ -434,7 +444,7 @@ const AddService: React.FC = () => {
         </div>
 
         {/* Image URL */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
             Image URL
           </label>
@@ -445,7 +455,27 @@ const AddService: React.FC = () => {
             onChange={(e) => setImageUrl(e.target.value)}
             className="w-full border border-gray-300 p-2 rounded mt-1"
           />
-        </div>
+        </div> */}
+
+<div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700">Image URL</label>
+  <input
+    type="text"
+    placeholder="Enter Image URL"
+    value={imgUrl}
+    onChange={(e) => setImageUrl(e.target.value)}
+    className="w-full border border-gray-300 p-2 rounded mt-1"
+  />
+  {/* Image Preview */}
+  {imgUrl && isValidURL(imgUrl) ? (
+    <div className="mt-2">
+      <img src={imgUrl} alt="Preview" className="h-32 w-32 object-cover rounded" />
+    </div>
+  ) : imgUrl ? (
+    <p className="text-red-500 text-sm mt-1">Invalid image URL</p>
+  ) : null}
+</div>
+
 
         {/* Name */}
         <div className="mb-4">
