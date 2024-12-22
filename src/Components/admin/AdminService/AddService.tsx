@@ -4,6 +4,9 @@ import ReactQuill from "react-quill";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
+export const base_url = "https://backend-rcta.onrender.com/api/v1";
+// export const base_url = "http://localhost:8082/api/v1";
+
 interface Service {
   id: number;
   group: string;
@@ -112,7 +115,7 @@ const AddService: React.FC = () => {
     const fetchData = async () => {
       try {
         const res = await
-          axios.get('http://localhost:8082/api/v1/getAllTennis', {
+          axios.get(`${base_url}/getAllTennis`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -148,7 +151,7 @@ const AddService: React.FC = () => {
     const fetchData = async () => {
       try {
         // const token = JSON.parse(localStorage.getItem("token") || "null"); // Retrieve token
-        const response = await axios.get(`http://localhost:8082/api/v1/getAllCategoriesAndSubCategories`, {
+        const response = await axios.get(`${base_url}/getAllCategoriesAndSubCategories`, {
 
           headers: {
             Authorization: `Bearer ${token}`,
@@ -204,7 +207,7 @@ const AddService: React.FC = () => {
   useEffect(() => {
     if (id) {
       axios
-        .get(`http://localhost:8082/api/v1/getTennis/${id}`, {
+        .get(`{base_url}/getTennis/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -251,7 +254,7 @@ const AddService: React.FC = () => {
       if (id) {
         // Update existing service
         const response = await axios.put(
-          `http://localhost:8082/api/v1/updateTennis/${id}`,
+          `{base_url}/updateTennis/${id}`,
           tennis,
           {
             headers: {
@@ -265,7 +268,7 @@ const AddService: React.FC = () => {
       } else {
         console.log(tennis)
         const response = await axios.post(
-          "http://localhost:8082/api/v1/createTennis",
+          "{base_url}/createTennis",
           tennis,
           {
             headers: {

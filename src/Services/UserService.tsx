@@ -1,5 +1,6 @@
 import axios from "axios"
- export const  base_url = "http://localhost:8082/api/auth/"
+export const base_url = "https://backend-rcta.onrender.com/api/auth/";
+//  export const  base_url = "http://localhost:8082/api/auth/"
 
 const registerUser =async (user:any)=>{
     console.log(user)
