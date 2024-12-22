@@ -5,6 +5,9 @@ import { sendEmail } from '../../Services/ContactService';
 import ReCAPTCHA from 'react-google-recaptcha';
 import axios from 'axios';
 
+export const base_url = "https://backend-rcta.onrender.com/api/v1";
+// export const base_url = "http://localhost:8082/api/v1";
+
 type ContactDataItem = {
   id: number;
   groups: string;
@@ -49,7 +52,7 @@ const ContactUs: FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8082/api/v1/getFilteredTennis', {
+        const response = await axios.get(`${base_url}/getFilteredTennis`, {
           params: {
             group: "Contact-Us"
 
