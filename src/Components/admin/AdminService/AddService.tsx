@@ -254,7 +254,7 @@ const AddService: React.FC = () => {
       if (id) {
         // Update existing service
         const response = await axios.put(
-          `{base_url}/updateTennis/${id}`,
+          `${base_url}//updateTennis/${id}`,
           tennis,
           {
             headers: {
@@ -268,7 +268,7 @@ const AddService: React.FC = () => {
       } else {
         console.log(tennis)
         const response = await axios.post(
-          `{base_url}/createTennis`,
+          `${base_url}//createTennis`,
           tennis,
           {
             headers: {
