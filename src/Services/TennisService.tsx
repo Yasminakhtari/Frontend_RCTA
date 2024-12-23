@@ -1,13 +1,12 @@
 import axios from "axios";
+import { base_url } from "../apiConfig";
 
-//export const base_url = "https://backend-rcta.onrender.com/api/v1";
-export const base_url = "http://localhost:8082/api/v1"
 
 const getAllCategoriesAndSubCategories = async () => {
     const token = JSON.parse(localStorage.getItem("token") || "null"); // Retrieve token from localStorage
   
     return axios
-      .get(`${base_url}/getAllCategoriesAndSubCategories`, {
+      .get(`${base_url}/v1/getAllCategoriesAndSubCategories`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -21,7 +20,7 @@ const getAllCategoriesAndSubCategories = async () => {
   
   const getAllTennisData = async (token: string) => {
     try {
-      const response = await axios.get(`${base_url}/getAllTennis`, {
+      const response = await axios.get(`${base_url}/v1/getAllTennis`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -38,7 +37,7 @@ const getAllCategoriesAndSubCategories = async () => {
     const updatedStatus = status === 'Active' ? 'Inactive' : 'Active';
     try {
       const response = await axios.post(
-        `${base_url}/toggleStatus/${id}?status=${updatedStatus}`,
+        `${base_url}/v1/toggleStatus/${id}?status=${updatedStatus}`,
         null,
         {
           headers: {

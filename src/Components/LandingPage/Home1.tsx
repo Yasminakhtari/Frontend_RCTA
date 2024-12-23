@@ -3,6 +3,7 @@ import { IconArrowUp, IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import raphel from "./raphael.png"
 import axios from "axios";
+import { base_url } from "../../apiConfig";
 
 
 type Tournament = {
@@ -23,8 +24,8 @@ type Tournament = {
   phoneNumber: string | null;
 };
 
-//export const base_url = "https://backend-rcta.onrender.com/api/v1";
-export const base_url = "http://localhost:8082/api/v1";
+// export const base_url = "https://backend-rcta.onrender.com/api/v1";
+// export const base_url = "http://localhost:8082/api/v1";
 
 const Home1 = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -34,7 +35,7 @@ const Home1 = () => {
 
       const fetchData = async()=>{
         try{
-          const response = await axios.get(`${base_url}/getFilteredTennis`,{
+          const response = await axios.get(`${base_url}/v1/getFilteredTennis`,{
             params:{
               group:"HomePage"
             },
