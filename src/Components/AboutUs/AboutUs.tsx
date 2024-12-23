@@ -5,9 +5,8 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { base_url } from "../../apiConfig";
 
-export const base_url = "https://backend-rcta.onrender.com/api/v1";
-// export const base_url = "http://localhost:8082/api/v1";
 const AboutUs = () => {
 
   const [aboutusData, setAboutusData] = useState<String[]>([]);
@@ -37,7 +36,7 @@ const AboutUs = () => {
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        const response = await axios.get(`${base_url}/getFilteredTennis`, {
+        const response = await axios.get(`${base_url}/v1/getFilteredTennis`, {
           params: {
             group: "About-Us"
           },

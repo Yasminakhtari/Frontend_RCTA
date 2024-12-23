@@ -1,8 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { base_url } from "../../../apiConfig";
 
-export const base_url = "https://backend-rcta.onrender.com/api/v1";
+// export const base_url = "https://backend-rcta.onrender.com/api/v1";
 // export const base_url = "http://localhost:8082/api/v1";
 
 interface Service {
@@ -116,7 +117,7 @@ const ServiceTable: React.FC = () => {
   useEffect(() => {
     const fetchFilteredData = async() => {
       try{
-        const response = await axios.get(`${base_url}/getFilteredTennis`,{
+        const response = await axios.get(`${base_url}/v1/getFilteredTennis`,{
           params: {
             group: groupFilter !== "All" ? groupFilter : null,
             category: categoryFilter !== "All" ? categoryFilter : null,
@@ -148,7 +149,7 @@ const ServiceTable: React.FC = () => {
     const fetchData = async () => {
       try {
         const res = await
-          axios.get(`${base_url}/getAllTennis`, {
+          axios.get(`${base_url}/v1/getAllTennis`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -187,7 +188,7 @@ const ServiceTable: React.FC = () => {
         try {
           const res = await axios.get(
             // `http://localhost:8082/api/v1/getAllByStatus?status=${statusFilter}`,
-            `${base_url}/getAllByStatus`, {
+            `${base_url}/v1/getAllByStatus`, {
             params: { status: statusFilter },
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -226,7 +227,7 @@ const ServiceTable: React.FC = () => {
 
       // Call the API to toggle the status
       const response = await axios.post(
-        `${base_url}/toggleStatus/${id}?status=${updatedStatus}`, // Assuming the backend API path
+        `${base_url}/v1/toggleStatus/${id}?status=${updatedStatus}`, // Assuming the backend API path
         // { status: validStatus }, 
         null,
         {
@@ -261,7 +262,7 @@ const ServiceTable: React.FC = () => {
     const fetchData = async () => {
       try {
         // const token = JSON.parse(localStorage.getItem("token") || "null"); // Retrieve token
-        const response = await axios.get(`${base_url}/getAllCategoriesAndSubCategories`, {
+        const response = await axios.get(`${base_url}/v1/getAllCategoriesAndSubCategories`, {
 
           headers: {
             Authorization: `Bearer ${token}`,
@@ -330,7 +331,7 @@ const ServiceTable: React.FC = () => {
   //Delete Services
   const deleteServiceData = async (serviceId: number) => {
     try {
-      const response = await axios.delete(`${base_url}/deleteTennis/${serviceId}`, {
+      const response = await axios.delete(`${base_url}/v1/deleteTennis/${serviceId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

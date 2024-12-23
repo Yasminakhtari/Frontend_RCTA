@@ -3,9 +3,8 @@ import "react-quill/dist/quill.snow.css"; // Import the Quill editor styles
 import ReactQuill from "react-quill";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { base_url } from "../../../apiConfig";
 
-export const base_url = "https://backend-rcta.onrender.com/api/v1";
-// export const base_url = "http://localhost:8082/api/v1";
 
 interface Service {
   id: number;
@@ -125,7 +124,7 @@ const AddService: React.FC = () => {
     const fetchData = async () => {
       try {
         const res = await
-          axios.get(`${base_url}/getAllTennis`, {
+          axios.get(`${base_url}/v1/getAllTennis`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -161,7 +160,7 @@ const AddService: React.FC = () => {
     const fetchData = async () => {
       try {
         // const token = JSON.parse(localStorage.getItem("token") || "null"); // Retrieve token
-        const response = await axios.get(`${base_url}/getAllCategoriesAndSubCategories`, {
+        const response = await axios.get(`${base_url}/v1/getAllCategoriesAndSubCategories`, {
 
           headers: {
             Authorization: `Bearer ${token}`,
@@ -217,7 +216,7 @@ const AddService: React.FC = () => {
   useEffect(() => {
     if (id) {
       axios
-        .get(`{base_url}/getTennis/${id}`, {
+        .get(`{base_url}/v1/getTennis/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -264,7 +263,7 @@ const AddService: React.FC = () => {
       if (id) {
         // Update existing service
         const response = await axios.put(
-          `${base_url}/updateTennis/${id}`,
+          `${base_url}/v1/updateTennis/${id}`,
           tennis,
           {
             headers: {
@@ -278,7 +277,7 @@ const AddService: React.FC = () => {
       } else {
         console.log(tennis)
         const response = await axios.post(
-          `${base_url}/createTennis`,
+          `${base_url}/v1/createTennis`,
           tennis,
           {
             headers: {
