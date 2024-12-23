@@ -31,8 +31,8 @@ const staticIcons = [
   IconAward,
 ];
 
-export const base_url = "https://backend-rcta.onrender.com/api/v1";
-// export const base_url = "http://localhost:8082/api/v1";
+//export const base_url = "https://backend-rcta.onrender.com/api/v1";
+export const base_url = "http://localhost:8082/api/v1";
 
 
 const LandingMediumSection = () => {
@@ -80,7 +80,7 @@ const LandingMediumSection = () => {
       <div className="text-lg mx-auto mb-10 text-mine-shaft-200 text-center w-3/4">
         Follow these simple steps to join our academy, enhance your skills, and reach your tennis potential.
       </div>
-git 
+
       {/* Steps Section */}
       <div className="flex flex-col md:flex-row justify-between md:items-center">
         {/* Left Section */}

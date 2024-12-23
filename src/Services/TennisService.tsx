@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const base_url = "https://backend-rcta.onrender.com/api/v1";
-// export const base_url = "http://localhost:8082/api/v1"
+//export const base_url = "https://backend-rcta.onrender.com/api/v1";
+export const base_url = "http://localhost:8082/api/v1"
 
 const getAllCategoriesAndSubCategories = async () => {
     const token = JSON.parse(localStorage.getItem("token") || "null"); // Retrieve token from localStorage
@@ -18,6 +18,7 @@ const getAllCategoriesAndSubCategories = async () => {
         throw error;
       });
   };
+  
   const getAllTennisData = async (token: string) => {
     try {
       const response = await axios.get(`${base_url}/getAllTennis`, {

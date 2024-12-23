@@ -2,8 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const base_url = "https://backend-rcta.onrender.com/api/v1";
-// export const base_url = "http://localhost:8082/api/v1";
+//export const base_url = "https://backend-rcta.onrender.com/api/v1";
+export const base_url = "http://localhost:8082/api/v1";
 
 interface Service {
   id: number;
@@ -15,6 +15,7 @@ interface Service {
   price: number;
   status: string;
   visible: boolean;
+  
 }
 
 const initialServices: Service[] = [

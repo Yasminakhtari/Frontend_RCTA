@@ -23,8 +23,8 @@ type Tournament = {
   phoneNumber: string | null;
 };
 
-export const base_url = "https://backend-rcta.onrender.com/api/v1";
-// export const base_url = "http://localhost:8082/api/v1";
+//export const base_url = "https://backend-rcta.onrender.com/api/v1";
+export const base_url = "http://localhost:8082/api/v1";
 
 const Home1 = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
