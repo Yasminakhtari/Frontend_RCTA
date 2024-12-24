@@ -16,6 +16,7 @@ interface Service {
   price: number;
   status: string;
   visible: boolean;
+  
 }
 
 const initialServices: Service[] = [

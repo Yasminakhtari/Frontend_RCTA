@@ -17,6 +17,7 @@ const getAllCategoriesAndSubCategories = async () => {
         throw error;
       });
   };
+  
   const getAllTennisData = async (token: string) => {
     try {
       const response = await axios.get(`${base_url}/v1/getAllTennis`, {

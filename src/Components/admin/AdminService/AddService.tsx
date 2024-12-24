@@ -456,24 +456,24 @@ const AddService: React.FC = () => {
           />
         </div> */}
 
-<div className="mb-4">
-  <label className="block text-sm font-medium text-gray-700">Image URL</label>
-  <input
-    type="text"
-    placeholder="Enter Image URL"
-    value={imgUrl}
-    onChange={(e) => setImageUrl(e.target.value)}
-    className="w-full border border-gray-300 p-2 rounded mt-1"
-  />
-  {/* Image Preview */}
-  {imgUrl && isValidURL(imgUrl) ? (
-    <div className="mt-2">
-      <img src={imgUrl} alt="Preview" className="h-32 w-32 object-cover rounded" />
-    </div>
-  ) : imgUrl ? (
-    <p className="text-red-500 text-sm mt-1">Invalid image URL</p>
-  ) : null}
-</div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Image URL</label>
+          <input
+            type="text"
+            placeholder="Enter Image URL"
+            value={imgUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            className="w-full border border-gray-300 p-2 rounded mt-1"
+          />
+          {/* Image Preview */}
+          {imgUrl && isValidURL(imgUrl) ? (
+            <div className="mt-2">
+              <img src={imgUrl} alt="Preview" className="h-32 w-32 object-cover rounded" />
+            </div>
+          ) : imgUrl ? (
+            <p className="text-red-500 text-sm mt-1">Invalid image URL</p>
+          ) : null}
+        </div>
 
 
         {/* Name */}
