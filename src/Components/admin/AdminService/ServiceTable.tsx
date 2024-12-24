@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { base_url } from "../../../apiConfig";
 
-// export const base_url = "https://backend-rcta.onrender.com/api/v1";
-// export const base_url = "http://localhost:8082/api/v1";
 
 interface Service {
   id: number;
@@ -26,30 +24,6 @@ const initialServices: Service[] = [
   { id: 4, group: "Products", category: "", subCategory: "", name: "Product Detail Page", duration: 45, price: 150, status: "Active", visible: true },
 ];
 
-// const groupCategoryMap: { [key: string]: { categories: string[]; subCategories: { [key: string]: string[] } } } = {
-//   "About-us": {
-//     categories: ["Coaches"],
-//     subCategories: {
-//       Coaches: ["Owner/Head Coach", "Assistant Coach", "Fitness Coach"],
-//     },
-//   },
-//   "Contact-us": {
-//     categories: [""],
-//     subCategories: {
-//       "": ["Phone No", "Email", "Current Place"],
-//     },
-//   },
-//   "Gallery": {
-//     categories: ["Coaches", "Students", "Achievements"],
-//     subCategories: {
-//       Coaches: [],
-//       Students: [],
-//       Achievements: [],
-//     },
-//   },
-
-//   "Products": { categories: [], subCategories: {} },
-// };
 interface TennisData {
   id: number;
   groups: string | null;
@@ -103,15 +77,20 @@ const ServiceTable: React.FC = () => {
   // const categories = groupFilter !== "All" ? groupCategoryMap[groupFilter]?.categories || [] : [];
   // const subCategories = categoryFilter !== "All" ? groupCategoryMap[groupFilter]?.subCategories[categoryFilter] || [] : [];
 
-  const totalPages = Math.ceil(filteredServices.length / ITEMS_PER_PAGE);
-  const paginatedServices = filteredServices.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  // const totalPages = Math.ceil(filteredServices.length / ITEMS_PER_PAGE);
+  // const paginatedServices = filteredServices.slice(
+  //   (currentPage - 1) * ITEMS_PER_PAGE,
+  //   currentPage * ITEMS_PER_PAGE
+  // );
   let tokenString = localStorage.getItem("token");
   let token = tokenString ? JSON.parse(tokenString) : null;
   console.log("token===>", token);
   const [tableData, setTableData] = useState<TennisData[]>([]);
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedTableData = tableData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const totalPages = Math.ceil(tableData.length / ITEMS_PER_PAGE);
 
   ////////////////////////////////////////
   //For Filter Data//
@@ -236,8 +215,7 @@ const ServiceTable: React.FC = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          // params: { status: validStatus }  // Add status as a query parameter
-        } // Send status as query parameter
+        } 
       );
 
       // Handle success
@@ -480,8 +458,8 @@ const ServiceTable: React.FC = () => {
         <thead>
           <tr className="bg-gray-200">
             <th className="border border-gray-300 p-2">Action</th>
+            <th className="border border-gray-300 p-2">Sl No.</th>
             <th className="border border-gray-300 p-2">Image</th>
-            <th className="border border-gray-300 p-2">Service ID</th>
             <th className="border border-gray-300 p-2">Group</th>
             <th className="border border-gray-300 p-2">Category</th>
             <th className="border border-gray-300 p-2">Sub-Category</th>
@@ -493,7 +471,7 @@ const ServiceTable: React.FC = () => {
         </thead>
 
         <tbody>
-          {tableData.length !== 0 && tableData.map((service) => (
+          {paginatedTableData.map((service, index) => (
             <tr key={service.id} className="hover:bg-gray-100">
               <td className="border border-gray-300 p-2">
 
@@ -534,6 +512,10 @@ const ServiceTable: React.FC = () => {
                 </button> */}
               </td>
               <td className="border border-gray-300 p-2">
+              {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                {/* {service?.id} */}
+                </td>
+              <td className="border border-gray-300 p-2">
               {service.imgUrl ? (
                 <img 
                   src={service.imgUrl} 
@@ -542,7 +524,6 @@ const ServiceTable: React.FC = () => {
                 />
               ) : null}
             </td>
-              <td className="border border-gray-300 p-2">{service?.id}</td>
               <td className="border border-gray-300 p-2">{service?.groups}</td>
               <td className="border border-gray-300 p-2">{service.category}</td>
               <td className="border border-gray-300 p-2">{service.subcategory}</td>
@@ -573,7 +554,7 @@ const ServiceTable: React.FC = () => {
         <button
           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
-          className={`p-2 ${currentPage === totalPages ? "text-gray-500" : "text-blue-500"}`}
+          className={`p-0 ${currentPage === totalPages ? "text-gray-500" : "text-blue-500"}`}
         >
           Next
         </button>
