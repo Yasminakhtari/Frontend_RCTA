@@ -163,10 +163,11 @@ const ServiceTable: React.FC = () => {
           // Extract unique groups from the data
           const uniqueGroups = Array.from(
             new Set(
-              res.data.map((item: { groups: string }) => item.groups.toLowerCase())
+              res.data.map((item: { groups: string }) => item.groups?.toLowerCase())
+              .filter((group: any) => group)
             )
           ).map((group) =>
-            res.data.find((item: { groups: string }) => item.groups.toLowerCase() === group)?.groups
+            res.data.find((item: { groups: string }) => item.groups?.toLowerCase() === group)?.groups
           );
           setGroups(uniqueGroups); // Update the groups state
           console.log(uniqueGroups)
@@ -188,7 +189,6 @@ const ServiceTable: React.FC = () => {
       if (statusFilter !== "All") {
         try {
           const res = await axios.get(
-            // `http://localhost:8082/api/v1/getAllByStatus?status=${statusFilter}`,
             `${base_url}/v1/getAllByStatus`, {
             params: { status: statusFilter },
             headers: { Authorization: `Bearer ${token}` }
