@@ -2,11 +2,15 @@ import { Button, Input } from '@mantine/core';
 import { IconLoader } from '@tabler/icons-react';
 import React, { useState } from 'react';
 
+// interface ImageUploadProps {
+//   onImageUpload: (url: string) => void;
+// }
 interface ImageUploadProps {
-  onImageUpload: (url: string) => void;
+  setImageUrl: (url: string) => void;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
+
+const ImageUpload: React.FC<ImageUploadProps> = ( { setImageUrl }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +54,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
       }
 
       const data = await response.json();
-      onImageUpload(data.secure_url);
+      setImageUrl(data.secure_url);
     } catch (error) {
       console.error("Upload error:", error);
       setError("Failed to upload image. Please try again.");
