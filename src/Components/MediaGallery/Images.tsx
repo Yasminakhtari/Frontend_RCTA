@@ -1,18 +1,21 @@
-import nadal from "../../src/assets/images/nadal.png"
-import image1 from  "../../src/assets/images/tenisplayer1.png"
-import image2 from  "../../src/assets/images/lawn tenis1.png"
-import image3 from  "../../src/assets/images/tenisplayer3.png"
-import image4 from  "../../src/assets/images/tenis2.jpeg"
+// import nadal from "../../src/assets/images/nadal.png"
+// import image1 from  "../../src/assets/images/tenisplayer1.png"
+// import image2 from  "../../src/assets/images/lawn tenis1.png"
+// import image3 from  "../../src/assets/images/tenisplayer3.png"
+// import image4 from  "../../src/assets/images/tenis2.jpeg"
 
 interface ImageProps {
       src: string;
-      alt: string;
+    
+     
     }
     
 
 
-  const Images = ({ src, alt }: ImageProps) => { 
+  const Images = ({ src }: ImageProps) => { 
+    console.log(src)
   return (
+    
 //     <div className='grid gap-4 grid-rows-12 grid-cols-12 lg:h-[600px] px-5 lg:px-20'>
         
 //       <div className="col-span-3 row-span-12 text-white">
@@ -44,7 +47,7 @@ interface ImageProps {
     <img
       className="w-full h-full object-cover rounded-md"
       src={src}
-      alt={alt}
+      alt={src}
       loading="lazy" 
     />
     </div>

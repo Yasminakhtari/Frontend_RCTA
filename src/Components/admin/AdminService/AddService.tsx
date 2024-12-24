@@ -4,6 +4,7 @@ import ReactQuill from "react-quill";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { base_url } from "../../../apiConfig";
+import ImageUpload from "../../../common/ImageUpload";
 
 
 interface Service {
@@ -309,6 +310,7 @@ const AddService: React.FC = () => {
             )
           )
         ]);
+        
       } else {
         // Filter categories based on selected group and exclude null categories
         const filteredCategories = tableData
@@ -319,7 +321,7 @@ const AddService: React.FC = () => {
         setCategories([ ...Array.from(new Set(filteredCategories))]);
       }
     }, [groupFilter,tableData]); // Re-run effect when groupFilter or tableData changes
-    
+    // console.log(imgUrl)
   
 
   return (
@@ -458,13 +460,19 @@ const AddService: React.FC = () => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Image URL</label>
-          <input
+          {/* <input
             type="text"
             placeholder="Enter Image URL"
             value={imgUrl}
             onChange={(e) => setImageUrl(e.target.value)}
             className="w-full border border-gray-300 p-2 rounded mt-1"
-          />
+          /> */}
+           {/* Upload Button */}
+          <div>
+            <ImageUpload 
+           setImageUrl={setImageUrl}
+             />
+          </div>
           {/* Image Preview */}
           {imgUrl && isValidURL(imgUrl) ? (
             <div className="mt-2">
