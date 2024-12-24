@@ -64,9 +64,9 @@ const GalleryTabs = () => {
 
         const coachImagesData = response.data.filter((item:any) => item.category === "coaches" );
         setCoachImages(coachImagesData);
-        const studentImagesData = response.data.filter((item:any) => item.category === "Achievements" );
+        const studentImagesData = response.data.filter((item:any) => item.category === "Students" );
         setStudentImages(studentImagesData)
-        const  achievementImagesData = response.data.filter((item:any) => item.category === "Students" );
+        const  achievementImagesData = response.data.filter((item:any) => item.category === "Achievements" );
         setAchievementImages(achievementImagesData);
       }
       catch(error){
