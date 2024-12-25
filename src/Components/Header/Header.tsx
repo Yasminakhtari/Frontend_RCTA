@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconAdCircle, IconBell, IconSettings, IconMenu2, IconX } from '@tabler/icons-react';
+import { IconAdCircle, IconBell, IconSettings, IconMenu2, IconX, IconShoppingCart } from '@tabler/icons-react';
 import { Avatar, Button, Indicator } from '@mantine/core';
 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -12,8 +12,9 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navigate = useNavigate();
-
-  const user = useSelector((state:any)=>state.user);//It allows functional React components to access and select data from the Redux store. 
+ 
+  const user = useSelector((state:any)=>state.user);//It allows functional React components to access and select data from the Redux store.
+  // const cartItems = useSelector((state) => state.cart.items); // Fetch cart items. 
   console.log("ooook");
   
   return (
@@ -50,6 +51,11 @@ const Header = () => {
           <div className='lg:hidden cursor-pointer' onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <IconX className='h-8 w-8' /> : <IconMenu2 className='h-8 w-8' />}
           </div>
+          <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer'>
+            <Indicator color="blueRibbon.6" offset={5} size={12} withBorder >
+              <IconShoppingCart stroke={1.5} onClick={() => navigate('/cart')} />
+            </Indicator>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -68,6 +74,11 @@ const Header = () => {
                
                 {user ? <ProfileMenu/>:<Link to="/login"><Button variant='filled' color="blueRibbon.9">Login</Button></Link>}
                 <div className='flex gap-3'>
+                <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
+                    <Indicator color="blueRibbon.6" offset={5} size={12} withBorder>
+                      <IconShoppingCart stroke={1.5} onClick={() => navigate('/cart')} />
+                    </Indicator>
+                  </div>
                   <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
                     <Indicator color="blueRibbon.6" offset={5} size={12} withBorder processing>
                       <IconBell stroke={1.5} />
