@@ -24,13 +24,58 @@ type Tournament = {
   phoneNumber: string | null;
 };
 
+interface ImageData  {
+  id: number;
+  groups: string;
+  category: string | null;
+  subcategory: string | null;
+  imgUrl: string | " ";
+  name: string | null;
+  description: string | null;
+  duration: number | null;
+  price: number | null;
+  status: string | null;
+  discount: number;
+  disbegindate: string | null; // Using string to represent ISO date format
+  disenddate: string | null;   // Using string to represent ISO date format
+  disquantity: number | null;
+  phoneNumber: string | null;
+}
 // export const base_url = "https://backend-rcta.onrender.com/api/v1";
 // export const base_url = "http://localhost:8082/api/v1";
 
 const Home1 = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [homePageData,setHomePageData] = useState<Tournament[]>([]);
-    ////////////////////////////////////
+  /////////////For Image///////////////////////
+    const [imageData,setImageData] = useState<ImageData[]>([]);
+  //////////////////////////////////
+    useEffect(()=>{
+      const fetchImageData =  async()=>{
+        try{
+          const response =  await axios.get(`${base_url}/v1/getFilteredTennis`,{
+            params:{
+              group:"Home Page"
+            },
+            headers:{
+              "Content-Type": "application/json",
+            }
+          })
+          console.log("okkkkk " , response.data);
+          setImageData(response.data);
+
+          // const mainImage = response.data.filter()
+        }
+        catch(error){
+          console.log(error);
+
+        }
+      }
+
+      fetchImageData();
+    },[]);
+
+    //////////////////////////////
     useEffect(()=>{
 
       const fetchData = async()=>{

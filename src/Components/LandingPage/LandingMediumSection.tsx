@@ -32,8 +32,6 @@ const staticIcons = [
   IconAward,
 ];
 
-// export const base_url = "https://backend-rcta.onrender.com/api/v1";
-// export const base_url = "http://localhost:8082/api/v1";
 
 
 const LandingMediumSection = () => {
@@ -55,6 +53,7 @@ const LandingMediumSection = () => {
             
           }
         });
+        
          // Clean up descriptions to remove HTML tags
         const cleanedData = response.data.map((item: tennisStepItem) => ({
           ...item,
