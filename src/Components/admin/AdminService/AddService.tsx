@@ -137,13 +137,14 @@ const AddService: React.FC = () => {
           setTableData(res.data);
           const uniqueGroups = Array.from(
             new Set(
-              res.data.map((item: { groups: string }) => item.groups.toLowerCase())
+              res.data.map((item: { groups: string }) => item.groups?.toLowerCase())
+              .filter((group: any) => group)
             )
           ).map((group) =>
-            res.data.find((item: { groups: string }) => item.groups.toLowerCase() === group)?.groups
+            res.data.find((item: { groups: string }) => item.groups?.toLowerCase() === group)?.groups
           );
           setGroups(uniqueGroups); // Update the groups state
-          //console.log(uniqueGroups)
+          console.log(uniqueGroups)
         }
       } catch (error) {
         console.error("Error fetching tennis data:", error);
@@ -217,7 +218,7 @@ const AddService: React.FC = () => {
   useEffect(() => {
     if (id) {
       axios
-        .get(`{base_url}/v1/getTennis/${id}`, {
+        .get(`${base_url}/v1/getTennis/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
