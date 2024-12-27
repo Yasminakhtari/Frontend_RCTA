@@ -11,6 +11,7 @@ import {
   NotificationsNoneOutlined,
   PsychologyOutlined,
   TableBar,
+  Link,
 } from "@mui/icons-material";
 
 const AdminSidebar = () => {
@@ -49,10 +50,12 @@ const AdminSidebar = () => {
                 <Dashboard className="mr-2 text-xl" />
                 {sidebarOpen && <span>Dashboard</span>}
               </div>
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
-                <TableBar className="mr-2 text-xl" />
-                {sidebarOpen && <span>Service Table</span>}
-              </div>
+              <Link to="/servicetable">
+                <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+                  <TableBar className="mr-2 text-xl" />
+                  {sidebarOpen && <span>Service Table</span>}
+                </div>
+              </Link>
             </div>
           </li>
 
