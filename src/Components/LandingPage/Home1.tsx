@@ -41,34 +41,34 @@ interface ImageData  {
   disquantity: number | null;
   phoneNumber: string | null;
 }
-// export const base_url = "https://backend-rcta.onrender.com/api/v1";
-// export const base_url = "http://localhost:8082/api/v1";
+
 
 const Home1 = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [homePageData,setHomePageData] = useState<Tournament[]>([]);
   /////////////For Image///////////////////////
-    const [imageData,setImageData] = useState<ImageData[]>([]);
+  const [mainImage,setMainImage] = useState<ImageData | null>(null);
   //////////////////////////////////
     useEffect(()=>{
       const fetchImageData =  async()=>{
         try{
           const response =  await axios.get(`${base_url}/v1/getFilteredTennis`,{
             params:{
-              group:"Home Page"
+              groups:"Home Page"
             },
             headers:{
               "Content-Type": "application/json",
             }
           })
           console.log("okkkkk " , response.data);
-          setImageData(response.data);
-
-          // const mainImage = response.data.filter()
+          const mainImage = response.data.find((item:any)=>
+            item.category === "Gallery" && item.subcategory === "Main Image"
+          )
+          console.log(mainImage);
+          setMainImage(mainImage || null);   
         }
         catch(error){
           console.log(error);
-
         }
       }
 
@@ -161,7 +161,7 @@ const Home1 = () => {
           <img
             className="rounded-lg object-cover w-full lg:w-auto"
             // src="/tennis.png"
-            src={raphel}
+            src={mainImage?.imgUrl || "/tennis.png" }
             alt="Tennis club"
           />
           

@@ -14,7 +14,7 @@ const Subscribe = () => {
                 variant="unstyled"
                 // size="xl"
             />
-            <Button className="rounded-lg lg:text-lg text-xs font-serif" color="blueRibbon">Subscribe</Button>
+            <Button className="rounded-lg lg:text-lg text-xs font-serif !bg-gray-900" color="blueRibbon">Subscribe</Button>
         </div>
     </div>
   );

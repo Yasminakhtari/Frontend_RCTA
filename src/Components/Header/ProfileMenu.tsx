@@ -57,7 +57,7 @@ const ProfileMenu = () => {
   return (
     <Menu shadow="md" width={200} opened={opened} onChange={setOpened }>
       <Menu.Target>
-        <Button>
+        <Button className='!text-gray-200 !bg-gray-900'>
             <div className='flex gap-2  cursor-pointer items-center'>
             {/* <div className='hidden lg:flex gap-2 items-center'> */}
               
