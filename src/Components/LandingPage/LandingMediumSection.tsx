@@ -32,8 +32,6 @@ const staticIcons = [
   IconAward,
 ];
 
-// export const base_url = "https://backend-rcta.onrender.com/api/v1";
-// export const base_url = "http://localhost:8082/api/v1";
 
 
 const LandingMediumSection = () => {
@@ -55,6 +53,7 @@ const LandingMediumSection = () => {
             
           }
         });
+        
          // Clean up descriptions to remove HTML tags
         const cleanedData = response.data.map((item: tennisStepItem) => ({
           ...item,
@@ -87,11 +86,11 @@ const LandingMediumSection = () => {
         {/* Left Section */}
         <div className="relative md:w-[28rem] w-full mb-8 md:mb-0">
           <img className="w-full h-auto" src="/lawntenis.png" alt="Tennis Player" />
-          <div className="w-40 flex flex-col items-center gap-1 border border-blueRibbon-900 rounded-xl py-3 px-1 backdrop-blur-md absolute top-[60%] md:top-[18%] right-0">
+          {/* <div className="w-40 flex flex-col items-center gap-1 border border-blueRibbon-900 rounded-xl py-3 px-1 backdrop-blur-md absolute top-[60%] md:top-[18%] right-0">
             <Avatar className="h-6 w-6 md:h-16 md:w-16" src="player-avatar.jpg" alt="Player Avatar" />
             <div className="md:text-sm  text-xs font-semibold text-mine-shaft-100 text-center">Create Your Profile</div>
             <div className="text-xs text-mine-shaft-200">75% Completed</div>
-          </div>
+          </div> */}
         </div>
 
         {/* Right Section */}
@@ -101,7 +100,7 @@ const LandingMediumSection = () => {
             return (
               <div key={step.id} className="flex items-start gap-4 mb-6">
                 {/* Icon Section */}
-                <div className="p-3 bg-blueRibbon-300 rounded-full flex items-center justify-center">
+                <div className="p-3 bg-blueRibbon-900 rounded-full flex items-center justify-center">
                   <Icon className="text-white h-6 w-6" />
                 </div>
 

@@ -213,7 +213,7 @@ const ContactUs: FC = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 text-lg rounded-md transition duration-300"
+                  className="!bg-gray-900 hover:bg-blue-700 text-white font-bold py-2 px-6 text-lg rounded-md transition duration-300"
                 >
                   {loading ? 'Submitting...' : 'Submit'}
                 </button>
@@ -222,19 +222,19 @@ const ContactUs: FC = () => {
 
             {/* Contact Info */}
             
-              <div className="mt-6 text-center">
+              <div className="mt-6  flex flex-col  items-start">
                   {contactData &&
                   (
                     <>
                         <>
                             <p className="text-lg sm:text-xl mb-2">
-                              Email: {contactData.find(item => item.subcategory === "Email")?.name || "Not available"}
+                              <div className='flex justify-center'><div className='!text-gray-900 mr-3 font-bold'>Email:</div> <div>{contactData.find(item => item.subcategory === "Email")?.name || "Not available"}</div></div>
                             </p>
                             <p className="text-lg sm:text-xl mb-2">
-                              Phone: {contactData.find(item => item.subcategory === "Phone")?.name || "Not available"}
+                            <div className='flex justify-center'><div className='!text-gray-900 mr-3 font-bold'>Phone:</div> <div>{contactData.find(item => item.subcategory === "Phone")?.name || "Not available"}</div></div>
                             </p>
                             <p className="text-lg sm:text-xl mb-4">
-                              Based in: {contactData.find(item => item.subcategory === "Location")?.name || "Not available"}
+                            <div className='flex justify-center items-center'><div className='!text-gray-900 mr-3 font-bold'>Based In:</div> <div>{contactData.find(item => item.subcategory === "Location")?.name || "Not available"}</div></div>
                             </p>
                         </>
                     </>

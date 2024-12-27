@@ -463,7 +463,7 @@ const ServiceTable: React.FC = () => {
             <th className="border border-gray-300 p-2">Group</th>
             <th className="border border-gray-300 p-2">Category</th>
             <th className="border border-gray-300 p-2">Sub-Category</th>
-            <th className="border border-gray-300 p-2">Name</th>
+            <th className="border border-gray-300 p-2">Text</th>
             <th className="border border-gray-300 p-2">Duration</th>
             <th className="border border-gray-300 p-2">Price</th>
             <th className="border border-gray-300 p-2">Status</th>

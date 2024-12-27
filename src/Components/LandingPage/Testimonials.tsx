@@ -1,9 +1,10 @@
 import React from 'react';
-import { Avatar, Rating } from "@mantine/core";
+import { Avatar, Button, Rating } from "@mantine/core";
 import { testimonials } from "../../Data/Data";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
+import { Link } from 'react-router-dom';
 
 const Testimonials = () => {
   const settings = {
@@ -23,11 +24,11 @@ const Testimonials = () => {
         What <span className="text-blueRibbon-950">User</span> Says about us?
       </div>
 
-      {/* Card Section */}
+      {/* Card Section for larger screens */}
       <div className="hidden md:flex gap-3 justify-evenly">
         {testimonials.map((items, index) => (
           <div key={index} className="flex flex-col gap-3 w-[23%] border-blueRibbon-900 p-3 border rounded-xl mt-10">
-            <div className="flex flex-col lg:flex-row gap-2 items-center ">
+            <div className="flex flex-col lg:flex-row gap-2 items-center">
               <div>
                 <Avatar className="!h-14 !w-14" src="iranian-8594205_1280.jpg" alt={items.name} />
                 <div>
@@ -41,6 +42,15 @@ const Testimonials = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* View All Reviews Button */}
+      <div className="text-center mt-6">
+        <Link to="/testimonial">
+          <Button className='flex mt-3 items-center justify-center cursor-pointer !text-gray-200 !bg-gray-900 px-6 py-2'>
+            View All Reviews ⭐
+          </Button>       
+        </Link>
       </div>
 
       {/* Carousel for Small Screens */}

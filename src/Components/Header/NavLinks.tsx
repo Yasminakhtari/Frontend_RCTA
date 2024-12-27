@@ -13,11 +13,12 @@ const NavLinks = ({onClick=()=>{}}) => { // Accept the onClick prop
         // {name:"Sign Up",url:"signup"},
         {name:"Gallery" , url:"gallery"},
         {name:"Contact Us",url:"contact-us"},
-        {name:"Testimonials",url:"testimonial"},
+        // {name:"Testimonials",url:"testimonial"},
         //  {name:"ServiceTable",url:"servicetable"},
         {name:"Product",url:"product"},
-        {name:"Classes",url:"classes"}
+        {name:"Classes",url:"classes"},
         // {name:"Products",url:"products"}
+        // {name:"Admin",url:"admin"}
     ];
 
     const location = useLocation();

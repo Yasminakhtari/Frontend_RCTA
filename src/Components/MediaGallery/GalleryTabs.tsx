@@ -53,7 +53,7 @@ const GalleryTabs = () => {
       try{
         const response = await axios.get(`${base_url}/v1/getFilteredTennis`,{
           params:{
-            group : "Gallery"
+            groups : "Gallery"
           },
           headers :{
             "Content-Type": "application/json",
