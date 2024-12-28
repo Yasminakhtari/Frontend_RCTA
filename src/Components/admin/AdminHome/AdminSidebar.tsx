@@ -11,118 +11,124 @@ import {
   NotificationsNoneOutlined,
   PsychologyOutlined,
   TableBar,
-  Link,
 } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 const AdminSidebar = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);  // State for toggling sidebar
+  const [sidebarOpen, setSidebarOpen] = useState(true); 
 
   return (
-    <div className="flex h-screen bg-gray-900 text-gray-200">
+    <div className="flex h-screen">
       {/* Sidebar Container */}
-      <div className={`flex flex-col p-4 bg-gray-900 text-gray-200 transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-64' : 'w-16'} md:w-64`}>
-        {/* Sidebar Logo */}
-        <div className="text-center mb-8">
-          <div className={`flex justify-center items-center mb-4 ${sidebarOpen ? 'w-12 h-12' : 'w-10 h-10'}`}>
-            <img
-              src="https://your-logo-url.com/logo.png" // Your logo URL here
-              alt="Tennis Club"
-              className={`transition-all duration-300 ${sidebarOpen ? 'w-16 h-16' : 'w-12 h-12'}`}
-            />
-          </div>
-          {sidebarOpen && <div className="text-2xl font-bold text-blue-400">Tennis Club</div>}
-        </div>
-
-        {/* Hamburger Menu for Mobile */}
-        <div className="md:hidden flex justify-between mb-6">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-white text-3xl">
+      <div
+        className={`bg-gray-900 text-gray-200 flex flex-col transition-all duration-300 ease-in-out ${
+          sidebarOpen ? 'w-64' : 'w-16'
+        }`}
+      >
+        {/* Sidebar Header */}
+        <div className="flex items-center justify-between p-4">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="text-gray-200 text-3xl focus:outline-none md:hidden"
+            aria-label="Toggle Sidebar"
+          >
             {sidebarOpen ? '×' : '☰'}
           </button>
         </div>
 
         {/* Sidebar Items */}
-        <ul className="space-y-6">
+        <nav className="flex-1 px-2 space-y-4 overflow-y-auto">
           {/* Main Section */}
-          <li>
+          <div>
             <p className="text-xs uppercase text-gray-400 mb-2">Main</p>
-            <div className="space-y-2">
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+            <Link to="/" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
                 <Dashboard className="mr-2 text-xl" />
                 {sidebarOpen && <span>Dashboard</span>}
               </div>
-              <Link to="/servicetable">
-                <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
-                  <TableBar className="mr-2 text-xl" />
-                  {sidebarOpen && <span>Service Table</span>}
-                </div>
-              </Link>
-            </div>
-          </li>
+            </Link>
+            <Link to="/servicetable" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
+                <TableBar className="mr-2 text-xl" />
+                {sidebarOpen && <span>Service Table</span>}
+              </div>
+            </Link>
+          </div>
 
           {/* Management Section */}
-          <li>
+          <div>
             <p className="text-xs uppercase text-gray-400 mb-2">Management</p>
-            <div className="space-y-2">
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+            <Link to="/members" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
                 <Group className="mr-2 text-xl" />
                 {sidebarOpen && <span>Members</span>}
               </div>
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+            </Link>
+            <Link to="/players" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
                 <SportsTennis className="mr-2 text-xl" />
                 {sidebarOpen && <span>Players</span>}
               </div>
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+            </Link>
+            <Link to="/tournaments" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
                 <Event className="mr-2 text-xl" />
                 {sidebarOpen && <span>Tournaments</span>}
               </div>
-            </div>
-          </li>
+            </Link>
+          </div>
 
           {/* Useful Section */}
-          <li>
+          <div>
             <p className="text-xs uppercase text-gray-400 mb-2">Useful</p>
-            <div className="space-y-2">
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+            <Link to="/stats" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
                 <InsertChart className="mr-2 text-xl" />
                 {sidebarOpen && <span>Stats</span>}
               </div>
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+            </Link>
+            <Link to="/notifications" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
                 <NotificationsNoneOutlined className="mr-2 text-xl" />
                 {sidebarOpen && <span>Notifications</span>}
               </div>
-            </div>
-          </li>
+            </Link>
+          </div>
 
           {/* Service Section */}
-          <li>
+          <div>
             <p className="text-xs uppercase text-gray-400 mb-2">Service</p>
-            <div className="space-y-2">
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+            <Link to="/logs" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
                 <PsychologyOutlined className="mr-2 text-xl" />
                 {sidebarOpen && <span>Logs</span>}
               </div>
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+            </Link>
+            <Link to="/settings" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
                 <SettingsApplicationsOutlined className="mr-2 text-xl" />
                 {sidebarOpen && <span>Settings</span>}
               </div>
-            </div>
-          </li>
+            </Link>
+          </div>
 
           {/* User Section */}
-          <li>
+          <div>
             <p className="text-xs uppercase text-gray-400 mb-2">User</p>
-            <div className="space-y-2">
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+            <Link to="/profile" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
                 <AccountCircleOutlined className="mr-2 text-xl" />
                 {sidebarOpen && <span>Profile</span>}
               </div>
-              <div className="flex items-center p-2 hover:bg-blue-500 hover:text-white rounded-md cursor-pointer">
+            </Link>
+            <Link to="/logout" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
                 <ExitToApp className="mr-2 text-xl" />
                 {sidebarOpen && <span>Logout</span>}
               </div>
-            </div>
-          </li>
-        </ul>
+            </Link>
+          </div>
+        </nav>
       </div>
     </div>
   );

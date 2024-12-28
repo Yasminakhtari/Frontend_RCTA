@@ -7,9 +7,8 @@ import {
   ShoppingCartOutlined,
 } from "@mui/icons-material";
 
-// Define the types for the props
 interface WidgetProps {
-  type: "user" | "order" | "earning" | "balance"; // Possible types
+  type: "user" | "order" | "earning" | "balance"; 
 }
 
 const Widget: React.FC<WidgetProps> = ({ type }) => {
@@ -19,7 +18,7 @@ const Widget: React.FC<WidgetProps> = ({ type }) => {
   const amount = 100;
   const diff = 20;
 
-  // Switch case based on the 'type' prop to handle the data and icons
+  
   switch (type) {
     case "user":
       data = {
