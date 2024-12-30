@@ -1,21 +1,23 @@
-
 import React, { useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useCart } from "../productpage/CartContext";
 
 // Define a list of courses
 const courses = [
-  { id: "1", title: "Tennis Foundations (for beginners)" },
-  { id: "2", title: "Rally Ready (for intermediate)" },
-  { id: "3", title: "Game Mastery (for advanced)" },
-  { id: "4", title: "Swing and Sweat (cardio-Focused)" },
-  { id: "5", title: "Group Clinic (for adults)" },
-  { id: "6", title: "Junior Aces (for kids & teens)" },
-  { id: "7", title: "Private Lesson" },
-  { id: "8", title: "Semi-Private Lesson" },
+  { id: "1", title: "Tennis Foundations (for beginners)", price: 20 },
+  { id: "2", title: "Rally Ready (for intermediate)", price: 25 },
+  { id: "3", title: "Game Mastery (for advanced)", price: 30 },
+  { id: "4", title: "Swing and Sweat (cardio-Focused)", price: 15 },
+  { id: "5", title: "Group Clinic (for adults)", price: 18 },
+  { id: "6", title: "Junior Aces (for kids & teens)", price: 22 },
+  { id: "7", title: "Private Lesson", price: 50 },
+  { id: "8", title: "Semi-Private Lesson", price: 40 },
 ];
 
 const CoursePage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Retrieve course ID from URL
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
   const sessionRef = useRef<HTMLDivElement | null>(null);
 
   // Find the course by ID
@@ -37,6 +39,18 @@ const CoursePage: React.FC = () => {
     );
   }
 
+  const handleRegister = () => {
+    addToCart({
+      id: Number(course.id),
+      name: course.title,
+      price: course.price,
+      description: "",
+      category: "",
+      image: "",
+    });
+    navigate("/cart"); // Redirect to the cart page
+  };
+
   return (
     <div className="bg-white-500 min-h-screen p-8">
       {/* Breadcrumb Navigation */}
@@ -57,12 +71,12 @@ const CoursePage: React.FC = () => {
         <button className="px-4 py-2 text-gray-900 border-b-2 border-blue-500 font-medium focus:outline-none">
           Description
         </button>
-        {/* <button
+        <button
           className="px-4 py-2 text-gray-500 hover:text-gray-900 focus:outline-none"
           onClick={scrollToSessions}
         >
           Sessions
-        </button> */}
+        </button>
       </div>
 
       {/* Course Description */}
@@ -89,6 +103,7 @@ const CoursePage: React.FC = () => {
                 <th className="border border-gray-300 px-4 py-2">End Date</th>
                 <th className="border border-gray-300 px-4 py-2">Days</th>
                 <th className="border border-gray-300 px-4 py-2">Time</th>
+                <th className="border border-gray-300 px-4 py-2">Price</th>
                 <th className="border border-gray-300 px-4 py-2">Register</th>
               </tr>
             </thead>
@@ -99,8 +114,12 @@ const CoursePage: React.FC = () => {
                 <td className="border border-gray-300 px-4 py-2">Apr 30th, 2025</td>
                 <td className="border border-gray-300 px-4 py-2">Mon, Wed, Fri</td>
                 <td className="border border-gray-300 px-4 py-2">5pm – 7pm</td>
+                <td className="border border-gray-300 px-4 py-2"> $20.0</td>
                 <td className="border border-gray-300 px-4 py-2">
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                    onClick={handleRegister}
+                  >
                     Register
                   </button>
                 </td>
@@ -111,8 +130,12 @@ const CoursePage: React.FC = () => {
                 <td className="border border-gray-300 px-4 py-2">Apr 30th, 2025</td>
                 <td className="border border-gray-300 px-4 py-2">Tues, Thurs</td>
                 <td className="border border-gray-300 px-4 py-2">5pm – 8pm</td>
+                <td className="border border-gray-300 px-4 py-2"> $20.0</td>
                 <td className="border border-gray-300 px-4 py-2">
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                    onClick={handleRegister}
+                  >
                     Register
                   </button>
                 </td>
@@ -123,8 +146,12 @@ const CoursePage: React.FC = () => {
                 <td className="border border-gray-300 px-4 py-2">Apr 30th, 2025</td>
                 <td className="border border-gray-300 px-4 py-2">Sat, Sun</td>
                 <td className="border border-gray-300 px-4 py-2">9am – 12pm</td>
+                <td className="border border-gray-300 px-4 py-2">$20.0</td>
                 <td className="border border-gray-300 px-4 py-2">
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                    onClick={handleRegister}
+                  >
                     Register
                   </button>
                 </td>
@@ -138,6 +165,3 @@ const CoursePage: React.FC = () => {
 };
 
 export default CoursePage;
-
-
-

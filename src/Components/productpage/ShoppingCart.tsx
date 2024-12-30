@@ -1,9 +1,11 @@
 
 import React from "react";
 import { useCart } from "./CartContext";
+import { useNavigate } from "react-router-dom";
 
 const ShoppingCart: React.FC = () => {
   const { cart, removeFromCart, clearCart, setCart } = useCart();
+  const navigate = useNavigate();
 
   const handleQuantityChange = (id: number, amount: number) => {
     setCart((prevCart) =>
@@ -15,28 +17,21 @@ const ShoppingCart: React.FC = () => {
     );
   };
 
-  const total = cart.reduce(
-    (sum, product) => sum + product.price * product.quantity,
-    0
-  );
+  const total = cart.reduce((sum, product) => sum + product.price * product.quantity, 0);
 
   return (
+    // <div className="container mx-auto p-4 sm:p-8 mt-16">
     <div className="flex flex-col min-h-screen bg-gray-100 p-8 sm:p-16 mt-10">
-      <h1 className="text-2xl sm:text-4xl font-bold text-center mb-6">Shopping Cart</h1>
+      <h1 className="text-2xl font-bold mb-6">Shopping Cart</h1>
       {cart.length === 0 ? (
-        <p className="text-center text-gray-600">Your cart is empty.</p>
+        <p>Your cart is empty.</p>
       ) : (
-        <>
+        <div>
           {cart.map((product) => (
-            <div key={product.id} className="flex justify-between items-center mb-4 border-b pb-4">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-16 h-16 rounded"
-              />
+            <div key={product.id} className="mb-4 flex justify-between items-center">
               <div>
-                <h2 className="font-bold">{product.name}</h2>
-                <p>€{product.price.toFixed(2)}</p>
+                <h2 className="text-lg font-semibold">{product.name}</h2>
+                <p>Price: ${product.price.toFixed(2)}</p>
               </div>
               <div>
                 <button onClick={() => handleQuantityChange(product.id, -1)}>-</button>
@@ -44,25 +39,26 @@ const ShoppingCart: React.FC = () => {
                 <button onClick={() => handleQuantityChange(product.id, 1)}>+</button>
               </div>
               <button
+                className="bg-red-500 text-white px-4 py-2 rounded"
                 onClick={() => removeFromCart(product.id)}
-                className="text-red-600"
               >
                 Remove
               </button>
             </div>
           ))}
-          <div className="mt-4 flex justify-between items-center">
-            <p className="font-bold">Total: €{total.toFixed(2)}</p>
-            <div>
-              <button onClick={clearCart} className="mr-4 bg-blue-600 text-white px-4 py-2 rounded ">
-                Clear Cart
-              </button>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded">
-                Checkout
-              </button>
-            </div>
+          <div className="mt-6">
+            <h2 className="text-xl font-bold">Total: ${total.toFixed(2)}</h2>
+            <button
+              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 mt-4"
+              onClick={() => {
+                clearCart();
+                navigate("/checkout");
+              }}
+            >
+              Checkout
+            </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
