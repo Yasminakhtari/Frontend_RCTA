@@ -57,11 +57,11 @@ const AboutUs = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${base_url}/v1/getFilteredTennis`, {
-          params: { group: "About-Us" },
+          params: { group: "About Us" },
           headers: { "Content-Type": "application/json" },
         });
-        const coachesData = response.data.filter((item: any) => item.category === "coach");
-        const journeyData = response.data.filter((item: any) => item.category === "Journey");
+        const coachesData = response.data.filter((item: any) => item.category === "Meet Our Coaches");
+        const journeyData = response.data.filter((item: any) => item.category === "Our Journey");
         setCoaches(coachesData);
         setJourney(journeyData);
 
@@ -163,7 +163,9 @@ const AboutUs = () => {
         </Title>
         <div className="mx-auto max-w-2xl">
           <Timeline active={journeys.length - 1} bulletSize={32} lineWidth={2}>
-            {journeys.map((event: any, index) => (
+            {journeys
+            .sort((a: any, b: any) => b.subcategory - a.subcategory) 
+            .map((event: any, index) => (
               <Timeline.Item
                 key={index}
                 title={

@@ -55,7 +55,7 @@ const ContactUs: FC = () => {
       try {
         const response = await axios.get(`${base_url}/v1/getFilteredTennis`, {
           params: {
-            group: "Contact-Us"
+            group: "Contact Us"
 
           },
           headers: {
