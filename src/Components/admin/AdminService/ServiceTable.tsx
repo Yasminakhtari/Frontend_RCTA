@@ -14,7 +14,7 @@ interface Service {
   price: number;
   status: string;
   visible: boolean;
-  
+
 }
 
 const initialServices: Service[] = [
@@ -63,15 +63,24 @@ const ServiceTable: React.FC = () => {
   const [group, setGroup] = useState('');
   const [category, setCategory] = useState('');
   const [subcategory, setSubcategory] = useState('');
+  const [tableData, setTableData] = useState<TennisData[]>([]);
+  const filteredServices = tableData.filter((service) => {
+    const searchTextLower = searchText.toLowerCase();
 
-  const filteredServices = services.filter((service) => {
-    const matchesSearch = service.name.toLowerCase().includes(searchText.toLowerCase());
-    const matchesGroup = groupFilter === "All" || service.group === groupFilter;
+    const matchesSearch =
+      (service.name && service.name.toLowerCase().includes(searchTextLower)) ||
+      (service.groups && service.groups.toLowerCase().includes(searchTextLower)) ||
+      (service.category && service.category.toLowerCase().includes(searchTextLower)) ||
+      (service.subcategory && service.subcategory.toLowerCase().includes(searchTextLower));
+
+    const matchesGroup = groupFilter === "All" || service.groups === groupFilter;
     const matchesCategory = categoryFilter === "All" || service.category === categoryFilter;
-    const matchesSubCategory = subCategoryFilter === "All" || service.subCategory === subCategoryFilter;
+    const matchesSubCategory = subCategoryFilter === "All" || service.subcategory === subCategoryFilter;
     const matchesStatus = statusFilter === "All" || service.status === statusFilter;
+
     return matchesSearch && matchesGroup && matchesCategory && matchesSubCategory && matchesStatus;
   });
+
 
 
   // const categories = groupFilter !== "All" ? groupCategoryMap[groupFilter]?.categories || [] : [];
@@ -85,19 +94,19 @@ const ServiceTable: React.FC = () => {
   let tokenString = localStorage.getItem("token");
   let token = tokenString ? JSON.parse(tokenString) : null;
   console.log("token===>", token);
-  const [tableData, setTableData] = useState<TennisData[]>([]);
+
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedTableData = tableData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedTableData = filteredServices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const totalPages = Math.ceil(tableData.length / ITEMS_PER_PAGE);
 
   ////////////////////////////////////////
   //For Filter Data//
   useEffect(() => {
-    const fetchFilteredData = async() => {
-      try{
-        const response = await axios.get(`${base_url}/v1/getFilteredTennis`,{
+    const fetchFilteredData = async () => {
+      try {
+        const response = await axios.get(`${base_url}/v1/getFilteredTennis`, {
           params: {
             group: groupFilter !== "All" ? groupFilter : null,
             category: categoryFilter !== "All" ? categoryFilter : null,
@@ -113,15 +122,17 @@ const ServiceTable: React.FC = () => {
         console.log(response.data)
         setTableData(response.data);//set The table data
       }
-      catch(error){
-        console.error("Error Fetching Filtered Tennis Data:" ,error);
+      catch (error) {
+        console.error("Error Fetching Filtered Tennis Data:", error);
       }
 
     };
     fetchFilteredData();
   }, [groupFilter, categoryFilter, subCategoryFilter, statusFilter])// Re-fetch when filters change
 
-
+  useEffect(() => {
+    setCurrentPage(1); // Reset to first page when search text or any filter changes
+  }, [searchText, groupFilter, categoryFilter, subCategoryFilter, statusFilter]);
 
 
   //////////////////////////////////////
@@ -143,7 +154,7 @@ const ServiceTable: React.FC = () => {
           const uniqueGroups = Array.from(
             new Set(
               res.data.map((item: { groups: string }) => item.groups?.toLowerCase())
-              .filter((group: any) => group)
+                .filter((group: any) => group)
             )
           ).map((group) =>
             res.data.find((item: { groups: string }) => item.groups?.toLowerCase() === group)?.groups
@@ -215,14 +226,12 @@ const ServiceTable: React.FC = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        } 
+        }
       );
 
       // Handle success
       console.log('Status updated:', response.data);
       alert("Service status updated to" + " " + response.data.data.status)
-      // Optionally, navigate to the service detail page
-      // navigate(`/view-service/${id}`);
       // Optionally, update the status in the state to reflect the change immediately
       // Update the status in the table data to reflect the change immediately
       setTableData(prevData =>
@@ -316,13 +325,13 @@ const ServiceTable: React.FC = () => {
           "Content-Type": "application/json",
         },
       });
-  
+
       if (response.status === 200) {
         // Remove the deleted service from the table data
         setTableData((prevData) =>
           prevData.filter((service) => service.id !== serviceId)
         );
-  
+
         // Show a success notification
         alert("Service deleted successfully!");
       }
@@ -491,39 +500,27 @@ const ServiceTable: React.FC = () => {
                 </button>
 
                 <button
-                // className="mr-4"
-                title="delete"
-                style={{ color: 'red', fontSize: '1rem' }}
-                onClick={() => deleteServiceData(service.id)}
+                  // className="mr-4"
+                  title="delete"
+                  style={{ color: 'red', fontSize: '1rem' }}
+                  onClick={() => deleteServiceData(service.id)}
                 >
-                🗑️
+                  🗑️
                 </button>
-                {/* <button
-                  onClick={() =>
-                    setServices((prevServices) =>
-                      prevServices.map((s) =>
-                        s.id === service.id ? { ...s, visible: !s.visible } : s
-                      )
-                    )
-                  }
-                  className={`text-${service.visible ? "green" : "red"}-500`}
-                >
-                  {service.visible ? "Hide" : "Show"}
-                </button> */}
               </td>
               <td className="border border-gray-300 p-2">
-              {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                 {/* {service?.id} */}
-                </td>
+              </td>
               <td className="border border-gray-300 p-2">
-              {service.imgUrl ? (
-                <img 
-                  src={service.imgUrl} 
-                  alt="service" 
-                  style={{ width: '50px', height: '50px', borderRadius: '0%' }} 
-                />
-              ) : null}
-            </td>
+                {service.imgUrl ? (
+                  <img
+                    src={service.imgUrl}
+                    alt="service"
+                    style={{ width: '50px', height: '50px', borderRadius: '0%' }}
+                  />
+                ) : null}
+              </td>
               <td className="border border-gray-300 p-2">{service?.groups}</td>
               <td className="border border-gray-300 p-2">{service.category}</td>
               <td className="border border-gray-300 p-2">{service.subcategory}</td>
@@ -537,7 +534,7 @@ const ServiceTable: React.FC = () => {
       </table>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center mt-4">
+      {/* <div className="flex justify-between items-center mt-4">
 
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -558,7 +555,39 @@ const ServiceTable: React.FC = () => {
         >
           Next
         </button>
+      </div> */}
+      <div className="flex justify-center items-center mt-4 space-x-2">
+        {/* Previous Button */}
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className={`px-3 py-1 rounded ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-blue-500 text-white"}`}
+        >
+          Prev
+        </button>
+
+        {/* Page Numbers */}
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={`px-3 py-1 rounded ${currentPage === page ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+              }`}
+          >
+            {page}
+          </button>
+        ))}
+
+        {/* Next Button */}
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className={`px-3 py-1 rounded ${currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-blue-500 text-white"}`}
+        >
+          Next
+        </button>
       </div>
+
     </div>
   );
 };
