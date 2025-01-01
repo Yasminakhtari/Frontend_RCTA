@@ -5,7 +5,7 @@ import {
   MonetizationOnOutlined,
   PersonOutlined,
   ShoppingCartOutlined,
-} from "@mui/icons-material";
+}from "@mui/icons-material";
 
 interface WidgetProps {
   type: "user" | "order" | "earning" | "balance"; 
