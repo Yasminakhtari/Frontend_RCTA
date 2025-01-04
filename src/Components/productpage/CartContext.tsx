@@ -1,22 +1,29 @@
-import React, { createContext, useState, ReactNode, useContext } from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 import { Product } from "./ProductData";
 
-interface CartProduct extends Product {
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  category: string;
+  image: string;
   quantity: number; // Add quantity to track product count in the cart
 }
 
 interface CartContextType {
-  cart: CartProduct[];
+  cart: CartItem[];
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
   clearCart: () => void;
-  setCart: React.Dispatch<React.SetStateAction<CartProduct[]>>;
+  setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  isBooked: (id: number) => boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [cart, setCart] = useState<CartProduct[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -38,8 +45,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCart([]);
   };
 
+  const isBooked = (id: number) => cart.some((cartItem) => cartItem.id === id);
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, setCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, setCart, isBooked }}>
       {children}
     </CartContext.Provider>
   );
@@ -52,4 +61,3 @@ export const useCart = (): CartContextType => {
   }
   return context;
 };
-

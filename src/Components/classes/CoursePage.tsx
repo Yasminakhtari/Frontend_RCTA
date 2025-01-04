@@ -17,7 +17,7 @@ const courses = [
 const CoursePage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Retrieve course ID from URL
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { addToCart, isBooked } = useCart();
   const sessionRef = useRef<HTMLDivElement | null>(null);
 
   // Find the course by ID
@@ -40,15 +40,17 @@ const CoursePage: React.FC = () => {
   }
 
   const handleRegister = () => {
-    addToCart({
-      id: Number(course.id),
-      name: course.title,
-      price: course.price,
-      description: "",
-      category: "",
-      image: "",
-    });
-    navigate("/cart"); // Redirect to the cart page
+    if (!isBooked(Number(course.id))) {
+      addToCart({
+        id: Number(course.id),
+        name: course.title,
+        price: course.price,
+        description: "An amazing course to boost your skills!",
+        category: "Sports",
+        image: "/path/to/image", // Replace with actual image path
+      });
+      navigate("/cart");
+    }
   };
 
   return (
@@ -61,7 +63,7 @@ const CoursePage: React.FC = () => {
       {/* Course Title Section */}
       <header className="mb-8 mt-16">
         <h1 className="text-4xl font-extrabold text-gray-900">{course.title}</h1>
-        <p className="text-white-700 text-lg mt-2">
+        <p className="text-gray-700 text-lg mt-2">
           Learn more about {course.title} and its sessions below.
         </p>
       </header>
@@ -114,46 +116,77 @@ const CoursePage: React.FC = () => {
                 <td className="border border-gray-300 px-4 py-2">Apr 30th, 2025</td>
                 <td className="border border-gray-300 px-4 py-2">Mon, Wed, Fri</td>
                 <td className="border border-gray-300 px-4 py-2">5pm – 7pm</td>
-                <td className="border border-gray-300 px-4 py-2"> $20.0</td>
+                <td className="border border-gray-300 px-4 py-2">${course.price.toFixed(2)}</td>
                 <td className="border border-gray-300 px-4 py-2">
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                    onClick={handleRegister}
-                  >
-                    Register
-                  </button>
+                  {isBooked(Number(course.id)) ? (
+                    <button
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md cursor-not-allowed"
+                      disabled
+                    >
+                      Booked
+                    </button>
+                  ) : (
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                      onClick={handleRegister}
+                    >
+                      Register
+                    </button>
+                  )}
                 </td>
               </tr>
+            </tbody>
+            <tbody>
               <tr>
                 <td className="border border-gray-300 px-4 py-2">Rafael Carbungco</td>
                 <td className="border border-gray-300 px-4 py-2">Jan 1st, 2025</td>
                 <td className="border border-gray-300 px-4 py-2">Apr 30th, 2025</td>
-                <td className="border border-gray-300 px-4 py-2">Tues, Thurs</td>
-                <td className="border border-gray-300 px-4 py-2">5pm – 8pm</td>
-                <td className="border border-gray-300 px-4 py-2"> $20.0</td>
+                <td className="border border-gray-300 px-4 py-2">Mon, Wed, Fri</td>
+                <td className="border border-gray-300 px-4 py-2">5pm – 7pm</td>
+                <td className="border border-gray-300 px-4 py-2">${course.price.toFixed(2)}</td>
                 <td className="border border-gray-300 px-4 py-2">
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                    onClick={handleRegister}
-                  >
-                    Register
-                  </button>
+                  {isBooked(Number(course.id)) ? (
+                    <button
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md cursor-not-allowed"
+                      disabled
+                    >
+                      Booked
+                    </button>
+                  ) : (
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                      onClick={handleRegister}
+                    >
+                      Register
+                    </button>
+                  )}
                 </td>
               </tr>
+            </tbody>
+            <tbody>
               <tr>
                 <td className="border border-gray-300 px-4 py-2">Rafael Carbungco</td>
                 <td className="border border-gray-300 px-4 py-2">Jan 1st, 2025</td>
                 <td className="border border-gray-300 px-4 py-2">Apr 30th, 2025</td>
-                <td className="border border-gray-300 px-4 py-2">Sat, Sun</td>
-                <td className="border border-gray-300 px-4 py-2">9am – 12pm</td>
-                <td className="border border-gray-300 px-4 py-2">$20.0</td>
+                <td className="border border-gray-300 px-4 py-2">Mon, Wed, Fri</td>
+                <td className="border border-gray-300 px-4 py-2">5pm – 7pm</td>
+                <td className="border border-gray-300 px-4 py-2">${course.price.toFixed(2)}</td>
                 <td className="border border-gray-300 px-4 py-2">
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                    onClick={handleRegister}
-                  >
-                    Register
-                  </button>
+                  {isBooked(Number(course.id)) ? (
+                    <button
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md cursor-not-allowed"
+                      disabled
+                    >
+                      Booked
+                    </button>
+                  ) : (
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                      onClick={handleRegister}
+                    >
+                      Register
+                    </button>
+                  )}
                 </td>
               </tr>
             </tbody>
