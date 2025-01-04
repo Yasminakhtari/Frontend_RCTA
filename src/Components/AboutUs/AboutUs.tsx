@@ -164,7 +164,7 @@ const AboutUs = () => {
         <div className="mx-auto max-w-2xl">
           <Timeline active={journeys.length - 1} bulletSize={32} lineWidth={2}>
             {journeys
-            .sort((a: any, b: any) => b.subcategory - a.subcategory) 
+            .sort((a: any, b: any) => a.subcategory - b.subcategory) 
             .map((event: any, index) => (
               <Timeline.Item
                 key={index}

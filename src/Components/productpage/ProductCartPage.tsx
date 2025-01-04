@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getFilteredProducts } from "../../Services/TennisService";
 
 interface Product {
+  imgUrl: string | undefined;
+  subcategory?: string | undefined;
   id: number;
   name: string;
   image: string;
@@ -10,31 +13,85 @@ interface Product {
   brand?: string;
 }
 
-const productData: Product[] = [
-  { id: 1, name: "Racket", image: "racket.png", category: "Gaming Accessories", subCategory: "Racket", brand: "Babolat" },
-  { id: 2, name: "Ball", image: "ball.png", category: "Gaming Accessories", subCategory: "Ball", brand: "Wilson" },
-  { id: 3, name: "Gloves", image: "gloves.png", category: "Gaming Accessories", subCategory: "Gloves", brand: "Prince" },
-  { id: 4, name: "Shoes", image: "shoes.png", category: "Gaming Accessories", subCategory: "Shoes", brand: "Nike" },
-  { id: 5, name: "Shoes", image: "shoes2.png", category: "Gaming Accessories", subCategory: "Shoes", brand: "Puma" },
-  { id: 6, name: "Racket", image: "racket.png", category: "Gaming Accessories", subCategory: "Racket", brand: "Wilson" },
-  { id: 7, name: "Ball", image: "ball.png", category: "Gaming Accessories", subCategory: "Ball", brand: "Wilson" },
-  { id: 8, name: "Gloves", image: "gloves.png", category: "Gaming Accessories", subCategory: "Gloves", brand: "Nike" },
-  { id: 9, name: "Shoes", image: "shoes.png", category: "Gaming Accessories", subCategory: "Shoes", brand: "Nike" },
-  { id: 10, name: "Shoes", image: "shoes2.png", category: "Gaming Accessories", subCategory: "Shoes", brand: "Nike" },
-];
-
 const ProductCartPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
-
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [subcategories, setSubcategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const navigate = useNavigate();
 
-  // Filtered products based on search query and selected brand
-  const filteredProducts = productData.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesBrand = selectedBrand === "" || product.brand === selectedBrand;
-    return matchesSearch && matchesBrand;
+  // Fetch data on component mount
+  const fetchProducts = async () => {
+    try {
+      const data: Product[] = await getFilteredProducts("Products");
+      setProducts(data);
+
+      const uniqueCategories: string[] = Array.from(
+        new Set(data.map((product) => product.category))
+      );
+      setCategories(uniqueCategories);
+
+      // Set initial subcategories based on the first product (or empty if none)
+      const uniqueSubcategories: string[] = Array.from(
+        new Set(
+          data
+            .filter((product) => product.category === selectedCategory)
+            .map((product) => product.subcategory)
+            .filter((sub): sub is string => sub !== undefined)
+        )
+      );
+      setSubcategories(uniqueSubcategories);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Update subcategories when a category is selected
+  useEffect(() => {
+    if (selectedCategory) {
+      // Update subcategories based on selected category
+      const filteredSubcategories: string[] = Array.from(
+        new Set(
+          products
+            .filter((product) => product.category === selectedCategory)
+            .map((product) => product.subcategory)
+            .filter((sub): sub is string => sub !== undefined)
+        )
+      );
+      setSubcategories(filteredSubcategories);
+    } else {
+      // If no category is selected, show all subcategories
+      const allSubcategories: string[] = Array.from(
+        new Set(products.map((product) => product.subcategory))
+      ).filter((sub): sub is string => sub !== undefined);
+      setSubcategories(allSubcategories);
+    }
+  }, [selectedCategory, products]);
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const matchesCategory = !selectedCategory || product.category === selectedCategory;
+
+    // Ensure subcategory is not undefined and is correctly filtered
+    const matchesSubcategory =
+      !selectedSubcategory ||
+      (product.subcategory && product.subcategory.toLowerCase() === selectedSubcategory.toLowerCase());
+
+    return matchesSearch && matchesCategory && matchesSubcategory;
   });
+
+
+
+
 
   return (
     <div className="mx-auto p-4 sm:p-8 mt-20">
@@ -49,32 +106,32 @@ const ProductCartPage: React.FC = () => {
           className="border rounded p-2 w-full sm:w-1/4"
         />
 
+        {/* Category Dropdown */}
+        <select
+          className="border rounded p-2 sm:w-1/6"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="">All</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+
         {/* Subcategory Dropdown */}
         <select
           className="border rounded p-2 sm:w-1/6"
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={selectedSubcategory}
+          onChange={(e) => setSelectedSubcategory(e.target.value)}
         >
-          <option value="">All Categories</option>
-          <option value="Racket">Racket</option>
-          <option value="Ball">Ball</option>
-          <option value="Gloves">Gloves</option>
-          <option value="Shoes">Shoes</option>
-        </select>
-
-        {/* Brand Dropdown */}
-        <select
-          className="border rounded p-2 sm:w-1/6"
-          value={selectedBrand}
-          onChange={(e) => setSelectedBrand(e.target.value)}
-        >
-          <option value="">All Brands</option>
-          <option value="Babolat">Babolat</option>
-          <option value="Wilson">Wilson</option>
-          <option value="Prince">Prince</option>
-          <option value="Dunlop">Dunlop</option>
-          <option value="Penn">Penn</option>
-          <option value="Penn">Puma</option>
-          <option value="Penn">Nike</option>
+          <option value="">All</option>
+          {subcategories.map((sub) => (
+            <option key={sub} value={sub}>
+              {sub}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -83,16 +140,17 @@ const ProductCartPage: React.FC = () => {
         {filteredProducts.map((product) => (
           <div key={product.id} className="bg-white p-4 shadow rounded relative">
             <img
-              src={product.image}
+              src={product.imgUrl}
               alt={product.name}
               className="w-full h-40 object-cover mb-4"
             />
             <h3 className="font-bold text-lg">{product.name}</h3>
-            <p className="text-sm text-gray-500">Brand: {product.brand}</p>
+            <p className="text-sm text-gray-500">Brand: {product.subcategory}</p>
             <button
               className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
               onClick={() => {
                 navigate(`/details/${product.id}`); // Navigate with product ID
+                // navigate(`/details/${product.id}`);
               }}
             >
               Details
