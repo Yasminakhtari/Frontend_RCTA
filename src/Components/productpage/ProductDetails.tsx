@@ -52,20 +52,20 @@ const ProductDetails: React.FC = () => {
 
   // If product is loading or an error occurred
   if (loading) {
-    return <div className="container mx-auto p-4 sm:p-8 mt-10">Loading...</div>;
+    return <div className=" mx-auto p-4 sm:p-8 mt-10">Loading...</div>;
   }
 
   if (error) {
-    return <div className="container mx-auto p-4 sm:p-8 mt-10 text-red-600">{error}</div>;
+    return <div className=" mx-auto p-4 sm:p-8 mt-10 text-red-600">{error}</div>;
   }
 
   // If product is not found
   if (!product) {
-    return <div className="container mx-auto p-4 sm:p-8 mt-10">Product not found.</div>;
+    return <div className=" mx-auto p-4 sm:p-8 mt-10">Product not found.</div>;
   }
 
   return (
-    <div className="mx-auto p-4 sm:p-8 mt-16">
+    <div className="mx-auto p-4 min-h-30 sm:p-8 mt-20">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Product Image */}
         <div className="flex justify-center">

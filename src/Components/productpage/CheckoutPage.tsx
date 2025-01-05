@@ -8,12 +8,19 @@ const CheckoutPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center mt-16">
       <div className="w-full max-w-xl bg-white shadow-lg rounded-lg p-6">
-      <button
+      {/* <button
           onClick={() => navigate(-1)} // Navigate to the previous page
           className="mb-4 text-blue-600 hover:underline"
         >
           &larr; Back
+        </button> */}
+        <button
+          onClick={() => navigate(-1)} // Go back without clearing the cart
+          className="mb-4 text-blue-600 hover:underline"
+        >
+          &larr; Back
         </button>
+
         {/* Heading */}
         <h1 className="text-2xl font-bold text-center mb-6">Checkout</h1>
 

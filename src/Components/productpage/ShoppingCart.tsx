@@ -9,9 +9,7 @@ const ShoppingCart: React.FC = () => {
   const handleQuantityChange = (id: number, amount: number) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + amount) }
-          : item
+        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + amount) } : item
       )
     );
   };
@@ -26,43 +24,43 @@ const ShoppingCart: React.FC = () => {
       ) : (
         <div>
           {cart.map((product) => (
-            <div key={product.id} className="mb-4 flex justify-between items-center">
-              <div>
-                <h2 className="text-lg font-semibold">{product.name}</h2>
-                <p>Price: ${product.price.toFixed(2)}</p>
+            <div key={product.id} className="mb-6 p-4 bg-white shadow-md rounded-lg">
+              <h2 className="text-lg font-semibold">{product.name}</h2>
+              <p className="mb-2">Price: ${product.price.toFixed(2)}</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  {product.category === "Sports" ? (
+                    <span className="text-gray-700">Quantity: {product.quantity}</span>
+                  ) : (
+                    <div className="flex space-x-2 mt-2">
+                      <button
+                        className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-200"
+                        onClick={() => handleQuantityChange(product.id, -1)}
+                      >
+                        -
+                      </button>
+                      <span className="text-lg">{product.quantity}</span>
+                      <button
+                        className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-200"
+                        onClick={() => handleQuantityChange(product.id, 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  onClick={() => removeFromCart(product.id)}
+                >
+                  Remove
+                </button>
               </div>
-              <div>
-                {product.category === "Sports" ? (
-                  <span className="text-gray-700">Quantity: {product.quantity}</span>
-                ) : (
-                  <>
-                    <button
-                      className="px-2 border border-gray-500 rounded hover:bg-gray-200"
-                      onClick={() => handleQuantityChange(product.id, -1)}
-                    >
-                      -
-                    </button>
-                    <span className="mx-2">{product.quantity}</span>
-                    <button
-                      className="px-2 border border-gray-500 rounded hover:bg-gray-200"
-                      onClick={() => handleQuantityChange(product.id, 1)}
-                    >
-                      +
-                    </button>
-                  </>
-                )}
-              </div>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                onClick={() => removeFromCart(product.id)}
-              >
-                Remove
-              </button>
             </div>
           ))}
           <div className="mt-6">
             <h2 className="text-xl font-bold">Total: ${total.toFixed(2)}</h2>
-            <button
+            {/* <button
               className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 mt-4"
               onClick={() => {
                 clearCart();
@@ -70,7 +68,14 @@ const ShoppingCart: React.FC = () => {
               }}
             >
               Checkout
+            </button> */}
+            <button
+              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 mt-4"
+              onClick={() => navigate("/checkout")} // Navigate without clearing cart
+            >
+              Checkout
             </button>
+
           </div>
         </div>
       )}
@@ -79,4 +84,3 @@ const ShoppingCart: React.FC = () => {
 };
 
 export default ShoppingCart;
-
