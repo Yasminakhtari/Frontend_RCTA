@@ -154,7 +154,7 @@ const ProductCartPage: React.FC = () => {
               className="w-full h-40 object-cover mb-4"
             />
             <h3 className="font-bold text-lg">{product.name}</h3>
-            <p className="text-sm text-gray-500">Subcategory: {product.subcategory}</p>
+            <p className="text-sm text-gray-500">Brand: {product.subcategory}</p>
             <button
               className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
               onClick={() => navigate(`/details/${product.id}`)}
