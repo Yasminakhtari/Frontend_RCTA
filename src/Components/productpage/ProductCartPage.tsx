@@ -102,7 +102,7 @@ const ProductCartPage: React.FC = () => {
 
 
   return (
-    <div className="mx-auto p-4 sm:p-8 mt-20">
+    <div className=" min-h-screen mx-auto p-4 sm:p-8 mt-20">
     {/* Top Section: Search and Filters */}
     <div className="flex flex-wrap items-center mb-6 space-x-4">
       {/* Search Input */}
