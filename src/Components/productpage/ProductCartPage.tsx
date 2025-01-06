@@ -147,7 +147,7 @@ const ProductCartPage: React.FC = () => {
     {filteredProducts.length > 0 ? (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="bg-white p-4 shadow rounded">
+          <div key={product.id} className="bg-white p-4 shadow rounded flex flex-col">
             <img
               src={product.imgUrl}
               alt={product.name}
@@ -156,7 +156,7 @@ const ProductCartPage: React.FC = () => {
             <h3 className="font-bold text-lg">{product.name}</h3>
             <p className="text-sm text-gray-500">Brand: {product.subcategory}</p>
             <button
-              className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+              className="mt-auto w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
               onClick={() => navigate(`/details/${product.id}`)}
             >
               Details
