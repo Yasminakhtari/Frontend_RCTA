@@ -27,13 +27,14 @@ const AppRoutes = () => {
     <Header />
     <Routes>
       <Route path="/admin" element={<AdminHomePage/>}/>
+      {/* <Route path="/admin/allplayers" element={<T} */}
       <Route path="/about-us" element={<About />} />
       {/* <Route path="/signup" element={<SignUpPage/>}/>
       <Route path="/login" element={<SignUpPage/>}/> */}
       <Route path="/signup" element={user ? <Navigate to="/" /> : <SignUpPage />} />
       <Route path="/login" element={user ? <Navigate to="/" /> : <SignUpPage />} />
       <Route path="/gallery" element={<MediaGalleryPage />} />
-      <Route path='/home' element={<HomePage />} />
+      {/* <Route path='/home' element={<HomePage />} /> */}
       <Route path="/contact-us" element={<ContactUs />} />
       <Route path="/products" element={<ProductsPage />} />
       <Route path="/testimonial" element={<AllTestiPage />} />

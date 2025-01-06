@@ -29,7 +29,7 @@ const AdminSidebar = () => {
         <div className="flex items-center justify-between p-4">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-gray-200 text-3xl focus:outline-none md:hidden"
+            className="text-red-700 text-3xl focus:outline-none md:hidden"
             aria-label="Toggle Sidebar"
           >
             {sidebarOpen ? '×' : '☰'}

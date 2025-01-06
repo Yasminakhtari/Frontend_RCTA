@@ -13,11 +13,11 @@ const AdminHome = () => {
 
       {/* Right side content that is movable */}
       <div className="flex-grow p-5">
-        <Draggable>
+        {/* <Draggable> */}
           <div className="bg-white shadow-md rounded-lg p-5">
             <AdminHomeContainer />
           </div>
-        </Draggable>
+        {/* </Draggable> */}
       </div>
     </div>
   )
