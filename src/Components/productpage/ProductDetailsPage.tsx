@@ -29,7 +29,7 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ productData }) => {
   );
 
   return (
-    <div className="mx-auto p-4 sm:p-8 mt-20">
+    <div className="mx-auto min-h-screen p-4 sm:p-8 mt-20">
       <h2 className="text-xl font-bold mb-6">Products: {subCategory}</h2>
 
       {filteredProducts.length === 0 ? (
