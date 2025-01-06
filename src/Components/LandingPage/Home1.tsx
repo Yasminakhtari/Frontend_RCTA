@@ -54,7 +54,7 @@ const Home1 = () => {
         try{
           const response =  await axios.get(`${base_url}/v1/getFilteredTennis`,{
             params:{
-              groups:"Home Page"
+              groups:"Home"
             },
             headers:{
               "Content-Type": "application/json",

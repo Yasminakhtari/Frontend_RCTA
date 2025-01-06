@@ -6,15 +6,18 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import NavLinks from './NavLinks';
 import ProfileMenu from './ProfileMenu';
 import { useSelector } from 'react-redux';
+import { useCart } from '../productpage/CartContext';
 
 const Header = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { cart } = useCart();
 
   const navigate = useNavigate();
  
   const user = useSelector((state:any)=>state.user);//It allows functional React components to access and select data from the Redux store.
-  // const cartItems = useSelector((state) => state.cart.items); // Fetch cart items. 
+  // const cartItems = useSelector((state) => state.cart.items); // Fetch cart items.
+  const cartItemCount = cart.reduce((count, item) => count + item.quantity, 0);  // Total item count 
   console.log("ooook");
   
   return (
@@ -51,11 +54,17 @@ const Header = () => {
           <div className='lg:hidden cursor-pointer' onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <IconX className='h-8 w-8' /> : <IconMenu2 className='h-8 w-8' />}
           </div>
-          <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer'>
+          {/* <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer'>
             <Indicator color="blueRibbon.6" offset={5} size={12} withBorder >
               <IconShoppingCart stroke={1.5} onClick={() => navigate('/cart')} />
             </Indicator>
+          </div> */}
+          <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer' onClick={() => navigate('/cart')}>
+            <Indicator color="blueRibbon.6" offset={5} size={12} withBorder label={cartItemCount > 0 ? cartItemCount : undefined}>
+              <IconShoppingCart stroke={1.5} />
+            </Indicator>
           </div>
+
         </div>
 
         {/* Mobile Menu */}
@@ -74,11 +83,17 @@ const Header = () => {
                
                 {user ? <ProfileMenu/>:<Link to="/login"><Button variant='filled' color="blueRibbon.9">Login</Button></Link>}
                 <div className='flex gap-3'>
-                <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
+                {/* <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
                     <Indicator color="blueRibbon.6" offset={5} size={12} withBorder>
                       <IconShoppingCart stroke={1.5} onClick={() => navigate('/cart')} />
                     </Indicator>
+                  </div> */}
+                  <div className='bg-mine-shaft-900 p-1.5 rounded-full' onClick={() => navigate('/cart')}>
+                    <Indicator color="blueRibbon.6" offset={5} size={12} withBorder label={cartItemCount > 0 ? cartItemCount : undefined}>
+                      <IconShoppingCart stroke={1.5} />
+                    </Indicator>
                   </div>
+
                   <div className='bg-mine-shaft-900 p-1.5 rounded-full'>
                     <Indicator color="blueRibbon.6" offset={5} size={12} withBorder processing>
                       <IconBell stroke={1.5} />

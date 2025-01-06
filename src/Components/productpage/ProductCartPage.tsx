@@ -1,271 +1,177 @@
-
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { useCart } from "./CartContext";
-
-// interface Product {
-//   id: number;
-//   name: string;
-//   price: number;
-//   image: string;
-//   category: string;
-//   subCategory?: string;
-// }
-
-// const productData: Product[] = [
-//   { id: 1, name: "Racket", price: 20.0, image: "racket.png", category: "Gaming Accessories", subCategory: "Racket" },
-//   { id: 2, name: "Ball", price: 10.0, image: "racket.png", category: "Gaming Accessories", subCategory: "Ball" },
-//   { id: 3, name: "Gloves", price: 15.0, image: "gloves.png", category: "Gaming Accessories", subCategory: "Gloves" },
-//   { id: 4, name: "Shoes", price: 30.0, image: "shoes.png", category: "Gaming Accessories", subCategory: "Shoes" },
-// ];
-
-// const ProductCartPage: React.FC = () => {
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [sortOrder, setSortOrder] = useState<"low-to-high" | "high-to-low">("low-to-high");
-//   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-//   const { addToCart } = useCart();
-//   const navigate = useNavigate();
-
-//   const filteredProducts = productData
-//     .filter((product) =>
-//       product.name.toLowerCase().includes(searchQuery.toLowerCase())
-//     )
-//     .sort((a, b) =>
-//       sortOrder === "low-to-high" ? a.price - b.price : b.price - a.price
-//     );
-
-//   const toggleSidebar = () => {
-//     setIsSidebarOpen((prev) => !prev);
-//   };
-
-//   return (
-//     <div className=" mx-auto p-4 sm:p-8 mt-20">
-//       {/* Top Section: Sidebar Toggle Button + Search + Sort */}
-//       <div className="flex items-center mb-6 ">
-//         <button
-//           className="mr-4 bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-//           onClick={toggleSidebar}
-//         >
-//           ---
-//         </button>
-//         <input
-//           type="text"
-//           placeholder="Search..."
-//           value={searchQuery}
-//           onChange={(e) => setSearchQuery(e.target.value)}
-//           className="border rounded p-2 w-full sm:w-1/2"
-//         />
-//         <select
-//           value={sortOrder}
-//           onChange={(e) => setSortOrder(e.target.value as "low-to-high" | "high-to-low")}
-//           className="border rounded p-2 ml-4"
-//         >
-//           <option value="low-to-high">Price: Low to High</option>
-//           <option value="high-to-low">Price: High to Low</option>
-//         </select>
-//       </div>
-
-//       {/* Sidebar */}
-//       {isSidebarOpen && (
-//         <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40">
-//           <div className="p-4">
-//             <button
-//               className="text-blue-500 hover:text-gray-700 float-right mt-16"
-//               onClick={toggleSidebar} 
-//             >
-//               ×
-//             </button>
-//             <h3 className="font-bold text-lg mb-4">All Products</h3>
-//             {productData.map((product) => (
-//               <div key={product.id} className="mb-4">
-//                 <img
-//                   src={product.image}
-//                   alt={product.name}
-//                   className="w-full h-20 object-cover mb-2"
-//                 />
-//                 <h4 className="font-semibold text-gray-700">{product.name}</h4>
-//                 <p className="text-gray-500">€{product.price.toFixed(2)}</p>
-//                 <button
-//                   className="mt-2 w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700"
-//                   onClick={() => {
-//                     addToCart({ ...product, quantity: 1 });
-//                     navigate("/cart");
-//                   }}
-//                 >
-//                   Add to Cart
-//                 </button>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       )}
-
-//       {/* Main Content */}
-//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//         {filteredProducts.map((product) => (
-//           <div key={product.id} className="bg-white p-4 shadow rounded relative">
-//             <img
-//                src={product.image}
-//               alt={product.name}
-//               className="w-full h-40 object-cover mb-4"
-//             />
-//             <h3 className="font-bold text-lg">{product.name}</h3>
-//             <p className="text-gray-700">€{product.price.toFixed(2)}</p>
-//             <button
-//               className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-//               onClick={() => {
-//                 addToCart({ ...product, quantity: 1 });
-//                 navigate("/cart");
-//               }}
-//             >
-//               Add to Cart
-//             </button>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProductCartPage;
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "./CartContext";
+import { getFilteredProducts } from "../../Services/TennisService";
 
 interface Product {
+  imgUrl: string | undefined;
+  subcategory?: string | undefined;
   id: number;
   name: string;
-  price: number;
   image: string;
   category: string;
   subCategory?: string;
+  brand?: string;
 }
 
-const productData: Product[] = [
-  { id: 1, name: "Racket", price: 20.0, image: "racket.png", category: "Gaming Accessories", subCategory: "Racket" },
-  { id: 2, name: "Ball", price: 10.0, image: "racket.png", category: "Gaming Accessories", subCategory: "Ball" },
-  { id: 3, name: "Gloves", price: 15.0, image: "gloves.png", category: "Gaming Accessories", subCategory: "Gloves" },
-  { id: 4, name: "Shoes", price: 30.0, image: "shoes.png", category: "Gaming Accessories", subCategory: "Shoes" },
-];
-
 const ProductCartPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<"low-to-high" | "high-to-low">("low-to-high");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
-
-  const { addToCart } = useCart();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [subcategories, setSubcategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const navigate = useNavigate();
 
-  // Filtered products based on search and subcategory
-  const filteredProducts = productData
-    .filter((product) => {
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesSubCategory = selectedSubCategory
-        ? product.subCategory === selectedSubCategory
-        : true;
-      return matchesSearch && matchesSubCategory;
-    })
-    .sort((a, b) =>
-      sortOrder === "low-to-high" ? a.price - b.price : b.price - a.price
-    );
+  // Fetch data on component mount
+  const fetchProducts = async () => {
+    try {
+      const data: Product[] = await getFilteredProducts("Products");
+      setProducts(data);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
+      const uniqueCategories: string[] = Array.from(
+        new Set(data.map((product) => product.category))
+      );
+      setCategories(uniqueCategories);
+
+      // Set initial subcategories based on the first product (or empty if none)
+      const uniqueSubcategories: string[] = Array.from(
+        new Set(
+          data
+            .filter((product) => product.category === selectedCategory)
+            .map((product) => product.subcategory)
+            .filter((sub): sub is string => sub !== undefined)
+        )
+      );
+      setSubcategories(uniqueSubcategories);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
   };
 
-  const handleSubCategoryClick = (subCategory: string | null) => {
-    setSelectedSubCategory(subCategory);
-    setIsSidebarOpen(false); // Close the sidebar on selection
-  };
-  
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Update subcategories when a category is selected
+  useEffect(() => {
+    if (selectedCategory) {
+      // Update subcategories based on selected category
+      const filteredSubcategories: string[] = Array.from(
+        new Set(
+          products
+            .filter((product) => product.category === selectedCategory)
+            .map((product) => product.subcategory)
+            .filter((sub): sub is string => sub !== undefined)
+        )
+      );
+      setSubcategories(filteredSubcategories);
+    } else {
+      // If no category is selected, show all subcategories
+      const allSubcategories: string[] = Array.from(
+        new Set(products.map((product) => product.subcategory))
+      ).filter((sub): sub is string => sub !== undefined);
+      setSubcategories(allSubcategories);
+    }
+  }, [selectedCategory, products]);
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const matchesCategory = !selectedCategory || product.category === selectedCategory;
+
+    // Ensure subcategory is not undefined and is correctly filtered
+    const matchesSubcategory =
+      !selectedSubcategory ||
+      (product.subcategory && product.subcategory.toLowerCase() === selectedSubcategory.toLowerCase());
+
+      const matchesSubcategorySearch = product.subcategory
+      ? product.subcategory.toLowerCase().includes(searchQuery.toLowerCase())
+      : false;
+
+      return (
+        matchesCategory &&
+        matchesSubcategory &&
+        (matchesSearch || matchesSubcategorySearch)
+      );
+  });
+
+
+
+
 
   return (
     <div className="mx-auto p-4 sm:p-8 mt-20">
-      {/* Top Section: Sidebar Toggle Button + Search + Sort */}
-      <div className="flex items-center mb-6">
-        <button
-        className="mr-4 bg-blue-600 text-white p-2 rounded hover:bg-blue-700 text-sm sm:text-base px-3 py-2"
-        onClick={toggleSidebar}
+    {/* Top Section: Search and Filters */}
+    <div className="flex flex-wrap items-center mb-6 space-x-4">
+      {/* Search Input */}
+      <input
+        type="text"
+        placeholder="Search in products..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="border rounded p-2 w-full sm:w-1/4"
+      />
+  
+      {/* Category Dropdown */}
+      <select
+        className="border rounded p-2 sm:w-1/6"
+        value={selectedCategory}
+        onChange={(e) => setSelectedCategory(e.target.value)}
       >
-        ---
-      </button>
-
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="border rounded p-2 w-full sm:w-1/2"
-        />
-        <select
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value as "low-to-high" | "high-to-low")}
-          className="border rounded p-2 ml-4"
-        >
-          <option value="low-to-high">Price: Low to High</option>
-          <option value="high-to-low">Price: High to Low</option>
-        </select>
-      </div>
-
-      {/* Sidebar */}
-      {isSidebarOpen && (
-        <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40">
-          <div className="p-4">
-            <button
-              className="text-blue-500 hover:text-gray-700 float-right mt-16"
-              onClick={toggleSidebar}
-            >
-              ×
-            </button>
-            {/* <h3 className="font-bold text-lg mb-4 mt-20">products</h3> */}
-            <h3
-        className="font-bold text-lg mb-4 mt-20 cursor-pointer hover:text-blue-600"
-        onClick={() => handleSubCategoryClick(null)} // Show all products
+        <option value="">All</option>
+        {categories.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
+      </select>
+  
+      {/* Subcategory Dropdown */}
+      <select
+        className="border rounded p-2 sm:w-1/6"
+        value={selectedSubcategory}
+        onChange={(e) => setSelectedSubcategory(e.target.value)}
       >
-        Products
-      </h3>
-            {Array.from(new Set(productData.map((product) => product.subCategory))).map(
-              (subCategory) => (
-                <div
-                  key={subCategory}
-                  className="mb-2 cursor-pointer hover:text-blue-600"
-                  onClick={() => handleSubCategoryClick(subCategory!)}
-                >
-                  {subCategory}
-                </div>
-              )
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Main Content */}
+        <option value="">All</option>
+        {subcategories.map((sub) => (
+          <option key={sub} value={sub}>
+            {sub}
+          </option>
+        ))}
+      </select>
+    </div>
+  
+    {/* Products Grid */}
+    {filteredProducts.length > 0 ? (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="bg-white p-4 shadow rounded relative">
+          <div key={product.id} className="bg-white p-4 shadow rounded">
             <img
-              src={product.image}
+              src={product.imgUrl}
               alt={product.name}
               className="w-full h-40 object-cover mb-4"
             />
             <h3 className="font-bold text-lg">{product.name}</h3>
-            <p className="text-gray-700">€{product.price.toFixed(2)}</p>
+            <p className="text-sm text-gray-500">Brand: {product.subcategory}</p>
             <button
               className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-              onClick={() => {
-                addToCart({ ...product, quantity: 1 });
-                navigate("/cart");
-              }}
+              onClick={() => navigate(`/details/${product.id}`)}
             >
-              Add to Cart
+              Details
             </button>
           </div>
         ))}
       </div>
-    </div>
+    ) : (
+      // Display message when no products match
+      <div className="text-center text-gray-500 mt-10">
+        No products found.
+      </div>
+    )}
+  </div>
+  
   );
 };
 

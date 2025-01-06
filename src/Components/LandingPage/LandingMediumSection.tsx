@@ -9,7 +9,8 @@ type tennisStepItem = {
   id: number;
   groups: string;
   category: string;
-  subcategory: "one" | "two" | "three" | "four" | "five"; // Restrict to valid subcategories
+  // subcategory: "one" | "two" | "three" | "four" | "five"; // Restrict to valid subcategories
+  subcategory:number|null;
   imgUrl: string;
   name: string;
   description: string;
@@ -45,7 +46,7 @@ const LandingMediumSection = () => {
       try{
         const response =await axios.get(`${base_url}/v1/getFilteredTennis`,{
           params: {
-            group: "Tennis Steps"
+            group: "Home"
           },
           headers:{
             // Authorization: `Bearer ${token}`,
@@ -58,7 +59,11 @@ const LandingMediumSection = () => {
         const cleanedData = response.data.map((item: tennisStepItem) => ({
           ...item,
           description: item.description.replace(/<[^>]*>/g, "").trim(), // Strip HTML tags
-        }));
+        }))
+        .filter((item: tennisStepItem) =>  item.category === "Get started at our Academy")
+        .sort((a: tennisStepItem, b: tennisStepItem) => 
+          (a.subcategory || 0) - (b.subcategory || 0) // Use 0 as fallback for null/undefined
+        );
 
         console.log(cleanedData);
         setTennisStep(cleanedData);

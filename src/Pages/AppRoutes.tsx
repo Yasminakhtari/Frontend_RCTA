@@ -18,6 +18,8 @@ import CoursePage from "../Components/classes/CoursePage";
 import ProductCartPage from "../Components/productpage/ProductCartPage";
 import ShoppingCart from "../Components/productpage/ShoppingCart";
 import AdminHomePage from "./AdminPage/AdminHomePage";
+import CheckoutPage from "../Components/productpage/CheckoutPage";
+import ProductDetails from "../Components/productpage/ProductDetails"
 
 
 
@@ -47,6 +49,8 @@ const AppRoutes = () => {
       <Route path="/product" element={<ProductCartPage />} />
       <Route path="/cart" element={<ShoppingCart />} />
       <Route path="/" element={<HomePage/>} />
+      <Route path="/checkout" element={<CheckoutPage />} />
+      <Route path="/details/:id" element={<ProductDetails />} />
       
 
     </Routes>

@@ -9,13 +9,13 @@ const NavLinks = ({onClick=()=>{}}) => { // Accept the onClick prop
         // { name: "Session", url: "tournaments" },
         // { name: "Rankings", url: "rankings" },
         { name: "Home", url: "home" },
-        { name: "About us",url: "about-us"},
+        { name: "About Us",url: "about-us"},
         // {name:"Sign Up",url:"signup"},
         {name:"Gallery" , url:"gallery"},
         {name:"Contact Us",url:"contact-us"},
         // {name:"Testimonials",url:"testimonial"},
         //  {name:"ServiceTable",url:"servicetable"},
-        {name:"Product",url:"product"},
+        {name:"Products",url:"product"},
         {name:"Classes",url:"classes"},
         // {name:"Products",url:"products"}
         {name:"Admin",url:"admin"}

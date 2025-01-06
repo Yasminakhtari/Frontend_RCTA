@@ -38,7 +38,7 @@ const Clubs = () => {
         });
         console.log(response.data);
         const clubLogoData = response.data.filter((item: any) =>
-          item.category === "Gallery" && item.subcategory === "Club Image"
+          item.category === "Partnership with clubs" && item.subcategory === "Club Image"
         );
         setClubLogos(clubLogoData);
 

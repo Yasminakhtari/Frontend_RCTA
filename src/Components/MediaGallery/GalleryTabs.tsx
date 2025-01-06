@@ -62,7 +62,7 @@ const GalleryTabs = () => {
         console.log(response.data);
         setGalleryData(response.data)
 
-        const coachImagesData = response.data.filter((item:any) => item.category === "coaches" );
+        const coachImagesData = response.data.filter((item:any) => item.category === "Coaches" );
         setCoachImages(coachImagesData);
         const studentImagesData = response.data.filter((item:any) => item.category === "Students" );
         setStudentImages(studentImagesData)
