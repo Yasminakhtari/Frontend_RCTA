@@ -30,7 +30,8 @@ const ShoppingCart: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   {product.category === "Sports" ? (
-                    <span className="text-gray-700">Quantity: {product.quantity}</span>
+                    // <span className="text-gray-700">Quantity: {product.quantity}</span>
+                    <span className="text-gray-700"> {product.quantity}</span>
                   ) : (
                     <div className="flex space-x-2 mt-2">
                       <button
@@ -60,22 +61,18 @@ const ShoppingCart: React.FC = () => {
           ))}
           <div className="mt-6">
             <h2 className="text-xl font-bold">Total: ${total.toFixed(2)}</h2>
-            {/* <button
-              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 mt-4"
-              onClick={() => {
-                clearCart();
-                navigate("/checkout");
-              }}
-            >
-              Checkout
-            </button> */}
             <button
-              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 mt-4"
-              onClick={() => navigate("/checkout")} // Navigate without clearing cart
+              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 mt-4 mr-4"
+              onClick={() => navigate("/checkout")}
             >
               Checkout
             </button>
-
+            <button
+              className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 mt-4"
+              onClick={clearCart}
+            >
+              Clear Cart
+            </button>
           </div>
         </div>
       )}
