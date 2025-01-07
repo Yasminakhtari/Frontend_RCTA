@@ -1,7 +1,7 @@
 import { Avatar, TextInput } from "@mantine/core";
 import { IconArrowUp, IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import raphel from "./raphael.png"
+// import raphel from "./raphael.png"
 import axios from "axios";
 import { base_url } from "../../apiConfig";
 
@@ -127,10 +127,10 @@ const Home1 = () => {
     };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center min-h-[90vh] gap-10 lg:gap-5 pt-4  px-5 mt-14 md:mt-5">
+    <div className="flex flex-col lg:flex-row items-center min-h-[90vh] gap-10 lg:gap-5 pt-4  px-5 mt-14 md:mt-9">
       {/* Left Section */}
       <div className="flex flex-col lg:w-[45%]">
-        <div className="text-5xl lg:text-6xl font-bold text-mine-shaft-100 leading-tight [&>span]:text-blueRibbon-900">
+        <div className="text-5xl mt-8 lg:text-6xl font-bold text-mine-shaft-100 leading-tight [&>span]:text-blueRibbon-900">
           Join the <span>Ultimate Tennis</span> Experience
         </div>
         <div className="md:text-lg text-mine-shaft-200 mt-3">
@@ -161,7 +161,8 @@ const Home1 = () => {
           <img
             className="rounded-lg object-cover w-full lg:w-auto"
             // src="/tennis.png"
-            src={mainImage?.imgUrl || "/tennis.png" }
+            // src={mainImage?.imgUrl || "/tennis.png" }
+            src={mainImage?.imgUrl }
             alt="Tennis club"
           />
           
@@ -236,3 +237,4 @@ const Home1 = () => {
 };
 
 export default Home1;
+

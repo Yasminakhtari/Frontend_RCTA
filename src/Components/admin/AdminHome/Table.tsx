@@ -149,85 +149,101 @@ const List: React.FC = () => {
   };
 
   return (
-    <TableContainer
-      component={Paper}
-      className="p-6 shadow-md rounded-lg bg-white border border-blueRibbon-950"
-    >
-      <Table>
-        <TableHead>
-          <TableRow className="bg-blueRibbon-900 ">
+    <div className="mt-12 p-4">
+      <style>
+        {`
+          /* Custom scrollbar styles */
+          ::-webkit-scrollbar {
+            width: 12px;
+          }
 
-            <TableCell className="!text-xl !font-bold !text-blueRibbon-100">Email</TableCell>
-            <TableCell className="!text-xl !font-bold !text-blueRibbon-100">First Name</TableCell>
-            <TableCell className="!text-xl !font-bold !text-blueRibbon-100">Last Name</TableCell>
-            <TableCell className="!text-xl !font-bold !text-blueRibbon-100">Mobile</TableCell>
-            <TableCell className="!text-xl !font-bold !text-blueRibbon-100">Role</TableCell>
-            <TableCell className="!text-xl !font-bold !text-blueRibbon-100">
-              Enrolled Session
-            </TableCell>
-            <TableCell className="!text-xl !font-bold !text-blueRibbon-100">
-              Session Start Date
-            </TableCell>
-            <TableCell className="!text-xl !font-bold !text-blueRibbon-100">
-              Session Expiration Date
-            </TableCell>
-            <TableCell className="!text-xl !font-bold !text-blueRibbon-100">Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.id}
-              className="hover:bg-gray-50 transition duration-150"
-            >
-              <TableCell className="text-gray-800">{row.email}</TableCell>
-              <TableCell className="text-gray-800">{row.firstName}</TableCell>
-              <TableCell className="text-gray-800">{row.lastName}</TableCell>
-              <TableCell className="text-gray-800">{row.mobile}</TableCell>
-              <TableCell
-                className={`text-sm font-bold px-2 py-1 rounded ${
-                  row.role === "User"
-                    ? "bg-pink-100 !text-pink-700"
-                    : "bg-yellow-100 !text-yellow-700"
-                }`}
-              >
-                {row.role}
-              </TableCell>
-              <TableCell
-                className={`text-sm font-bold px-2 py-1 rounded ${
-                  row.enrolledSession === "Completed"
-                    ? "bg-green-100 !text-green-700"
-                    : row.enrolledSession === "Ongoing"
-                    ? "bg-blue-100 !text-blue-700"
-                    : "bg-purple-100 !text-purple-700"
-                }`}
-              >
-                {row.enrolledSession}
-              </TableCell>
-              <TableCell className="text-gray-800">
-                {row.sessionStartDate}
-              </TableCell>
-              <TableCell className="text-gray-800">
-                {row.sessionExpirationDate}
-              </TableCell>
-              <TableCell>
-                <button
-                  onClick={(e) => handleClick(e, row.id)}
-                  className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
-                >
-                  Change Role
-                </button>
-              </TableCell>
+          ::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+          }
+
+          ::-webkit-scrollbar-thumb {
+            background-color: #4CAF50; 
+            border-radius: 10px;
+            border: 3px solid #fff;
+          }
+
+          ::-webkit-scrollbar-thumb:hover {
+            background-color: #45a049; 
+          }
+
+          ::-webkit-scrollbar-corner {
+            background-color: #f0f0f0;
+          }
+        `}
+      </style>
+
+      <TableContainer
+        component={Paper}
+        className="p-6 shadow-md rounded-lg bg-white border border-blueRibbon-950 overflow-y-auto" // Added overflow-y-auto to make sure scrollbar is enabled
+      >
+        <Table>
+          <TableHead>
+            <TableRow className="bg-blueRibbon-900">
+              <TableCell className="!text-lg sm:!text-xl !font-semibold !text-blueRibbon-100">Email</TableCell>
+              <TableCell className="!text-lg sm:!text-xl !font-semibold !text-blueRibbon-100">First Name</TableCell>
+              <TableCell className="!text-lg sm:!text-xl !font-semibold !text-blueRibbon-100">Last Name</TableCell>
+              <TableCell className="!text-lg sm:!text-xl !font-semibold !text-blueRibbon-100">Mobile</TableCell>
+              <TableCell className="!text-lg sm:!text-xl !font-semibold !text-blueRibbon-100">Role</TableCell>
+              <TableCell className="!text-lg sm:!text-xl !font-semibold !text-blueRibbon-100">Enrolled Session</TableCell>
+              <TableCell className="!text-lg sm:!text-xl !font-semibold !text-blueRibbon-100">Session Start Date</TableCell>
+              <TableCell className="!text-lg sm:!text-xl !font-semibold !text-blueRibbon-100">Session Expiration Date</TableCell>
+              <TableCell className="!text-lg sm:!text-xl !font-semibold !text-blueRibbon-100">Actions</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <TableRow key={row.id} className="hover:bg-gray-50 transition duration-150">
+                <TableCell className="text-gray-800">{row.email}</TableCell>
+                <TableCell className="text-gray-800">{row.firstName}</TableCell>
+                <TableCell className="text-gray-800">{row.lastName}</TableCell>
+                <TableCell className="text-gray-800">{row.mobile}</TableCell>
+                <TableCell
+                  className={`text-sm font-bold px-2 py-1 rounded ${
+                    row.role === "User"
+                      ? "bg-pink-100 !text-pink-700"
+                      : "bg-yellow-100 !text-yellow-700"
+                  }`}
+                >
+                  {row.role}
+                </TableCell>
+                <TableCell
+                  className={`text-sm font-bold px-2 py-1 rounded ${
+                    row.enrolledSession === "Completed"
+                      ? "bg-green-100 !text-green-700"
+                      : row.enrolledSession === "Ongoing"
+                      ? "bg-blue-100 !text-blue-700"
+                      : "bg-purple-100 !text-purple-700"
+                  }`}
+                >
+                  {row.enrolledSession}
+                </TableCell>
+                <TableCell className="text-gray-800">{row.sessionStartDate}</TableCell>
+                <TableCell className="text-gray-800">{row.sessionExpirationDate}</TableCell>
+                <TableCell>
+                  <button
+                    onClick={(e) => handleClick(e, row.id)}
+                    className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 text-sm sm:text-base"
+                  >
+                    Change Role
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        <MenuItem onClick={() => handleRoleChange("User")}>User</MenuItem>
-        <MenuItem onClick={() => handleRoleChange("Admin")}>Admin</MenuItem>
-      </Menu>
-    </TableContainer>
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+          <MenuItem onClick={() => handleRoleChange("User")}>User</MenuItem>
+          <MenuItem onClick={() => handleRoleChange("Admin")}>Admin</MenuItem>
+        </Menu>
+      </TableContainer>
+    </div>
   );
 };
 
