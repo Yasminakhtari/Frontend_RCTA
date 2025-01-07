@@ -116,7 +116,7 @@ const ProductCartPage: React.FC = () => {
   
       {/* Category Dropdown */}
       <select
-        className="border rounded p-2 sm:w-1/6"
+        className="border rounded p-2 w-full sm:w-1/4"
         value={selectedCategory}
         onChange={(e) => setSelectedCategory(e.target.value)}
       >
@@ -130,7 +130,7 @@ const ProductCartPage: React.FC = () => {
   
       {/* Subcategory Dropdown */}
       <select
-        className="border rounded p-2 sm:w-1/6"
+        className="border rounded p-2 w-full sm:w-1/4"
         value={selectedSubcategory}
         onChange={(e) => setSelectedSubcategory(e.target.value)}
       >
@@ -151,7 +151,7 @@ const ProductCartPage: React.FC = () => {
             <img
               src={product.imgUrl}
               alt={product.name}
-              className="w-full h-40 object-cover mb-4"
+              className="w-full h-40 object-cover sm:h-48 md:h-56 lg:h-64"
             />
             <h3 className="font-bold text-lg">{product.name}</h3>
             <p className="text-sm text-gray-500">Brand: {product.subcategory}</p>
