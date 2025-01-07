@@ -134,7 +134,7 @@ const ShoppingCart: React.FC = () => {
                             +
                           </button>
                         </div>
-                        <span className="text-gray-700">Total: ${productTotal.toFixed(2)}</span>
+                        <span className="text-gray-700">:${productTotal.toFixed(2)}</span>
                       </div>
                     )}
                   </div>
