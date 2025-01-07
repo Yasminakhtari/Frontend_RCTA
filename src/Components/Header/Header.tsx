@@ -22,27 +22,27 @@ const Header = () => {
   
   return (
     location.pathname !== "/signup" && location.pathname !== "/login" ? (
-      <div className='w-full md:px-16  fixed top-0 z-50 px-4 lg:px-20 bg-blueRibbon-600 font-["poppins"] text-white h-20 flex justify-between items-center lg:h-20 '>
+      <div className='w-full md:px-5  fixed top-0 z-50 px-4 lg:px-10 bg-blueRibbon-600 font-["poppins"] text-white h-20 flex justify-between items-center lg:h-20 '>
         {/* Logo Section */}
 
         <div className='flex gap-3 items-center text-blueRibbon-950 f'>
           <IconAdCircle className='h-10 w-10 stroke-1.25' onClick={() => navigate("/")} />
-          <div className='text-2xl md:text-4xl font-extrabold'>RC Tennis Academy</div>
+          <div className='text-2xl md:text-4xl  font-extrabold '>RC Tennis Academy</div>
         </div>
 
        
-        <div className='hidden lg:flex'>
+        <div className=' hidden lg:flex  md:text-xs lg:text-base'>
           <NavLinks/> 
         </div>
 
         {/* Actions */}
-        <div className='flex gap-5 items-center'>
+        <div className='flex md:gap-5 gap-2 justify-center items-center'>
           {/* <div className='hidden lg:flex gap-2 items-center' onClick={()=>navigate("/login")}>
             <div>username</div>
             <Avatar src="" alt="it's me" />
           </div> */}
           {/* <ProfileMenu/> */}
-          {user ? <ProfileMenu/>:<Link to="/login"><Button variant='filled' color="blueRibbon.9">Login</Button></Link>}
+          {user ? <ProfileMenu/>:<Link to="/login"><button >Login</button></Link>}
            
 
           <div className='bg-mine-shaft-900 p-1.5 rounded-full hidden lg:block'>

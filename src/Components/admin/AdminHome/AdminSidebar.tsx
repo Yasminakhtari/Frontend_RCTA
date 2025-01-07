@@ -13,6 +13,7 @@ import {
   TableBar,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import { IconUser } from '@tabler/icons-react';
 
 const AdminSidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true); 
@@ -29,7 +30,7 @@ const AdminSidebar = () => {
         <div className="flex items-center justify-between p-4">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-gray-200 text-3xl focus:outline-none md:hidden"
+            className="text-red-700 text-3xl focus:outline-none md:hidden"
             aria-label="Toggle Sidebar"
           >
             {sidebarOpen ? '×' : '☰'}
@@ -51,6 +52,13 @@ const AdminSidebar = () => {
               <div className="flex items-center">
                 <TableBar className="mr-2 text-xl" />
                 {sidebarOpen && <span>Service Table</span>}
+              </div>
+            </Link>
+
+            <Link to="/alluser" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
+                <IconUser className="mr-2 text-xl" />
+                {sidebarOpen && <span>Get All User</span>}
               </div>
             </Link>
           </div>
@@ -81,7 +89,7 @@ const AdminSidebar = () => {
           {/* Useful Section */}
           <div>
             <p className="text-xs uppercase text-gray-400 mb-2">Useful</p>
-            <Link to="/stats" className="block p-2 hover:bg-blue-500 rounded-md">
+            <Link to="/404" className="block p-2 hover:bg-blue-500 rounded-md">
               <div className="flex items-center">
                 <InsertChart className="mr-2 text-xl" />
                 {sidebarOpen && <span>Stats</span>}

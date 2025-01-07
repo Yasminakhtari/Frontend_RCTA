@@ -19,9 +19,9 @@ const AdminHomeContainer = () => {
       </div>
 
       
-      <div className="mt-5">
+      {/* <div className="mt-5">
         <Table />
-      </div>
+      </div> */}
     </div>
   )
 }
