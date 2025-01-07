@@ -102,7 +102,7 @@ const ProductCartPage: React.FC = () => {
 
 
   return (
-    <div className="mx-auto p-4 sm:p-8 mt-20">
+    <div className=" min-h-screen mx-auto p-4 sm:p-8 mt-20">
     {/* Top Section: Search and Filters */}
     <div className="flex flex-wrap items-center mb-6 space-x-4">
       {/* Search Input */}
@@ -116,7 +116,7 @@ const ProductCartPage: React.FC = () => {
   
       {/* Category Dropdown */}
       <select
-        className="border rounded p-2 sm:w-1/6"
+        className="border rounded p-2 w-full sm:w-1/4"
         value={selectedCategory}
         onChange={(e) => setSelectedCategory(e.target.value)}
       >
@@ -130,7 +130,7 @@ const ProductCartPage: React.FC = () => {
   
       {/* Subcategory Dropdown */}
       <select
-        className="border rounded p-2 sm:w-1/6"
+        className="border rounded p-2 w-full sm:w-1/4"
         value={selectedSubcategory}
         onChange={(e) => setSelectedSubcategory(e.target.value)}
       >
@@ -147,16 +147,16 @@ const ProductCartPage: React.FC = () => {
     {filteredProducts.length > 0 ? (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="bg-white p-4 shadow rounded">
+          <div key={product.id} className="bg-white p-4 shadow rounded flex flex-col">
             <img
               src={product.imgUrl}
               alt={product.name}
-              className="w-full h-40 object-cover mb-4"
+              className="w-full h-40 object-cover sm:h-48 md:h-56 lg:h-64"
             />
             <h3 className="font-bold text-lg">{product.name}</h3>
             <p className="text-sm text-gray-500">Brand: {product.subcategory}</p>
             <button
-              className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+              className="mt-auto w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
               onClick={() => navigate(`/details/${product.id}`)}
             >
               Details

@@ -65,7 +65,7 @@ const ProductDetails: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto p-4 min-h-30 sm:p-8 mt-20">
+    <div className=" min-h-screen mx-auto p-4 min-h-30 sm:p-8 mt-20">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Product Image */}
         <div className="flex justify-center">
