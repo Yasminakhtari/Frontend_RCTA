@@ -118,7 +118,7 @@ const ShoppingCart: React.FC = () => {
                     {product.category === "Sports" ? (
                       <span className="text-gray-700"> {product.quantity}</span>
                     ) : (
-                      <div className="flex items-center space-x-4 mt-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 mt-2">
                         <div className="flex items-center space-x-2">
                           <button
                             className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-200"
@@ -134,7 +134,7 @@ const ShoppingCart: React.FC = () => {
                             +
                           </button>
                         </div>
-                        <h2 className="text-gray-700 sm:ml-4">: ${productTotal.toFixed(2)}</h2>
+                        <h2 className="text-gray-700 sm:ml-4 sm:mt-0 mt-2">: ${productTotal.toFixed(2)}</h2>
                       </div>
                     )}
                   </div>
