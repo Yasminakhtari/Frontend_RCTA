@@ -151,7 +151,7 @@ const ProductCartPage: React.FC = () => {
             <img
               src={product.imgUrl}
               alt={product.name}
-              className="w-full h-40 object-cover sm:h-48 md:h-56 lg:h-64"
+              className="w-full h-[250px] sm:h-[300px] md:h-[350px] object-contain"
             />
             <h3 className="font-bold text-lg">{product.name}</h3>
             <p className="text-sm text-gray-500">Brand: {product.subcategory}</p>
