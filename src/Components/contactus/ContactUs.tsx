@@ -121,7 +121,7 @@ const ContactUs: FC = () => {
   };
   // console.log(contactData[1].name);
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden mt-10">
       {/* Header Section */}
       <div
         className="w-full h-48 sm:h-64 bg-cover bg-center flex justify-center items-center shadow-lg"
