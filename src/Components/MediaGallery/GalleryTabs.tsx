@@ -1,8 +1,8 @@
 import { Badge, Tabs } from "@mantine/core";
-import { students, coachess, achievements } from "../../Data/Data";
+// import { students, coachess, achievements } from "../../Data/Data";
 import Images from "./Images";
 import Marquee from "react-fast-marquee";
-import ImageUpload from "../../common/ImageUpload";
+// import ImageUpload from "../../common/ImageUpload";
 import { useEffect,useState } from "react";
 import {base_url} from "../../apiConfig"
 import axios from "axios";
