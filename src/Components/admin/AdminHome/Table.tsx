@@ -31,7 +31,7 @@ interface Role {
 interface SelectedRole {
   id: number | null;
 }
-
+const ITEMS_PER_PAGE = 10;
 const List: React.FC = () => {
   // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   // const [selectedRole, setSelectedRole] = useState<SelectedRole>({ id: null });
@@ -42,7 +42,23 @@ const List: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<SelectedRole>({ id: null });
   const [roles, setRoles] = useState<Role[]>([]); // State for roles
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
  
+  const filteredRows = rows.filter((row) =>
+    (row.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+    (row.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+    (row.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+    (row.role?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+    (row.mobile?.includes(searchQuery) ?? false)
+  ); 
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedTableData = filteredRows.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const totalPages = Math.ceil(rows.length / ITEMS_PER_PAGE);
+
+  
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +85,11 @@ const List: React.FC = () => {
 
     fetchData();
   }, []);
+
+
+  useEffect(() => {
+      setCurrentPage(1); // Reset to first page when search text or any filter changes
+    }, [filteredRows]);
   // const rows: Row[] = [
   //   {
   //     id: 1,
@@ -237,6 +258,7 @@ const List: React.FC = () => {
   
 
   return (
+    
     <div className="mt-12 p-4">
       <style>
         {`
@@ -265,6 +287,14 @@ const List: React.FC = () => {
           }
         `}
       </style>
+      {/* Search Input */}
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="border rounded p-2 w-full sm:w-1/4"
+      />
 
       <TableContainer
         component={Paper}
@@ -285,8 +315,8 @@ const List: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {rows.length > 0 ? (
-            rows.map((row) => (
+          {paginatedTableData.length > 0 ? (
+            paginatedTableData.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>{row.email}</TableCell>
                 <TableCell>{row.firstName}</TableCell>
@@ -317,6 +347,37 @@ const List: React.FC = () => {
         ))}
         </Menu>
       </TableContainer>
+      <div className="flex justify-center items-center mt-4 space-x-2">
+        {/* Previous Button */}
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className={`px-3 py-1 rounded ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-blue-500 text-white"}`}
+        >
+          Prev
+        </button>
+
+        {/* Page Numbers */}
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={`px-3 py-1 rounded ${currentPage === page ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+              }`}
+          >
+            {page}
+          </button>
+        ))}
+
+        {/* Next Button */}
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className={`px-3 py-1 rounded ${currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-blue-500 text-white"}`}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
