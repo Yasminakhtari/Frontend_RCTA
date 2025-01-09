@@ -1,5 +1,6 @@
 import axios from "axios"
 import { base_url } from "../apiConfig"
+import { Row } from "react-table"
 
 
 const registerUser =async (user:any)=>{
@@ -42,4 +43,34 @@ const changePass = async(email:string,password:string)=>{
     .then(res=>res.data)
     .catch(error=>{throw error;})
 }
-export {loginUser,registerUser,sendOtp,verifyOtp,changePass};
+
+const getAllUsers = async () => {
+    try {
+      const response = await axios.get(`${base_url}/auth/getAllUsers`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const getAllRoles = async () => {
+    try {
+      const response = await axios.get(`${base_url}/roles`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // Update user details, including role
+   const updateUser = async (id: number, updatedUser: any) => {
+    try {
+      const response = await axios.put(`${base_url}/auth/update/${id}`, updatedUser);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw error;
+    }
+  };
+  
+export {loginUser,registerUser,sendOtp,verifyOtp,changePass,getAllUsers,getAllRoles,updateUser};
