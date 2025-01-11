@@ -22,7 +22,9 @@ import CheckoutPage from "../Components/productpage/CheckoutPage";
 import ProductDetails from "../Components/productpage/ProductDetails"
 import NotFound from "../Components/notfound/NotFound";
 import Table from "../Components/admin/AdminHome/Table";
-
+import CreateClassForm from "../Components/classes/CreateClassForm";
+import ClassManagement from "../Components/classes/ClassManagement";
+import ProfilePage from "./ProfilePage";
 
 
 
@@ -58,6 +60,9 @@ const AppRoutes = () => {
       <Route path="/404" element={<NotFound/>}/>
       <Route path="/alluser" element={<Table/>}/>
       <Route path="/" element={<HomePage/>} />
+      <Route path="createclass" element={<CreateClassForm />} />
+      <Route path="classmanagement" element={<ClassManagement />} />
+      <Route path="profile" element= {<ProfilePage />} />
       
 
     </Routes>
