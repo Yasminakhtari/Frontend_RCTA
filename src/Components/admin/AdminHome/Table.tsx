@@ -259,7 +259,7 @@ const List: React.FC = () => {
 
   return (
     
-    <div className="mt-12 p-4">
+    <div className=" p-4 mt-16 lg:mt-10">
       <style>
         {`
           /* Custom scrollbar styles */
@@ -293,7 +293,7 @@ const List: React.FC = () => {
         placeholder="Search..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="border rounded p-2 w-full sm:w-1/4"
+        className="border rounded p-2 w-full sm:w-1/4 mt-10 border-blue-950"
       />
 
       <TableContainer
@@ -315,28 +315,62 @@ const List: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-          {paginatedTableData.length > 0 ? (
-            paginatedTableData.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{row.email}</TableCell>
-                <TableCell>{row.firstName}</TableCell>
-                <TableCell>{row.lastName}</TableCell>
-                <TableCell></TableCell>
-                <TableCell>{row.role?.name}</TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell>
-                  <button onClick={(e) => handleClick(e, row.id)}>Change Role</button>
-                </TableCell>
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={9}>No data available</TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+  {paginatedTableData.length > 0 ? (
+    paginatedTableData.map((row) => (
+      <TableRow key={row.id}>
+        <TableCell>{row.email}</TableCell>
+        <TableCell>{row.firstName}</TableCell>
+        <TableCell>{row.lastName}</TableCell>
+        <TableCell>{row.mobile}</TableCell>
+        <TableCell
+          className={`text-sm font-bold px-2 py-1 rounded ${
+            row.role.name === "Admin"
+              ? "bg-red-100 text-red-700"
+              : row.role.name === "Coach"
+              ? "bg-yellow-100 text-yellow-700"
+              : "bg-green-100 text-green-700"
+          }`}
+        >
+          {row.role.name}
+        </TableCell>
+        <TableCell
+          className={`text-sm font-bold px-2 py-1 rounded ${
+            row.enrolledSession === "Completed"
+              ? "bg-green-100 text-green-700"
+              : row.enrolledSession === "Ongoing"
+              ? "bg-blue-100 text-blue-700"
+              : "bg-purple-100 text-purple-700"
+          }`}
+        >
+          {row.enrolledSession}
+        </TableCell>
+        <TableCell>{row.sessionStartDate}</TableCell>
+        <TableCell>{row.sessionExpirationDate}</TableCell>
+        <TableCell>
+          <button
+            onClick={(e) => handleClick(e, row.id)}
+            className={`px-4 py-2 text-white rounded text-sm sm:text-base ${
+              row.role.name === "Admin"
+                ? "bg-red-500 hover:bg-red-600"
+                : row.role.name === "Coach"
+                ? "bg-yellow-500 hover:bg-yellow-600"
+                : "bg-green-500 hover:bg-green-600"
+            }`}
+          >
+            Change Role
+          </button>
+        </TableCell>
+      </TableRow>
+    ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={9} className="text-center">
+        No data available
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
+
         </Table>
 
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>

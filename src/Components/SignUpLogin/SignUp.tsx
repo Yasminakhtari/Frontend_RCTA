@@ -140,7 +140,7 @@ const SignUp = (props:any) => {
 
             if(valid === true){//jadi valid false then request send karani
               setLoading(true);
-              let newdata={...data,roleId: 1,}
+              let newdata={...data,roleId: 2,}
               registerUser(newdata)
               .then((res)=>{
                 setData(form);//After registration to clear the form

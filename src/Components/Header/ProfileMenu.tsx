@@ -1,12 +1,11 @@
 import { Menu, Button, Text, rem, Avatar, Switch, useMantineTheme, Divider } from '@mantine/core';
 import {
 
-  IconSearch,
+
   IconMessageCircle,
   IconTrash,
   IconArrowsLeftRight,
   IconUserCircle,
-  IconFileText,
   IconMoon,
   IconSun,
   IconMoonStars,
@@ -72,7 +71,7 @@ const ProfileMenu = () => {
 
         <Link to="/profile" >
           <Menu.Item leftSection={<IconUserCircle style={{ width: rem(14), height: rem(14) }} />}>
-            Profile
+            {user.data.userDetails.firstName}
           </Menu.Item>
         </Link>
 
