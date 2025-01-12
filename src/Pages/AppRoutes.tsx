@@ -63,7 +63,7 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage/>} />
       <Route path="/create" element={<CreateClassForm />} />
       <Route path="/manage" element={<ClassManagement />} />
-      <Route path="/management" element={<UserManagement />} />
+      <Route path="/players" element={<UserManagement />} />
       
 
     </Routes>

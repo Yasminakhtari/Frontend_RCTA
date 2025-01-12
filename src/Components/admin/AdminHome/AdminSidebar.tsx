@@ -54,6 +54,12 @@ const AdminSidebar = () => {
                 {sidebarOpen && <span>Service Table</span>}
               </div>
             </Link>
+            <Link to="/manage" className="block p-2 hover:bg-blue-500 rounded-md">
+              <div className="flex items-center">
+                <TableBar className="mr-2 text-xl" />
+                {sidebarOpen && <span>Class Table</span>}
+              </div>
+            </Link>
 
             <Link to="/alluser" className="block p-2 hover:bg-blue-500 rounded-md">
               <div className="flex items-center">
