@@ -24,6 +24,8 @@ import NotFound from "../Components/notfound/NotFound";
 import Table from "../Components/admin/AdminHome/Table";
 import CreateClassForm from "../Components/classes/CreateClassForm";
 import ClassManagement from "../Components/classes/ClassManagement";
+import UserManagement from "../Components/management/UserManagement";
+
 
 
 
@@ -61,6 +63,7 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage/>} />
       <Route path="/create" element={<CreateClassForm />} />
       <Route path="/manage" element={<ClassManagement />} />
+      <Route path="/management" element={<UserManagement />} />
       
 
     </Routes>
