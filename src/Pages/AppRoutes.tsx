@@ -25,6 +25,7 @@ import Table from "../Components/admin/AdminHome/Table";
 import CreateClassForm from "../Components/classes/CreateClassForm";
 import ClassManagement from "../Components/classes/ClassManagement";
 import ProfilePage from "./ProfilePage";
+import UserProfilePage from "./UserProfilePage";
 
 
 
@@ -62,7 +63,8 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage/>} />
       <Route path="createclass" element={<CreateClassForm />} />
       <Route path="classmanagement" element={<ClassManagement />} />
-      <Route path="profile" element= {<ProfilePage />} />
+      {/* <Route path="profile" element= {<ProfilePage />} /> */}
+      <Route path="/profile" element={<UserProfilePage/>}/>
       
 
     </Routes>
