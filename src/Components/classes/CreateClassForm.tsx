@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill'; // Rich text editor
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
+import { Link } from 'react-router-dom';
 
 // Define a TypeScript interface for the class form state
 interface ClassFormData {
@@ -52,11 +53,15 @@ const CreateClassForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-screen-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-screen-md mx-auto p-6 bg-white rounded-lg shadow-lg min-h-screen mt-16">
       <h1 className="text-3xl font-bold mb-4">Classes</h1>
       <div className="flex space-x-4 mb-6">
+      <Link to="/manage">
         <button className="bg-gray-200 text-black py-2 px-4 rounded hover:bg-gray-300">Manage</button>
+      </Link> 
+      <Link to="/create">
         <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Create</button>
+      </Link>  
       </div>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>

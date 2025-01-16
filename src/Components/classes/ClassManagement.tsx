@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
+import { Link } from 'react-router-dom';
 
 // Define the Class interface
 interface Class {
@@ -19,11 +20,31 @@ const ClassManagement: React.FC = () => {
   // State management
   const [classes, setClasses] = useState<Class[]>(initialClasses);
   const [search, setSearch] = useState<string>('');
+  const [editClass, setEditClass] = useState<Class | null>(null);
 
   // Handle edit action
   const handleEdit = (id: number): void => {
-    console.log(`Edit class with id: ${id}`);
-    // Logic for editing the class (e.g., navigate to another page)
+    const classToEdit = classes.find((cls) => cls.id === id);
+    if (classToEdit) {
+      setEditClass(classToEdit); // Set the class to be edited
+    }
+  };
+
+  // Handle save edit
+  const handleSave = (): void => {
+    if (editClass) {
+      setClasses(
+        classes.map((cls) =>
+          cls.id === editClass.id ? { ...cls, ...editClass } : cls
+        )
+      );
+      setEditClass(null); // Reset the edit form
+    }
+  };
+
+  // Handle cancel edit
+  const handleCancel = (): void => {
+    setEditClass(null); // Reset the edit form without saving
   };
 
   // Handle delete action
@@ -44,16 +65,20 @@ const ClassManagement: React.FC = () => {
   );
 
   return (
-    <div className="max-w-screen-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-screen-lg mx-auto p-6 bg-white rounded-lg shadow-lg min-h-screen mt-12">
       <h1 className="text-3xl font-bold mb-6">Classes</h1>
       <div className="flex justify-between mb-4">
         <div>
+        <Link to="/manage">
           <button className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400">
             Manage
           </button>
+        </Link > 
+        <Link to="/create">
           <button className="ml-2 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
             Create
           </button>
+        </Link>  
         </div>
         <input
           type="text"
@@ -74,47 +99,72 @@ const ClassManagement: React.FC = () => {
         <tbody>
           {filteredClasses.map((cls) => (
             <tr key={cls.id} className="hover:bg-gray-100">
-              <td className="p-4 border-b">{cls.title}</td>
-              <td className="p-4 border-b">{cls.duration}</td>
               <td className="p-4 border-b">
-                <button
-                  onClick={() => handleEdit(cls.id)}
-                  className="text-blue-500 hover:text-blue-700 mr-2"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    className="w-5 h-5 inline-block"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 17h2m4-4H7m10 0a2 2 0 100 4 2 2 0 110-4z"
-                    />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => handleDelete(cls.id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    className="w-5 h-5 inline-block"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
+                {editClass && editClass.id === cls.id ? (
+                  <input
+                    type="text"
+                    value={editClass.title}
+                    onChange={(e) =>
+                      setEditClass({
+                        ...editClass,
+                        title: e.target.value,
+                      })
+                    }
+                    className="border px-2 py-1 rounded"
+                  />
+                ) : (
+                  cls.title
+                )}
+              </td>
+              <td className="p-4 border-b">
+                {editClass && editClass.id === cls.id ? (
+                  <input
+                    type="number"
+                    value={editClass.duration}
+                    onChange={(e) =>
+                      setEditClass({
+                        ...editClass,
+                        duration: +e.target.value,
+                      })
+                    }
+                    className="border px-2 py-1 rounded"
+                  />
+                ) : (
+                  cls.duration
+                )}
+              </td>
+              <td className="p-4 border-b">
+                {editClass && editClass.id === cls.id ? (
+                  <>
+                    <button
+                      onClick={handleSave}
+                      className="text-green-500 hover:text-green-700 mr-2"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={handleCancel}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleEdit(cls.id)}
+                      className="text-blue-500 hover:text-blue-700 mr-2"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(cls.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
@@ -125,3 +175,4 @@ const ClassManagement: React.FC = () => {
 };
 
 export default ClassManagement;
+
