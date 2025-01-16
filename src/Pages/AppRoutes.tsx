@@ -27,13 +27,18 @@ import ClassManagement from "../Components/classes/ClassManagement";
 import UserManagement from "../Components/management/UserManagement";
 import SessionManagePage from "../Components/sessionpage/SessionManagePage";
 import SessionCreatePage from "../Components/sessionpage/SessionCreatePage";
-
+import LocationCreate from "../Components/sessionpage/LocationCreate";
+import LocationTable from "../Components/sessionpage/LocationTable";
 
 
 
 
 const AppRoutes = () => {
   const user = useSelector((state: any) => state.user);
+  const handleLocationSubmit = (data: { address: string; city: string; state: string; zipcode: string }) => {
+    console.log('Location Data Submitted:', data);
+  };
+  
   return <BrowserRouter>
     <Header />
     <Routes>
@@ -68,7 +73,8 @@ const AppRoutes = () => {
       <Route path="/players" element={<UserManagement />} />
       <Route path="/manage" element={<SessionManagePage />} />
       <Route path="/create" element={<SessionCreatePage />} />
-      
+      <Route path="/location" element={<LocationCreate onSubmit={handleLocationSubmit} />} />
+      <Route path="/locationtable" element={<LocationTable />} />
 
     </Routes>
     <ScrollUp />
