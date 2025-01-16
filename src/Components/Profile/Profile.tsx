@@ -207,24 +207,24 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
                         value={newChild.age}
                         onChange={(e) => setNewChild({ ...newChild, age: e.target.value })}
                     />
-                    <TextInput
+                    {/* <TextInput
                         label="Username"
                         placeholder="Enter child's username"
                         value={newChild.username}
                         onChange={(e) => setNewChild({ ...newChild, username: e.target.value })}
-                    />
+                    /> */}
                     <TextInput
                         label="Batch"
                         placeholder="Enter batch (e.g., Morning, Evening)"
                         value={newChild.batch}
                         onChange={(e) => setNewChild({ ...newChild, batch: e.target.value })}
                     />
-                    <TextInput
+                    {/* <TextInput
                         label="Coach"
                         placeholder="Enter coach name"
                         value={newChild.coach}
                         onChange={(e) => setNewChild({ ...newChild, coach: e.target.value })}
-                    />
+                    /> */}
                     <TextInput
                         label="Status"
                         placeholder="Enter status (ongoing, incoming, completed)"
