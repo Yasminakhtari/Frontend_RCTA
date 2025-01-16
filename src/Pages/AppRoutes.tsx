@@ -24,6 +24,8 @@ import NotFound from "../Components/notfound/NotFound";
 import Table from "../Components/admin/AdminHome/Table";
 import CreateClassForm from "../Components/classes/CreateClassForm";
 import ClassManagement from "../Components/classes/ClassManagement";
+// import ProfilePage from "./ProfilePage";
+import UserProfilePage from "./UserProfilePage";
 import UserManagement from "../Components/management/UserManagement";
 import SessionManagePage from "../Components/sessionpage/SessionManagePage";
 import SessionCreatePage from "../Components/sessionpage/SessionCreatePage";
@@ -68,6 +70,11 @@ const AppRoutes = () => {
       <Route path="/404" element={<NotFound/>}/>
       <Route path="/alluser" element={<Table/>}/>
       <Route path="/" element={<HomePage/>} />
+      <Route path="createclass" element={<CreateClassForm />} />
+      <Route path="classmanagement" element={<ClassManagement />} />
+      {/* <Route path="profile" element= {<ProfilePage />} /> */}
+      <Route path="/profile" element={<UserProfilePage/>}/>
+      
       {/* <Route path="/create" element={<CreateClassForm />} />
       <Route path="/manage" element={<ClassManagement />} /> */}
       <Route path="/players" element={<UserManagement />} />

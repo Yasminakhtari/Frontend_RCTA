@@ -19,9 +19,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { removeUser } from '../../Slices/UserSlice';
 
 const ProfileMenu = () => {
-
+  
   const dispatch = useDispatch();
-  const user = useSelector((state: any) => state.user);//
+  const user = useSelector((state: any) => state.user);
+  const profile = useSelector((state: any) => state.profile || { picture: null });
+
   const [checked, setChecked] = useState(false);
   const [opened, setOpened] = useState(false);
 
@@ -62,7 +64,7 @@ const ProfileMenu = () => {
             {/* <div className='hidden lg:flex gap-2 items-center'> */}
 
             {/* <div className='text-xs' >{user.data.userDetails.firstName}</div> */}
-            <Avatar  className=" h-2 w-2" src="avatar.png" alt="it's me" />
+            <Avatar src={profile.picture?`data:image/jpeg;base64,${profile.picture}`:"iranian-8594205_1280.jpg"} alt="it's me" />
           </div>
         </button>
       </Menu.Target>

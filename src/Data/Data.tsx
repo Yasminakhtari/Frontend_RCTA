@@ -106,4 +106,6 @@ const journey = [
     { year: "2023", description: "Our players won 10+ regional championships." },
 ];
 
+//profle data
+
 export { clubs, testimonials, footerLinks, tennisSteps, coaches, journey, students, coachess, achievements };
