@@ -25,6 +25,7 @@ const AdminSidebar = () => {
       links: [
         { to: '/', icon: Dashboard, label: 'Dashboard' },
         { to: '/servicetable', icon: TableBar, label: 'Service Table' },
+        { to: '/manage', icon: TableBar, label: 'Session Table' },
         { to: '/alluser', icon: IconUser, label: 'Get All User' },
       ],
     },
@@ -80,6 +81,7 @@ const AdminSidebar = () => {
 
         {/* Sidebar Items */}
         <nav className="flex-1 px-2 space-y-4 overflow-y-auto">
+
           {menuItems.map((section, index) => (
             <div key={index}>
               <p className="text-xs uppercase text-gray-400 mb-2">{section.section}</p>
@@ -97,6 +99,7 @@ const AdminSidebar = () => {
               ))}
             </div>
           ))}
+
         </nav>
       </div>
     </div>
