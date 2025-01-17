@@ -1,34 +1,53 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Added for navigation
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom'; // Added for navigation
+import { getFilteredProducts } from '../../Services/TennisService';
+import { getAllUsers } from '../../Services/UserService';
+import { getSessionById, saveSession, updateSession } from '../../Services/SessionService';
 
 interface SessionFormData {
-  course: string;
-  startDate: string;
-  endDate: string;
+  courseId: string;
+  fromDate: string;
+  toDate: string;
   startTime: string;
   endTime: string;
-  selectedDays: string[];
+  days: string[];
   price: string;
-  coach: string;
-  sessionCapacity: string;
-  waitingCapacity: string;
-  location: string; // Added location field
+  coachId: string;
+  maxCapacity: string;
+  maxWaitingCapacity: string;
+  locationId: string; // Added location field
 }
 
+interface User {
+  id: number;
+  username: string;
+  firstName:string;
+  lastName:string;
+  role: {
+    id: number;
+    name: string;
+  };
+}
+
+
 const SessionCreatePage: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // Get `id` from the route
   const navigate = useNavigate(); // Added for navigation
+  // const [categories, setCategories] = useState<{ [key: string]: string[] }>({});
+  const [categories, setCategories] = useState<{ [key: string]: { id: number; subcategory: string }[] }>({});
+  const [coaches, setCoaches] = useState<User[]>([]);
   const [formData, setFormData] = useState<SessionFormData>({
-    course: '',
-    startDate: '',
-    endDate: '',
+    courseId: '',
+    fromDate: '',
+    toDate: '',
     startTime: '',
     endTime: '',
-    selectedDays: [],
+    days: [],
     price: '',
-    coach: '',
-    sessionCapacity: '',
-    waitingCapacity: '',
-    location: '', // Initialize location
+    coachId: '',
+    maxCapacity: '',
+    maxWaitingCapacity: '',
+    locationId: '', // Initialize location
   });
 
   const handleInputChange = (
@@ -41,9 +60,9 @@ const SessionCreatePage: React.FC = () => {
   const toggleDay = (day: string) => {
     setFormData((prevData) => ({
       ...prevData,
-      selectedDays: prevData.selectedDays.includes(day)
-        ? prevData.selectedDays.filter((d) => d !== day)
-        : [...prevData.selectedDays, day],
+      days: prevData.days.includes(day)
+        ? prevData.days.filter((d) => d !== day)
+        : [...prevData.days, day],
     }));
   };
 
@@ -56,30 +75,153 @@ const SessionCreatePage: React.FC = () => {
     return totalHours > 0 ? totalHours.toFixed(2) : '0.00';
   };
 
-  const handleCreateSession = () => {
-    alert('Session created successfully!'); // Placeholder
+  const handleCreateSession = async () => {
+    try {
+      if (id) {
+        // If `id` exists, it's an update operation
+        const updatedSession = { ...formData };
+        const response = await updateSession(Number(id), updatedSession); // Call update API
+        alert('Session updated successfully!');
+        console.log('Session updated:', response);
+      } else {
+        // If `id` doesn't exist, it's a create operation
+        const response = await saveSession(formData);
+        alert('Session created successfully!');
+        console.log('Session created:', response);
+      }
+      navigate('/manage');
+    } catch (error) {
+      alert("Failed to create session. Please try again.");
+    }
   };
+
+  const fetchSessionData = async () => {
+    if (!id) return; // If no `id` is provided, skip fetching
+    try {
+      const response = await getSessionById(Number(id)); // Call API to fetch session by ID
+      const session = response.data; // Assuming `response.data` contains the session
+
+       // Fetch course and coach names
+    const course = await getFilteredProducts('Classes'); // Fetch all courses
+    const coach = await getAllUsers(); // Fetch all users (to get coaches)
+
+    // Find course and coach names
+    const courseData = course.find((c: any) => c.id === session.courseId);
+    const coachData = coach.data.find((u: any) => u.id === session.coachId);
+      // Prepopulate categories if courseData is available
+    if (courseData) {
+      setCategories((prevCategories) => ({
+        ...prevCategories,
+        [courseData.category]: [{ id: courseData.id, subcategory: courseData.subcategory }],
+      }));
+    } else {
+      console.warn(`Course with ID ${session.courseId} not found`);
+    }
+
+    // Prepopulate coaches if coachData is available
+    if (coachData) {
+      setCoaches((prevCoaches) => [
+        ...prevCoaches,
+        {
+          id: coachData.id,
+          firstName: coachData.firstName, // Add firstName
+          lastName: coachData.lastName,   // Add lastName
+          username: coachData.username,
+          role: coachData.role,
+        },
+      ]);
+    } 
+    else {
+      console.warn(`Coach with ID ${session.coachId} not found`);
+    }
+
+      setFormData({
+        courseId: session.courseId.toString(),
+        fromDate: session.fromDate.split('-').reverse().join('-'), // Format date as YYYY-MM-DD
+        toDate: session.toDate.split('-').reverse().join('-'),
+        startTime: session.startTime,
+        endTime: session.endTime,
+        days: session.days.map((day: string) => day),
+        price: session.price.toString(),
+        coachId: session.coachId.toString(),
+        maxCapacity: session.maxCapacity.toString(),
+        maxWaitingCapacity: session.maxWaitingCapacity.toString(),
+        locationId: session.locationId.toString(),
+      });
+    } catch (error) {
+      console.error('Error fetching session data:', error);
+      alert('Failed to fetch session data. Please try again.');
+    }
+  };
+
+  const fetchSession = async () => {
+    try {
+      const data = await getFilteredProducts("Classes");
+
+      // Define the type of categoryMap
+      const categoryMap: { [key: string]: { id: number; subcategory: string }[] } = {};
+
+      // Process data into categories and subcategories with IDs
+      data.forEach((classes: { id: number; category: string; subcategory: string }) => {
+        const { id, category, subcategory } = classes;
+
+        if (!categoryMap[category]) {
+          categoryMap[category] = [];
+        }
+
+        // Add subcategory with ID if not already included
+        if (!categoryMap[category].some((sub) => sub.id === id)) {
+          categoryMap[category].push({ id, subcategory });
+        }
+      });
+
+      setCategories(categoryMap); // Set the updated category map
+    } catch (error) {
+      console.error("Error fetching session:", error);
+    }
+  };
+
+  // Fetch all users and filter by roleId
+  const fetchCoaches = async () => {
+    try {
+      const users = await getAllUsers();
+      const filteredCoaches = users.data.filter((user: { role: { id: number } }) => user.role?.id === 3);
+      setCoaches(filteredCoaches);
+    } catch (error) {
+      console.error("Error fetching coaches:", error);
+    }
+  };
+  useEffect(() => {
+    fetchSession();
+    fetchCoaches();
+    fetchSessionData(); // Fetch session if `id` exists in the route
+  }, [id]);
 
   return (
     //<div className="max-w-md mx-auto p-6 bg-white rounded shadow mt-16">
     <div className="w-3/5 mx-auto p-6 bg-white rounded shadow mt-16">
-      <h1 className="text-lg font-bold mb-2">Create Session</h1>
+      <h1 className="text-lg font-bold mb-2">{ id ? "Update Session" : "Create Session"}</h1>
       <div className="mb-2 space-x-2">
-        <button onClick={() => navigate('/manage')} className="bg-blue-500 text-white px-3 py-1 rounded-sm text-sm">Manage</button>
-        <button onClick={() => navigate('/create')} className="bg-gray-200 px-3 py-1 rounded-sm text-sm">Create</button>
+        <button onClick={() => navigate('/manage')} className="bg-gray-200 px-3 py-1 rounded-sm text-sm">Manage</button>
+        <button onClick={() => navigate('/create')} className="bg-blue-500 text-white px-3 py-1 rounded-sm text-sm">Create</button>
       </div>
       <div className="space-y-4">
         <div>
           <label className="block font-medium">Select Course</label>
           <select
-            name="course"
-            value={formData.course}
+            name="courseId"
+            value={formData.courseId}
             onChange={handleInputChange}
             className="border p-2 rounded w-full"
           >
             <option value="">Select a course to create a session</option>
-            <option value="Tennis Foundations">Tennis Foundations</option>
-            <option value="Rally Ready">Rally Ready</option>
+            {Object.entries(categories).map(([category, subcategories]) =>
+              subcategories.map(({ id, subcategory }) => (
+                <option key={id} value={id}>
+                  {`${subcategory} (${category})`}
+                </option>
+              ))
+            )}
           </select>
         </div>
         <div>
@@ -87,15 +229,15 @@ const SessionCreatePage: React.FC = () => {
           <div className="flex gap-2">
             <input
               type="date"
-              name="startDate"
-              value={formData.startDate}
+              name="fromDate"
+              value={formData.fromDate}
               onChange={handleInputChange}
               className="border p-2 rounded w-1/2"
             />
             <input
               type="date"
-              name="endDate"
-              value={formData.endDate}
+              name="toDate"
+              value={formData.toDate}
               onChange={handleInputChange}
               className="border p-2 rounded w-1/2"
             />
@@ -130,7 +272,7 @@ const SessionCreatePage: React.FC = () => {
               <label key={day} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  checked={formData.selectedDays.includes(day)}
+                  checked={formData.days.includes(day)}
                   onChange={() => toggleDay(day)}
                 />
                 <span>{day}</span>
@@ -141,14 +283,14 @@ const SessionCreatePage: React.FC = () => {
         <div>
           <label className="block font-medium">Location</label>
           <select
-            name="location"
-            value={formData.location}
+            name="locationId"
+            value={formData.locationId}
             onChange={handleInputChange}
             className="border p-2 rounded w-full"
           >
             <option value="">Select a location</option>
-            <option value="College Park High School">College Park High School</option>
-            <option value="Garden">Garden</option>
+            <option value="1">College Park High School</option>
+            <option value="2">Garden</option>
           </select>
         </div>
         <div>
@@ -167,24 +309,18 @@ const SessionCreatePage: React.FC = () => {
           </div>
           <div>
             <label className="block font-medium">Coach</label>
-            {/* <input
-              type="text"
-              name="instructor"
-              value={formData.coach}
-              onChange={handleInputChange}
-              className="border p-2 rounded w-full"
-            /> */}
             <select
-              name="coach"  // Corrected to match formData key
-              value={formData.coach}
+              name="coachId"  // Corrected to match formData key
+              value={formData.coachId}
               onChange={handleInputChange}
               className="border p-2 rounded w-full"
             >
               <option value="">Select a coach</option>
-              <option value="Rafael Carbungco">Rafael Carbungco</option>
-              <option value="Abinash Patri">Abinash Patri</option>
-              <option value="Yasmin Nani">Yasmin Nani</option>
-              <option value="Sourav Mohanty">Sourav Mohanty</option>
+              {coaches.map((coach) => (
+                <option key={coach.id} value={coach.id}>
+                   {`${coach.firstName} ${coach.lastName}`}
+                </option>
+              ))}
             </select>
 
           </div>
@@ -194,8 +330,8 @@ const SessionCreatePage: React.FC = () => {
             <label className="block font-medium">Session Capacity</label>
             <input
               type="number"
-              name="sessionCapacity"
-              value={formData.sessionCapacity}
+              name="maxCapacity"
+              value={formData.maxCapacity}
               onChange={handleInputChange}
               className="border p-2 rounded w-full"
             />
@@ -204,8 +340,8 @@ const SessionCreatePage: React.FC = () => {
             <label className="block font-medium">Waiting Capacity</label>
             <input
               type="number"
-              name="waitingCapacity"
-              value={formData.waitingCapacity}
+              name="maxWaitingCapacity"
+              value={formData.maxWaitingCapacity}
               onChange={handleInputChange}
               className="border p-2 rounded w-full"
             />
@@ -217,7 +353,7 @@ const SessionCreatePage: React.FC = () => {
           onClick={handleCreateSession}
           className="w-full bg-blue-600 text-white py-2 rounded"
         >
-          Create Session
+          { id ? "Update Session" : "Create Session"}
         </button>
       </div>
     </div>

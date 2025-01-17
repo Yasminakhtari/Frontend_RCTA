@@ -102,7 +102,7 @@ const Classes: React.FC = () => {
                 <span className="text-gray-500 text-sm ml-2">({course.category})</span>
               </h3>
               <p className="text-gray-500 text-sm mb-4">
-                Duration: {course.duration ? `${course.duration} minutes` : "N/A"}
+                Duration: {course.duration ? `${course.duration} hours` : "N/A"}
               </p>
               <button
                 className="bg-gradient-to-r from-blue-500 to-teal-400 text-white py-2 rounded-md shadow-md hover:from-blue-600 hover:to-teal-500 focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 flex justify-center items-center w-full"

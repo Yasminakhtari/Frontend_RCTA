@@ -82,7 +82,7 @@ const AppRoutes = () => {
       <Route path="/create" element={<SessionCreatePage />} />
       <Route path="/location" element={<LocationCreate onSubmit={handleLocationSubmit} />} />
       <Route path="/locationtable" element={<LocationTable />} />
-
+      <Route path="/create/:id" element={<SessionCreatePage />} />
     </Routes>
     <ScrollUp />
     {/* <ServiceTable/> */}
