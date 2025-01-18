@@ -72,7 +72,16 @@ const LocationTable: React.FC = () => {
     setLocations([...locations, newLocation]);
     setEditFormData(newLocation);
     setEditingIndex(locations.length);
-    setIsNewLocation(true); // Mark as adding a new location
+    setEditFormData(newLocation);
+  };
+
+  const handleRemoveNewLocation = () => {
+    if (editingIndex !== null) {
+      const updatedLocations = locations.slice(0, editingIndex).concat(locations.slice(editingIndex + 1));
+      setLocations(updatedLocations);
+      setEditingIndex(null);
+      setEditFormData(null);
+    }
   };
 
   const handleEditClick = async (index: number) => {
@@ -298,12 +307,20 @@ const LocationTable: React.FC = () => {
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <button
-                        onClick={handleEditSubmit}
-                        className="px-3 py-1 text-white bg-green-500 rounded hover:bg-green-600"
-                      >
-                        {isNewLocation ? 'Save' : 'Update'}
-                      </button>
+                      <div className="flex space-x-2 justify-center">
+                        <button
+                          onClick={handleEditSubmit}
+                          className="px-3 py-1 text-white bg-green-500 rounded hover:bg-green-600"
+                        >
+                          {isNewLocation ? 'Save' : 'Update'}
+                        </button>
+                        <button
+                          onClick={handleRemoveNewLocation}
+                          className="px-3 py-1 text-white bg-red-500 rounded hover:bg-red-600"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </td>
                   </>
                 ) : (
