@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'; // Added for navigati
 import { getFilteredProducts } from '../../Services/TennisService';
 import { getAllUsers } from '../../Services/UserService';
 import { getSessionById, saveSession, updateSession } from '../../Services/SessionService';
+import { getAllLocation } from '../../Services/LocationService';
 
 interface SessionFormData {
   courseId: string;
@@ -29,6 +30,15 @@ interface User {
   };
 }
 
+interface Location{
+  id?: any; // Optional to handle cases where ID might not exist initially
+  locationName: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  status: string;
+}
 
 const SessionCreatePage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Get `id` from the route
@@ -36,6 +46,7 @@ const SessionCreatePage: React.FC = () => {
   // const [categories, setCategories] = useState<{ [key: string]: string[] }>({});
   const [categories, setCategories] = useState<{ [key: string]: { id: number; subcategory: string }[] }>({});
   const [coaches, setCoaches] = useState<User[]>([]);
+  const [location, setLocations] = useState<Location[]>([]);
   const [formData, setFormData] = useState<SessionFormData>({
     courseId: '',
     fromDate: '',
@@ -191,10 +202,25 @@ const SessionCreatePage: React.FC = () => {
       console.error("Error fetching coaches:", error);
     }
   };
+  //Fetch Location
+  const fetchLocations = async () => {
+    try {
+      const location = await getAllLocation();
+  
+      // Filter locations where status is 'active'
+      const activeLocations = location.data.filter((location: { status: string }) => location.status === 'active');
+  
+      setLocations(activeLocations);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+    }
+  };
+  
   useEffect(() => {
     fetchSession();
     fetchCoaches();
     fetchSessionData(); // Fetch session if `id` exists in the route
+    fetchLocations();
   }, [id]);
 
   return (
@@ -288,9 +314,13 @@ const SessionCreatePage: React.FC = () => {
             onChange={handleInputChange}
             className="border p-2 rounded w-full"
           >
-            <option value="">Select a location</option>
-            <option value="1">College Park High School</option>
-            <option value="2">Garden</option>
+             <option value="">Select a location</option>
+        {location.map((location) => (
+          <option key={location.id} value={location.id}>
+            {location.locationName}, {location.address}
+                {/* {location.locationName}, {location.address}, {location.city}, {location.state}, {location.zipCode} */}
+          </option>
+        ))}
           </select>
         </div>
         <div>

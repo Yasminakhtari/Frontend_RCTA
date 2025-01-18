@@ -14,46 +14,7 @@ interface Session {
 }
 
 const initialSessions: Session[] = [
-  // {
-  //   sessionNo: 2,
-  //   class: 'Tennis Foundations',
-  //   timeline: 'Jan 6, 2025 - Mar 14, 2025',
-  //   timing: '18:00 - 20:00',
-  //   days: 'mon, tue, wed, thu, fri',
-  //   coaches: 'Rafael Carbungco',
-  //   location: 'College Park High School',
-  //   updatedOn: 'Nov 17, 2024, 3:19 AM',
-  // },
-  // {
-  //   sessionNo: 1,
-  //   class: 'Rally Ready',
-  //   timeline: 'Dec 17, 2024 - Dec 27, 2024',
-  //   timing: '12:30 - 18:30',
-  //   days: 'mon',
-  //   coaches: 'Abinash Patri',
-  //   location: 'College Park High School',
-  //   updatedOn: 'Dec 14, 2024, 9:29 PM',
-  // },
-  // {
-  //   sessionNo: 1,
-  //   class: 'Swing and Sweat',
-  //   timeline: 'Feb 1, 2025 - Feb 28, 2025',
-  //   timing: '10:00 - 13:00',
-  //   days: 'sat',
-  //   coaches: 'Rafael Carbungco',
-  //   location: 'College Park High School',
-  //   updatedOn: 'Dec 14, 2024, 9:32 PM',
-  // },
-  // {
-  //   sessionNo: 1,
-  //   class: 'Game Mastery',
-  //   timeline: 'Feb 1, 2025 - Feb 28, 2025',
-  //   timing: '07:00 - 12:00',
-  //   days: 'wed, fri, sat, tue',
-  //   coaches: 'Rafael Carbungco',
-  //   location: 'College Park High School',
-  //   updatedOn: 'Jan 13, 2025, 6:15 PM',
-  // },
+  
 ];
 
 const SessionManagePage: React.FC = () => {
@@ -119,7 +80,7 @@ const SessionManagePage: React.FC = () => {
           timing: `${item.startTime} - ${item.endTime}`,
           days: item.days.join(', '),
           coaches: ` ${item.coachName}`, // Replace with coach name if available
-          location: ` ${item.locationId}`, // Replace with location name if available
+          location: ` ${item.locationName}`, // Replace with location name if available
           // updatedOn: new Date().toLocaleString(), // Use updated date if available
         }));
         setSessions(transformedSessions);

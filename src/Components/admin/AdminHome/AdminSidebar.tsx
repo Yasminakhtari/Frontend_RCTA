@@ -11,6 +11,7 @@ import {
   NotificationsNoneOutlined,
   PsychologyOutlined,
   TableBar,
+  AddLocation,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { IconUser } from '@tabler/icons-react';
@@ -26,7 +27,8 @@ const AdminSidebar = () => {
         { to: '/', icon: Dashboard, label: 'Dashboard' },
         { to: '/servicetable', icon: TableBar, label: 'Service Table' },
         { to: '/manage', icon: TableBar, label: 'Session Table' },
-        { to: '/alluser', icon: IconUser, label: 'Get All User' },
+        { to: '/alluser', icon: IconUser, label: 'Get All Users' },
+        { to: '/locationtable', icon: AddLocation, label: 'Locations' },
       ],
     },
     {

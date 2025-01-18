@@ -44,21 +44,22 @@ const List: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
- 
+  const [isUpdatingRole, setIsUpdatingRole] = useState(false);
+
   const filteredRows = rows.filter((row) =>
     (row.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
     (row.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
     (row.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
     (row.role?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
     (row.mobile?.includes(searchQuery) ?? false)
-  ); 
+  );
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedTableData = filteredRows.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const totalPages = Math.ceil(rows.length / ITEMS_PER_PAGE);
 
-  
-  
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,109 +89,8 @@ const List: React.FC = () => {
 
 
   useEffect(() => {
-      setCurrentPage(1); // Reset to first page when search text or any filter changes
-    }, [filteredRows]);
-  // const rows: Row[] = [
-  //   {
-  //     id: 1,
-  //     email: "sonu@example.com",
-  //     firstName: "Sonu",
-  //     lastName: "Sharma",
-  //     mobile: "1234567890",
-  //     role: "User",
-  //     enrolledSession: "Completed",
-  //     sessionStartDate: "2023-08-01",
-  //     sessionExpirationDate: "2023-11-01",
-  //   },
-  //   {
-  //     id: 2,
-  //     email: "admin@example.com",
-  //     firstName: "Admin",
-  //     lastName: "User",
-  //     mobile: "9876543210",
-  //     role: "Coach",
-  //     enrolledSession: "Ongoing",
-  //     sessionStartDate: "2023-09-01",
-  //     sessionExpirationDate: "2023-12-01",
-  //   },
-  //   {
-  //     id: 3,
-  //     email: "subham@example.com",
-  //     firstName: "Subham",
-  //     lastName: "Kumar",
-  //     mobile: "5555555555",
-  //     role: "Coach",
-  //     enrolledSession: "Upcoming",
-  //     sessionStartDate: "2024-01-01",
-  //     sessionExpirationDate: "2024-04-01",
-  //   },
-  //   {
-  //     id: 4,
-  //     email: "sonu@example.com",
-  //     firstName: "Sonu",
-  //     lastName: "Sharma",
-  //     mobile: "1234567890",
-  //     role: "User",
-  //     enrolledSession: "Completed",
-  //     sessionStartDate: "2023-08-01",
-  //     sessionExpirationDate: "2023-11-01",
-  //   },
-  //   {
-  //     id: 5,
-  //     email: "admin@example.com",
-  //     firstName: "Admin",
-  //     lastName: "User",
-  //     mobile: "9876543210",
-  //     role: "Coach",
-  //     enrolledSession: "Ongoing",
-  //     sessionStartDate: "2023-09-01",
-  //     sessionExpirationDate: "2023-12-01",
-  //   },
-  //   {
-  //     id: 6,
-  //     email: "subham@example.com",
-  //     firstName: "Subham",
-  //     lastName: "Kumar",
-  //     mobile: "5555555555",
-  //     role: "Coach",
-  //     enrolledSession: "Upcoming",
-  //     sessionStartDate: "2024-01-01",
-  //     sessionExpirationDate: "2024-04-01",
-  //   },
-  //   {
-  //     id: 7,
-  //     email: "sonu@example.com",
-  //     firstName: "Sonu",
-  //     lastName: "Sharma",
-  //     mobile: "1234567890",
-  //     role: "User",
-  //     enrolledSession: "Completed",
-  //     sessionStartDate: "2023-08-01",
-  //     sessionExpirationDate: "2023-11-01",
-  //   },
-  //   {
-  //     id: 8,
-  //     email: "admin@example.com",
-  //     firstName: "Admin",
-  //     lastName: "User",
-  //     mobile: "9876543210",
-  //     role: "Coach",
-  //     enrolledSession: "Ongoing",
-  //     sessionStartDate: "2023-09-01",
-  //     sessionExpirationDate: "2023-12-01",
-  //   },
-  //   {
-  //     id: 9,
-  //     email: "subham@example.com",
-  //     firstName: "Subham",
-  //     lastName: "Kumar",
-  //     mobile: "5555555555",
-  //     role: "Coach",
-  //     enrolledSession: "Upcoming",
-  //     sessionStartDate: "2024-01-01",
-  //     sessionExpirationDate: "2024-04-01",
-  //   },
-  // ];
+    setCurrentPage(1); // Reset to first page when search text or any filter changes
+  }, [filteredRows]);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, id: number) => {
     setAnchorEl(event.currentTarget);
@@ -205,60 +105,70 @@ const List: React.FC = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
-
-
-  // const handleRoleChange = (role: number) => {
-  //   const updatedRows = rows.map((row) =>
-  //     row.id === selectedRole.id ? { ...row, role } : row
-  //   );
-  //   console.log("Updated Roles:", updatedRows);
-  //   setAnchorEl(null);
-  // };
+  ;
   const handleRoleChange = async (roleId: number) => {
     if (selectedUserId === null) return;
-  
+    setIsUpdatingRole(true);
     try {
-      // Find the selected user
       const selectedUser = rows.find((row) => row.id === selectedUserId);
-      console.log(selectedUser)
       if (!selectedUser) throw new Error("User not found");
   
-      // Map required fields for the API payload
       const updatedUser = {
         roleId,
         firstName: selectedUser.firstName,
         lastName: selectedUser.lastName,
-        username: selectedUser.username, // Assuming `username` is same as `email`
+        username: selectedUser.username,
         email: selectedUser.email,
       };
   
-      // Call the API to update the user's role
       await updateUser(selectedUserId, updatedUser);
-     // Fetch users again to update the state
-     const usersResponse = await getAllUsers();
-     setRows(usersResponse.data);
   
-      // Update the local state to reflect the changes
-      // setRows((prevRows) =>
-      //   prevRows.map((row) =>
-      //     row.id === selectedUserId
-      //       ? { ...row, role: roles.find((role) => role.id === roleId) }
-      //       : row
-      //   )
-      // );
-  
-      console.log("User role updated successfully!");
+      const usersResponse = await getAllUsers();
+      setRows(usersResponse.data);
     } catch (error) {
       console.error("Error updating user role:", error);
       setError("Failed to update role. Please try again.");
     } finally {
+      setIsUpdatingRole(false);
       handleClose();
     }
   };
-  
+  // const handleRoleChange = async (roleId: number) => {
+  //   if (selectedUserId === null) return;
+
+  //   try {
+  //     // Find the selected user
+  //     const selectedUser = rows.find((row) => row.id === selectedUserId);
+  //     console.log(selectedUser)
+  //     if (!selectedUser) throw new Error("User not found");
+
+  //     // Map required fields for the API payload
+  //     const updatedUser = {
+  //       roleId,
+  //       firstName: selectedUser.firstName,
+  //       lastName: selectedUser.lastName,
+  //       username: selectedUser.username, // Assuming `username` is same as `email`
+  //       email: selectedUser.email,
+  //     };
+
+  //     // Call the API to update the user's role
+  //     await updateUser(selectedUserId, updatedUser);
+  //     // Fetch users again to update the state
+  //     const usersResponse = await getAllUsers();
+  //     setRows(usersResponse.data);
+
+  //     console.log("User role updated successfully!");
+  //   } catch (error) {
+  //     console.error("Error updating user role:", error);
+  //     setError("Failed to update role. Please try again.");
+  //   } finally {
+  //     handleClose();
+  //   }
+  // };
+
 
   return (
-    
+
     <div className=" p-4 mt-16 lg:mt-10">
       <style>
         {`
@@ -315,39 +225,38 @@ const List: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-  {paginatedTableData.length > 0 ? (
-    paginatedTableData.map((row) => (
-      <TableRow key={row.id}>
-        <TableCell>{row.email}</TableCell>
-        <TableCell>{row.firstName}</TableCell>
-        <TableCell>{row.lastName}</TableCell>
-        <TableCell>{row.mobile}</TableCell>
-        <TableCell
-          className={`text-sm font-bold px-2 py-1 rounded ${
-            row.role.name === "Admin"
-              ? "bg-red-100 text-red-700"
-              : row.role.name === "Coach"
-              ? "bg-yellow-100 text-yellow-700"
-              : "bg-green-100 text-green-700"
-          }`}
-        >
-          {row.role.name}
-        </TableCell>
-        <TableCell
-          className={`text-sm font-bold px-2 py-1 rounded ${
-            row.enrolledSession === "Completed"
-              ? "bg-green-100 text-green-700"
-              : row.enrolledSession === "Ongoing"
-              ? "bg-blue-100 text-blue-700"
-              : "bg-purple-100 text-purple-700"
-          }`}
-        >
-          {row.enrolledSession}
-        </TableCell>
-        <TableCell>{row.sessionStartDate}</TableCell>
-        <TableCell>{row.sessionExpirationDate}</TableCell>
-        <TableCell>
-          <button
+            {paginatedTableData.length > 0 ? (
+              paginatedTableData.map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell>{row.email}</TableCell>
+                  <TableCell>{row.firstName}</TableCell>
+                  <TableCell>{row.lastName}</TableCell>
+                  <TableCell>{row.mobile}</TableCell>
+                  <TableCell
+                    className={`text-sm font-bold px-2 py-1 rounded ${row.role.name === "Admin"
+                        ? "bg-red-100 text-red-700"
+                        : row.role.name === "Coach"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-green-100 text-green-700"
+                      }`}
+                  >
+                    {row.role.name}
+                  </TableCell>
+                  <TableCell
+                  // className={`text-sm font-bold px-2 py-1 rounded ${
+                  //   row.enrolledSession === "Completed"
+                  //     ? "bg-green-100 text-green-700"
+                  //     : row.enrolledSession === "Ongoing"
+                  //     ? "bg-blue-100 text-blue-700"
+                  //     : "bg-purple-100 text-purple-700"
+                  // }`}
+                  >
+                    {row.enrolledSession}
+                  </TableCell>
+                  <TableCell>{row.sessionStartDate}</TableCell>
+                  <TableCell>{row.sessionExpirationDate}</TableCell>
+                  <TableCell>
+                    {/* <button
             onClick={(e) => handleClick(e, row.id)}
             className={`px-4 py-2 text-white rounded text-sm sm:text-base ${
               row.role.name === "Admin"
@@ -358,27 +267,33 @@ const List: React.FC = () => {
             }`}
           >
             Change Role
-          </button>
-        </TableCell>
-      </TableRow>
-    ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan={9} className="text-center">
-        No data available
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
+          </button> */}
+                    <button
+                      onClick={(e) => handleClick(e, row.id)}
+                      className="px-4 py-1 text-white rounded text-sm sm:text-base bg-green-500 hover:bg-green-600"
+                    >
+                      Change Role
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={9} className="text-center">
+                  No data available
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
 
         </Table>
 
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        {roles.map((role) => (
-          <MenuItem key={role.id} onClick={() => handleRoleChange(role.id)}>
-            {role.name}
-          </MenuItem>
-        ))}
+          {roles.map((role) => (
+            <MenuItem key={role.id} onClick={() => handleRoleChange(role.id)}>
+              {role.name}
+            </MenuItem>
+          ))}
         </Menu>
       </TableContainer>
       <div className="flex justify-center items-center mt-4 space-x-2">
