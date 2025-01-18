@@ -112,10 +112,10 @@ const SessionManagePage: React.FC = () => {
         <button onClick={() => navigate('/manage')} className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm sm:text-base">Manage</button>
         <button onClick={() => navigate('/create')} className="bg-gray-300 px-4 py-2 rounded-md text-sm sm:text-base">Create</button>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse border border-gray-400 text-sm sm:text-base">
-          <thead>
-            <tr className="bg-gray-200">
+      <div className="overflow-x-auto shadow-md rounded-lg">
+        <table className="min-w-full bg-white">
+          <thead className="bg-blue-600 text-white">
+            <tr>
               <th className="border border-gray-400 p-2">Session#</th>
               <th className="border border-gray-400 p-2">Class</th>
               <th className="border border-gray-400 p-2">Timeline</th>

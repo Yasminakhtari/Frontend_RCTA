@@ -25,7 +25,7 @@ const getLocationById = async (id: number) => {
 
 const updateLocation = async (id:number, locationDto:any) => {
     try {
-      const response = await axios.post(`${base_url}/location/updateLocation`, locationDto, {
+      const response = await axios.put(`${base_url}/location/updateLocation`, locationDto, {
         params: { id }, // Send the ID as a request parameter
       });
       return response.data;

@@ -80,5 +80,22 @@ const getAllCategoriesAndSubCategories = async () => {
       throw error; // rethrow the error to be handled by the component
     }
   };
+
+  const getTennisSessionDetails = async (id: any) => {
+    try {
+      const response = await axios.get(`${base_url}/v1/sessionDetail/${id}`, {
+      });
+      return response.data; // return the data from the response
+    } catch (error) {
+      console.error('Error fetching tennis data:', error);
+      throw error; // rethrow the error to be handled by the component
+    }
+  };
   
-export { getAllCategoriesAndSubCategories,getAllTennisData,toggleServiceStatus,getFilteredProducts,getTennisById };
+export { getAllCategoriesAndSubCategories,
+          getAllTennisData,
+          toggleServiceStatus,
+          getFilteredProducts,
+          getTennisById,
+          getTennisSessionDetails
+         };

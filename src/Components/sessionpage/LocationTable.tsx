@@ -11,11 +11,7 @@ interface LocationData {
   status: string;
 }
 
-const initialLocations: LocationData[] = [
-  // { name: 'College Park High School', address: '123 Main St', city: 'Springfield', state: 'IL', zipcode: '62704', isActive: true },
-  // { name: 'College Park High School', address: '456 Oak Ave', city: 'Lincoln', state: 'NE', zipcode: '68508', isActive: true },
-  // { name: 'Michael Brown', address: '789 Maple Dr', city: 'Madison', state: 'WI', zipcode: '53703', isActive: true },
-];
+const initialLocations: LocationData[] = [];
 
 
 
@@ -73,6 +69,7 @@ const LocationTable: React.FC = () => {
     setEditFormData(newLocation);
     setEditingIndex(locations.length);
     setEditFormData(newLocation);
+    setIsNewLocation(true);
   };
 
   const handleRemoveNewLocation = () => {
@@ -115,49 +112,6 @@ const LocationTable: React.FC = () => {
       setEditFormData({ ...editFormData, [name]: value });
     }
   };
-
-  // const handleEditSubmit = async () => {
-  //   if (editFormData) {
-  //     try {
-  //       let savedLocation;
-
-  //       if (editingIndex !== null) {
-  //         alert(editingIndex)
-  //         // Update an existing location
-  //         const id = editFormData.id; // Assuming the ID exists in editFormData
-  //         if (!id) {
-  //           console.error("Location ID is required for updating.");
-  //           return;
-  //         }
-
-  //         savedLocation = await updateLocation(id, editFormData);
-  //         console.log("Location updated successfully:", savedLocation);
-
-  //         // Show success alert for update
-  //         alert("The location has been updated successfully!");
-  //       } else {
-  //         // Save a new location
-  //         savedLocation = await saveLocation(editFormData);
-  //         console.log("Location saved successfully:", savedLocation);
-
-  //         // Show success alert for save
-  //         alert("The location has been saved successfully!");
-  //       }
-
-  //       // Fetch updated locations
-  //       await fetchLocations();
-
-  //       // Reset form and editing state
-  //       setEditingIndex(null);
-  //       setEditFormData(null);
-  //     } catch (error) {
-  //       console.error("Error saving/updating location:", error);
-
-  //       // Show error alert
-  //       alert("There was an issue saving or updating the location. Please try again.");
-  //     }
-  //   }
-  // };
 
   const handleEditSubmit = async () => {
     if (editFormData) {
@@ -314,12 +268,14 @@ const LocationTable: React.FC = () => {
                         >
                           {isNewLocation ? 'Save' : 'Update'}
                         </button>
+                        {isNewLocation && (
                         <button
                           onClick={handleRemoveNewLocation}
                           className="px-3 py-1 text-white bg-red-500 rounded hover:bg-red-600"
                         >
                           Remove
                         </button>
+                        )}
                       </div>
                     </td>
                   </>
