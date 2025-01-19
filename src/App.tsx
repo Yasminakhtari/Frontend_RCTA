@@ -13,7 +13,7 @@ import { Provider } from 'react-redux';
 import Store from './Store';
 import AppRoutes from './Pages/AppRoutes';
 import { CartProvider } from './Components/productpage/CartContext';
-
+import { UserProvider } from './Components/notification/UserContext';
 
 function App() {
 
@@ -36,12 +36,14 @@ function App() {
   return (
     <div className='w-[100%] defaulttheme={dark} overflow-hidden'>
     <Provider store={Store}>
+    <UserProvider>
     <CartProvider>
         <MantineProvider   theme={theme} >
           <Notifications position="top-right" zIndex={1000} />
             <AppRoutes/>
         </MantineProvider>
-     </CartProvider>  
+     </CartProvider> 
+     </UserProvider> 
     </Provider>
 
 

@@ -31,14 +31,19 @@ import SessionManagePage from "../Components/sessionpage/SessionManagePage";
 import SessionCreatePage from "../Components/sessionpage/SessionCreatePage";
 import LocationCreate from "../Components/sessionpage/LocationCreate";
 import LocationTable from "../Components/sessionpage/LocationTable";
-
+//import { Notifications } from "@mui/icons-material";
+import Notifications from "../Components/notification/Notifications";
+import { useUserContext } from '../Components/notification/UserContext';
+import StudentDetails from "../Components/sessionpage/StudentDetails";
 
 
 
 const AppRoutes = () => {
+  const { userId } = useUserContext();
   const user = useSelector((state: any) => state.user);
   const handleLocationSubmit = (data: { address: string; city: string; state: string; zipcode: string }) => {
     console.log('Location Data Submitted:', data);
+    
   };
   
   return <BrowserRouter>
@@ -83,6 +88,8 @@ const AppRoutes = () => {
       <Route path="/location" element={<LocationCreate onSubmit={handleLocationSubmit} />} />
       <Route path="/locationtable" element={<LocationTable />} />
       <Route path="/create/:id" element={<SessionCreatePage />} />
+      <Route path="/notification" element={<Notifications userId={userId} />} />
+      <Route path="/studentdetails" element={<StudentDetails />} />
     </Routes>
     <ScrollUp />
     {/* <ServiceTable/> */}

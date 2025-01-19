@@ -50,6 +50,8 @@ const SessionManagePage: React.FC = () => {
 
   const handleManageParticipants = (sessionNo: number) => {
     alert(`Manage participants for session: ${sessionNo}`);
+  
+    navigate(`/studentdetails/${sessionNo}`); // Navigate to StudentDetails with sessionNo
   };
 
   const filteredSessions = sessions.filter(session =>
@@ -103,7 +105,7 @@ const SessionManagePage: React.FC = () => {
         <input
           type="text"
           placeholder="Search by class"
-          className="border rounded-md px-3 py-2 text-sm sm:text-base w-full sm:w-auto"
+          className="w-1/3 px-1 py-1 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
         />
