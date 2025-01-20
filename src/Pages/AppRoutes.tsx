@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Header from "../Components/Header/Header";
 import MediaGalleryPage from "./MediaGalleryPage";
@@ -35,6 +36,16 @@ import LocationTable from "../Components/sessionpage/LocationTable";
 import Notifications from "../Components/notification/Notifications";
 import { useUserContext } from '../Components/notification/UserContext';
 import StudentDetails from "../Components/sessionpage/StudentDetails";
+import PaymentPage from "../Components/productpage/PaymentPage";
+import PaymentModal from "../Components/productpage/PaymentModal";
+
+
+
+const PaymentModalWrapper: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(true); // You can toggle based on your logic
+
+  return <PaymentModal isOpen={isOpen} onClose={() => setIsOpen(false)} />;
+};
 
 
 
@@ -90,6 +101,8 @@ const AppRoutes = () => {
       <Route path="/create/:id" element={<SessionCreatePage />} />
       <Route path="/notification" element={<Notifications userId={userId} />} />
       <Route path="/studentdetails/:id" element={<StudentDetails />} />
+      <Route path="/payment" element={<PaymentPage />} />
+      <Route path="/paymentmodal" element={<PaymentModalWrapper />} />
     </Routes>
     <ScrollUp />
     {/* <ServiceTable/> */}

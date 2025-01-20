@@ -11,12 +11,17 @@ const AdminHome = () => {
     setIsSidebarVisible(!isSidebarVisible);
   };
 
+   // Close the sidebar (used in AdminSidebar's onClose prop)
+   const closeSidebar = () => {
+    setIsSidebarVisible(false); // Sidebar is closed
+  };
+
   return (
     <div className="mt-20 flex">
       {/* Sidebar */}
       {isSidebarVisible && (
         <div className="sticky top-0 bg-gray-800 p-5 w-64 transition-all duration-300 ease-in-out">
-          <AdminSidebar />
+          <AdminSidebar onClose={closeSidebar} />
         </div>
       )}
 

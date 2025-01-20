@@ -16,8 +16,15 @@ import {
 import { Link } from "react-router-dom";
 import { IconUser } from '@tabler/icons-react';
 
-const AdminSidebar = () => {
+interface AdminSidebarProps {
+  onClose: () => void; // Define onClose as a prop
+}
+
+// const AdminSidebar = () => {
+//   const [sidebarOpen, setSidebarOpen] = useState(true);
+const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  
 
   // Array of menu sections and their links
   const menuItems = [
@@ -79,6 +86,14 @@ const AdminSidebar = () => {
           >
             {sidebarOpen ? '×' : '☰'}
           </button>
+          
+          {/* Added close button for the parent component */}
+          <button
+            onClick={onClose} // Close sidebar when this button is clicked
+            className="text-white md:hidden"
+          >
+            ×
+          </button>
         </div>
 
         {/* Sidebar Items */}
@@ -92,6 +107,7 @@ const AdminSidebar = () => {
                   key={linkIndex}
                   to={link.to}
                   className="block p-2 hover:bg-blue-500 rounded-md"
+                  onClick={onClose} // Close sidebar when a link is clicked
                 >
                   <div className="flex items-center">
                     <link.icon className="mr-2 text-xl" />
