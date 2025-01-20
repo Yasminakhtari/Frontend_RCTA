@@ -90,6 +90,9 @@ const AppRoutes = () => {
       <Route path="/create/:id" element={<SessionCreatePage />} />
       <Route path="/notification" element={<Notifications userId={userId} />} />
       <Route path="/studentdetails" element={<StudentDetails />} />
+      <Route path="/" element={<SessionManagePage />} />
+      <Route path="/studentdetails/:sessionNo" element={<StudentDetails />} />
+      <Route path="/create/:sessionNo" element={<SessionCreatePage />} />
     </Routes>
     <ScrollUp />
     {/* <ServiceTable/> */}
