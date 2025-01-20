@@ -20,11 +20,13 @@ const ProductCartPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   // Fetch data on component mount
   const fetchProducts = async () => {
     try {
+      setLoading(true);
       const data: Product[] = await getFilteredProducts("Products");
       setProducts(data);
 
@@ -45,6 +47,8 @@ const ProductCartPage: React.FC = () => {
       setSubcategories(uniqueSubcategories);
     } catch (error) {
       console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,7 +101,13 @@ const ProductCartPage: React.FC = () => {
       );
   });
 
-
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-100 to-blue-200">
+        <p className="text-gray-700 text-lg font-semibold">Loading ...</p>
+      </div>
+    );
+  }
 
 
 

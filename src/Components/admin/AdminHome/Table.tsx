@@ -87,7 +87,6 @@ const List: React.FC = () => {
     fetchData();
   }, []);
 
-
   useEffect(() => {
     setCurrentPage(1); // Reset to first page when search text or any filter changes
   }, [filteredRows]);
@@ -103,7 +102,7 @@ const List: React.FC = () => {
     setSelectedUserId(null);
   };
 
-  if (loading) return <div>Loading...</div>;
+  // if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   ;
   const handleRoleChange = async (roleId: number) => {
@@ -167,6 +166,13 @@ const List: React.FC = () => {
   // };
 
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-100 to-blue-200">
+        <p className="text-gray-700 text-lg font-semibold">Loading ...</p>
+      </div>
+    );
+  }
   return (
 
     <div className=" p-4 mt-16 lg:mt-10">
