@@ -52,7 +52,11 @@ const ProductDetails: React.FC = () => {
 
   // If product is loading or an error occurred
   if (loading) {
-    return <div className=" mx-auto p-4 sm:p-8 mt-10">Loading...</div>;
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-100 to-blue-200">
+        <p className="text-gray-700 text-lg font-semibold">Loading ...</p>
+      </div>
+    );
   }
 
   if (error) {
@@ -60,9 +64,9 @@ const ProductDetails: React.FC = () => {
   }
 
   // If product is not found
-  if (!product) {
-    return <div className=" mx-auto p-4 sm:p-8 mt-10">Product not found.</div>;
-  }
+  // if (!product) {
+  //   return <div className=" mx-auto p-4 sm:p-8 mt-10">Product not found.</div>;
+  // }
 
   return (
     <div className=" min-h-screen mx-auto p-4 min-h-30 sm:p-8 mt-20">

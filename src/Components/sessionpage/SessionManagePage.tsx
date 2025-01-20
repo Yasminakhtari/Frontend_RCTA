@@ -20,6 +20,7 @@ const initialSessions: Session[] = [
 const SessionManagePage: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>(initialSessions);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   const handleEdit = (sessionNo: number) => {
@@ -73,6 +74,7 @@ const SessionManagePage: React.FC = () => {
 
   const fetchSession = async () => {
     try {
+      setLoading(true);
       const response = await getAllSession();
       if (response.data) {
         const transformedSessions = response.data.map((item: any) => ({
@@ -91,13 +93,22 @@ const SessionManagePage: React.FC = () => {
       console.error('Failed to fetch sessions:', error);
       alert('Failed to fetch session data. Please try again.');
     }
+    finally {
+      setLoading(false);
+    }
   };
 
 
    useEffect(() => {
       fetchSession();
     }, []);
-
+    if (loading) {
+      return (
+        <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-100 to-blue-200">
+          <p className="text-gray-700 text-lg font-semibold">Loading ...</p>
+        </div>
+      );
+    }
   return (
     <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 bg-white rounded shadow min-h-screen mt-16">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-5 gap-3">

@@ -21,16 +21,20 @@ const LocationTable: React.FC = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editFormData, setEditFormData] = useState<LocationData | null>(null);
   const [isNewLocation, setIsNewLocation] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
 
   // Fetch all locations on component mount
   const fetchLocations = async () => {
     try {
+      setLoading(true);
       const data = await getAllLocation();
       console.log(data.data)
       setLocations(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
       console.error('Failed to fetch locations:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -147,6 +151,14 @@ const LocationTable: React.FC = () => {
       }
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-100 to-blue-200">
+        <p className="text-gray-700 text-lg font-semibold">Loading ...</p>
+      </div>
+    );
+  }
 
 
   // const toggleStatus = (index: number) => {
