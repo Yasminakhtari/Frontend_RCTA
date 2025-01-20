@@ -49,6 +49,7 @@ const Login = (props: any) => {
         console.log(res);
         console.log(res?.data?.token);
         localStorage.setItem("token", JSON.stringify(res?.data?.token))
+        localStorage.setItem("loginData",JSON.stringify(res?.data))
         notifications.show({
           title: 'Login Sucessful',
           message: 'Redirecting to home Page...',

@@ -34,6 +34,8 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
     const [selectedChild, setSelectedChild] = useState<Child | null>(null);
     const [selectedReason, setSelectedReason] = useState<string | null>(null);
     const [isProfileDetailsModalOpen, setProfileDetailsModalOpen] = useState(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [userData, setUsers] = useState<any>();
     const [isMobile, setIsMobile] = useState(false); // State for checking mobile screen size
 
     const staticChildrenData: Child[] = [
@@ -63,12 +65,33 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
 
     // Use effect to check for screen size on window resize
     useEffect(() => {
+        const userDetails = localStorage.getItem('loginData');
+      console.log(userDetails)
+      setUsers(userDetails ? JSON.parse(userDetails) : null); // Parse JSON if necessary
+      console.log(userData)
         checkIfMobile();
         window.addEventListener('resize', checkIfMobile);
         return () => {
             window.removeEventListener('resize', checkIfMobile);
         };
     }, []);
+      // Fetch all locations on component mount
+  const fetchUserDetails = async () => {
+    try {
+      setLoading(true);
+      const userDetails = localStorage.getItem('loginData');
+      console.log(userDetails)
+      setUsers(userDetails ? JSON.parse(userDetails) : null); // Parse JSON if necessary
+    } catch (error) {
+      console.error('Failed to fetch locations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+//   useEffect(() => {
+//     fetchUserDetails();
+//   }, []); // Dependency array ensures this runs only once
 
     const handleAddChild = () => {
         if (newChild.name && newChild.age) {
@@ -131,7 +154,9 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
             </div>
 
             <div className=" flex  md:justify-between md:items-center mt-6 px-3">
-                <h1 className=" text-xl md:text-3xl font-bold lg:font-semibold w-2/5 md:w-auto ">Serena Williams</h1>
+                <h1 className=" text-xl md:text-3xl font-bold lg:font-semibold w-2/5 md:w-auto ">
+                {userData?.userDetails?.firstName} {userData?.userDetails?.lastName}
+                </h1>
                 <div className=" text-xs md:text-xl flex items-center gap-2">
                     <Badge color="blue" variant="filled">Player</Badge>
                 </div>
@@ -141,7 +166,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
 
             <div className="flex gap-1 text-mine-shaft-300 text-lg items-center">
                 <IconMail className="h-5 w-5" stroke={1.5} />
-                serena@gmail.com
+                {userData?.userDetails?.email}
             </div>
 
             <div className="flex gap-1 text-mine-shaft-300 text-lg items-center">
@@ -232,7 +257,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
                         onChange={(e) => setNewChild({ ...newChild, status: e.target.value as "ongoing" | "incoming" | "completed" })}
                     />
                     <Button onClick={handleAddChild} fullWidth color="blue">
-                        Add Child
+                        Add Player
                     </Button>
                 </div>
             </Modal>
@@ -253,7 +278,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
             {!isMobile && selectedChild && <PlayersDetails child={selectedChild} />}
 
             <div className="mt-6">
-                <h2 className="text-lg font-bold mb-4">Children List</h2>
+                <h2 className="text-lg font-bold mb-4">Player List</h2>
                 <div className="grid grid-cols-1 gap-4">
                     {children.map((child) => (
                         <div
