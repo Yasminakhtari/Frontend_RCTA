@@ -69,8 +69,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
     },
   ];
 
+  const handleContainerClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent clicks inside the sidebar from closing it
+  };
+
+
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen "onClick={onClose}>
       {/* Sidebar Container */}
       <div
         className={`bg-gray-900 text-gray-200 flex flex-col transition-all duration-300 ease-in-out ${
