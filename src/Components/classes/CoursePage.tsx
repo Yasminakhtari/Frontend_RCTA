@@ -21,6 +21,8 @@ const CoursePage: React.FC = () => {
   const [courses, setCourse] = useState<Course>({} as Course); // Initialize as an empty array
   const [sessions, setSessions] = useState<any[]>([]); // State to store session details
   const [loading, setLoading] = useState(true); // Loading state to handle async data fetching
+  const [isAnyBooked, setIsAnyBooked] = useState(false); // Track if any session is booked.
+
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -28,7 +30,7 @@ const CoursePage: React.FC = () => {
         setLoading(true);
         const data = await getTennisSessionDetails(id);
         console.log(data.tennisData.category)
-        setCourse(data.tennisData || []); // Set course data as an array (in case of empty data)
+        setCourse(data.tennisData || {}); // Set course data as an array (in case of empty data)
         setSessions(data.sessions || []); // Set session data as an array
       } catch (error) {
         console.error("Error fetching course details:", error);
@@ -44,7 +46,15 @@ const CoursePage: React.FC = () => {
 
   // Find the course by ID
   // const course = courses.find((course: { id: string | undefined }) => course.id === id);
-
+    // Update if any session is booked
+    useEffect(() => {
+      if (sessions.length > 0) {
+        const anySessionBooked = sessions.some((session: any) => isBooked(session.id));
+        setIsAnyBooked(anySessionBooked);
+      } else {
+        setIsAnyBooked(false);
+      }
+    }, [sessions, isBooked]);
 
   const scrollToSessions = () => {
     if (sessionRef.current) {
@@ -83,7 +93,6 @@ const CoursePage: React.FC = () => {
   //   }
   // };
   const handleRegister = (sessionId: number, courseId: number) => {
-    alert(sessionId+" "+courseId)
     if (!isBooked(sessionId)) {
       const selectedSession = sessions.find((session) => session.id === sessionId);
   
@@ -97,6 +106,7 @@ const CoursePage: React.FC = () => {
           category: "Sports",
           image: "/path/to/image", // Replace with actual image path
         });
+        setIsAnyBooked(true);
         navigate("/cart");
       }
     }
@@ -174,12 +184,19 @@ const CoursePage: React.FC = () => {
                     <td className="border border-gray-300 px-4 py-2">{session.startTime} – {session.endTime}</td>
                     <td className="border border-gray-300 px-4 py-2">${session.price.toFixed(2)}</td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {isBooked(session.id) ? (
+                      {/* {isBooked(session.id) ? (
                         <button
                           className="bg-gray-500 text-white px-4 py-2 rounded-md cursor-not-allowed"
                           disabled
                         >
                           Booked
+                        </button>
+                      ) : isAnyBooked && !isBooked(session.id) ? (
+                        <button
+                          className="bg-gray-400 text-white px-4 py-2 rounded-md cursor-not-allowed"
+                          disabled
+                        >
+                          Disabled
                         </button>
                       ) : (
                         <button
@@ -188,7 +205,20 @@ const CoursePage: React.FC = () => {
                         >
                           Register
                         </button>
-                      )}
+                      )} */}
+                       <button
+            className={`px-4 py-2 rounded-md text-white ${
+              isBooked(session.id)
+                ? "bg-gray-500 cursor-not-allowed"
+                : isAnyBooked && !isBooked(session.id)
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
+            disabled={isBooked(session.id) || (isAnyBooked && !isBooked(session.id))}
+            onClick={() => handleRegister(session.id!, courses.id!)}
+          >
+            {isBooked(session.id) ? "Booked" : "Register"}
+          </button>
                     </td>
                   </tr>
                 ))
