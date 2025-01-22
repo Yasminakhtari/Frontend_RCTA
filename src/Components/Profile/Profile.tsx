@@ -16,6 +16,7 @@ interface Child {
     batch: string;
     coach: string;
     status: "ongoing" | "incoming" | "completed";
+
 }
 
 interface ProfileProps {
@@ -28,7 +29,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
     const dispatch = useDispatch();
     const profile = useSelector((state: any) => state.profile || { picture: null });
 
-    const { hovered, ref } = useHover();
+    const {hovered,ref} = useHover();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isRemoveModalOpen, setRemoveModalOpen] = useState(false);
     const [selectedChild, setSelectedChild] = useState<Child | null>(null);
@@ -46,6 +47,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
 
     const [edit, setEdit] = useState(false);
     const [phone, setPhone] = useState("");
+    const [location,setLocation] = useState("");
 
     const [children, setChildren] = useState<Child[]>(staticChildrenData);
     const [newChild, setNewChild] = useState<Child>({
@@ -66,7 +68,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
     // Use effect to check for screen size on window resize
     useEffect(() => {
         const userDetails = localStorage.getItem('loginData');
-      console.log(userDetails)
+        console.log(userDetails)
       setUsers(userDetails ? JSON.parse(userDetails) : null); // Parse JSON if necessary
       console.log(userData)
         checkIfMobile();

@@ -3,6 +3,7 @@ import AdminSidebar from './AdminSidebar'; // Ensure this component works
 import AdminHomeContainer from './AdminHomeContainer'; // Ensure this component works
 import { ActionIcon } from '@mantine/core';
 import { IconLayoutSidebarLeftCollapseFilled, IconLayoutSidebarRightExpand } from '@tabler/icons-react';
+import { Outlet } from 'react-router-dom';
 
 const AdminHome = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -47,7 +48,8 @@ const AdminHome = () => {
         }`}
       >
         <div className="bg-white shadow-md rounded-lg p-5">
-          <AdminHomeContainer />
+          {/* <AdminHomeContainer /> */}
+          <Outlet/>
         </div>
       </div>
     </div>

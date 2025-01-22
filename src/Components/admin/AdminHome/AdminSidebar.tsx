@@ -24,40 +24,40 @@ const AdminSidebar = () => {
     {
       section: 'Main',
       links: [
-        { to: '/', icon: Dashboard, label: 'Dashboard' },
-        { to: '/servicetable', icon: TableBar, label: 'Service Table' },
-        { to: '/manage', icon: TableBar, label: 'Session Table' },
-        { to: '/alluser', icon: IconUser, label: 'Get All Users' },
-        { to: '/locationtable', icon: AddLocation, label: 'Locations' },
+        { to: 'dashboard', icon: Dashboard, label: 'Dashboard' },
+        { to: 'servicetable', icon: TableBar, label: 'Service Table' },
+        { to: 'manage', icon: TableBar, label: 'Session Table' },
+        { to: 'alluser', icon: IconUser, label: 'Get All Users' },
+        { to: 'locationtable', icon: AddLocation, label: 'Locations' },
       ],
     },
     {
       section: 'Management',
       links: [
-        { to: '/members', icon: Group, label: 'Members' },
-        { to: '/players', icon: SportsTennis, label: 'Players' },
-        { to: '/tournaments', icon: Event, label: 'Tournaments' },
+        { to: 'members', icon: Group, label: 'Members' },
+        { to: 'players', icon: SportsTennis, label: 'Players' },
+        { to: 'tournaments', icon: Event, label: 'Tournaments' },
       ],
     },
     {
       section: 'Useful',
       links: [
-        { to: '/404', icon: InsertChart, label: 'Stats' },
-        { to: '/notifications', icon: NotificationsNoneOutlined, label: 'Notifications' },
+        { to: '404', icon: InsertChart, label: 'Stats' },
+        { to: 'notifications', icon: NotificationsNoneOutlined, label: 'Notifications' },
       ],
     },
     {
       section: 'Service',
       links: [
-        { to: '/logs', icon: PsychologyOutlined, label: 'Logs' },
-        { to: '/settings', icon: SettingsApplicationsOutlined, label: 'Settings' },
+        { to: 'logs', icon: PsychologyOutlined, label: 'Logs' },
+        { to: 'settings', icon: SettingsApplicationsOutlined, label: 'Settings' },
       ],
     },
     {
       section: 'User',
       links: [
-        { to: '/profile', icon: AccountCircleOutlined, label: 'Profile' },
-        { to: '/logout', icon: ExitToApp, label: 'Logout' },
+        { to: 'profile', icon: AccountCircleOutlined, label: 'Profile' },
+        { to: 'logout', icon: ExitToApp, label: 'Logout' },
       ],
     },
   ];
