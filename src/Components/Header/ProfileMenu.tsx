@@ -28,11 +28,11 @@ const ProfileMenu = () => {
   const [opened, setOpened] = useState(false);
 
 
-  console.log(user.data.userDetails.firstName)
+  console.log(user.data.userDetails.firstName);
+
   ////
   const handleLogout = () => {
     dispatch(removeUser());
-
     localStorage.removeItem("token")
   }
   ////
@@ -83,7 +83,7 @@ const ProfileMenu = () => {
             ADMIN
           </Menu.Item>
         </Link>
-        <Divider />
+        <Divider  />
 
         <Menu.Item leftSection={<IconMessageCircle style={{ width: rem(14), height: rem(14) }} />}>
           Messages
