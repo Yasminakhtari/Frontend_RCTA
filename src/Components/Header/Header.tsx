@@ -32,7 +32,7 @@ const Header = () => {
 
         <div className='flex gap-3 items-center text-blueRibbon-950 f'>
           {/* <IconDots className='h-8 w-8 cursor-pointer mr-3' onClick={() => setIsSidebarOpen(!isSidebarOpen)} /> */}
-          <IconMenu2 className='h-8 w-8 cursor-pointer mr-3' onClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+          {/* <IconMenu2 className='h-8 w-8 cursor-pointer mr-3' onClick={() => setIsSidebarOpen(!isSidebarOpen)} /> */}
           <IconAdCircle className='h-10 w-10 stroke-1.25' onClick={() => { navigate("/"); closeSidebar(); }} />
           <div className='text-2xl md:text-4xl  font-extrabold '>RC Tennis Academy</div>
         </div>

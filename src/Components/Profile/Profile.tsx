@@ -16,6 +16,7 @@ interface Child {
     batch: string;
     coach: string;
     status: "ongoing" | "incoming" | "completed";
+
 }
 
 interface ProfileProps {
@@ -46,6 +47,9 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
 
     const [edit, setEdit] = useState(false);
     const [phone, setPhone] = useState("");
+    const [location, setLocation] = useState("");
+    const [isEditingPhone, setIsEditingPhone] = useState(false);
+    const [isEditingLocation, setIsEditingLocation] = useState(false);
 
     const [children, setChildren] = useState<Child[]>(staticChildrenData);
     const [newChild, setNewChild] = useState<Child>({
@@ -66,32 +70,33 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
     // Use effect to check for screen size on window resize
     useEffect(() => {
         const userDetails = localStorage.getItem('loginData');
-      console.log(userDetails)
-      setUsers(userDetails ? JSON.parse(userDetails) : null); // Parse JSON if necessary
-      console.log(userData)
+        console.log(userDetails)
+        setUsers(userDetails ? JSON.parse(userDetails) : null); // Parse JSON if necessary
+        console.log(userData)
         checkIfMobile();
         window.addEventListener('resize', checkIfMobile);
         return () => {
             window.removeEventListener('resize', checkIfMobile);
         };
     }, []);
-      // Fetch all locations on component mount
-  const fetchUserDetails = async () => {
-    try {
-      setLoading(true);
-      const userDetails = localStorage.getItem('loginData');
-      console.log(userDetails)
-      setUsers(userDetails ? JSON.parse(userDetails) : null); // Parse JSON if necessary
-    } catch (error) {
-      console.error('Failed to fetch locations:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-//   useEffect(() => {
-//     fetchUserDetails();
-//   }, []); // Dependency array ensures this runs only once
+    // Fetch all locations on component mount
+    const fetchUserDetails = async () => {
+        try {
+            setLoading(true);
+            const userDetails = localStorage.getItem('loginData');
+            console.log(userDetails)
+            setUsers(userDetails ? JSON.parse(userDetails) : null); // Parse JSON if necessary
+        } catch (error) {
+            console.error('Failed to fetch locations:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    //   useEffect(() => {
+    //     fetchUserDetails();
+    //   }, []); // Dependency array ensures this runs only once
 
     const handleAddChild = () => {
         if (newChild.name && newChild.age) {
@@ -123,21 +128,37 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
     };
 
     //////////
-    const handleEdit = () => {
-        if (!edit) {//jadi edit sethi nahi then setEdit true karidia
-            setEdit(true);
-            setPhone(profile.phone);
-        } else {
-            setEdit(false);
+    // const handleEdit = () => {
+    //     if (!edit) {//jadi edit sethi nahi then setEdit true karidia
+    //         setEdit(true);
+    //         // setPhone(profile.phone);
+    //     } else {
+    //         setEdit(false);
+    //     }
+    // }
+
+
+    const handleEditPhone = () => {
+        setIsEditingPhone(!isEditingPhone);
+        if (isEditingPhone) {
+            successNotification("Success", "Phone number updated successfully");
         }
-    }
+    };
+
+    const handleEditLocation = () => {
+        setIsEditingLocation(!isEditingLocation);
+        if (isEditingLocation) {
+            successNotification("Success", "Location updated successfully");
+        }
+    };
+
 
     const handleSave = () => {
         setEdit(false);
-        let updatedProfile = { ...profile, phone: phone }
+        // let updatedProfile = { ...profile, phone: phone,location:location}
         //now i have use dispatch to ...........
-        dispatch(changeProfile(updatedProfile));
-        successNotification("Success", "Phone number Updated Sucessfully");
+        // dispatch(changeProfile(updatedProfile));
+        successNotification("Success", "Updated Sucessfully");
     }
 
 
@@ -147,15 +168,15 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
             <div className="relative">
                 <img className="rounded-t-2xl" src="/banner.jpg" alt="Banner" />
                 <div ref={ref} className="absolute flex items-center justify-center left-3 -bottom-1/3">
-                <Avatar className="rounded-full   !h-24 !w-24 md:!h-48 md:!w-48 mb-10 border-mine-shaft-950 border-8"  src={profile.picture?`data:image/jpeg;base64,${profile.picture}`:"iranian-8594205_1280.jpg"} alt="it's me" />
-                    
+                    <Avatar className="rounded-full   !h-24 !w-24 md:!h-48 md:!w-48 mb-10 border-mine-shaft-950 border-8" src={profile.picture ? `data:image/jpeg;base64,${profile.picture}` : "iranian-8594205_1280.jpg"} alt="it's me" />
+
                     {hovered && <IconEdit className="absolute z-10 !w-16 !h-16" />}
                 </div>
             </div>
 
             <div className=" flex  md:justify-between md:items-center mt-6 px-3">
                 <h1 className=" text-xl md:text-3xl font-bold lg:font-semibold w-2/5 md:w-auto ">
-                {userData?.userDetails?.firstName} {userData?.userDetails?.lastName}
+                    {userData?.userDetails?.firstName} {userData?.userDetails?.lastName}
                 </h1>
                 <div className=" text-xs md:text-xl flex items-center gap-2">
                     <Badge color="blue" variant="filled">Player</Badge>
@@ -168,41 +189,72 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
                 <IconMail className="h-5 w-5" stroke={1.5} />
                 {userData?.userDetails?.email}
             </div>
-
+            {/* Location */}
             <div className="flex gap-1 text-mine-shaft-300 text-lg items-center">
                 <IconMapPin className="h-5 w-5" stroke={1.5} />
-                Florida, USA
+                Location <span>
+                {isEditingLocation ? (
+                    <Textarea
+                        value={location}
+                        autosize
+                        minRows={3}
+                        placeholder="Update Your Location."
+                        onChange={(e) => setLocation(e.target.value)}
+                    />
+                ) : (
+                    <div className="text-lg ml-4 text-white font-bold  text-justify">{location || 'N/A'}</div>
+                )}
+                </span>
+               
+                <div>
+                    {isEditingLocation ? (
+                        <ActionIcon onClick={handleEditLocation} size="lg" color="green.8" variant="subtle">
+                            <IconCheck className="h-4/5 w-4/5" />
+                        </ActionIcon>
+                    ) : (
+                        <ActionIcon onClick={handleEditLocation} size="lg" color="brightSun.4" variant="subtle">
+                            <IconPencil className="h-4/5 w-4/5" />
+                        </ActionIcon>
+                    )}
+                </div>
+
+                
             </div>
+
+
+            {/* Phone */}
             <div className="px-3">
-                <div className="text-lg font-semibold mb-3 flex justify-between">Contact no. <span className="ml-3">81309071-2327</span>
+                <div className="text-lg font-semibold mb-3 flex justify-between">
+                    Contact no. <span className="!ml-0">
+                    {isEditingPhone ? (
+                    <Textarea
+                        
+                        value={phone}
+                        autosize
+                        minRows={3}
+                        placeholder="Enter Your Phone No."
+                        onChange={(e) => setPhone(e.target.value)}
+                    />
+                ) : (
+                    <div className="text-xl font-bold  text-white text-justify">{phone || 'N/A'}</div>
+                )} 
+                    </span>
+                     
                     <div>
-                        {
-                            edit && <ActionIcon onClick={handleSave} size="lg" color="green.8" variant="subtle" >
-                                {edit ? <IconCheck className="h-4/5 w-4/5" /> : <IconPencil className="h-4/5 w-4/5" />}
+                        {isEditingPhone ? (
+                            <ActionIcon onClick={handleEditPhone} size="lg" color="green.8" variant="subtle">
+                                <IconCheck className="h-4/5 w-4/5" />
                             </ActionIcon>
-                        }
-                        {
-                            !edit && <ActionIcon onClick={handleEdit} size="lg" color={edit ? "red.8" : "brightSun.4"} variant="subtle" >
-                                {edit ? <IconX className="h-4/5 w-4/5" /> : <IconPencil className="h-4/5 w-4/5" />}
+                        ) : (
+                            <ActionIcon onClick={handleEditPhone} size="lg" color="brightSun.4" variant="subtle">
+                                <IconPencil className="h-4/5 w-4/5" />
                             </ActionIcon>
-                        }
+                        )}
                     </div>
                 </div>
 
-
-                {
-                    edit ? <>
-                        <div>
-                            <Textarea value={phone} autosize minRows={3} placeholder="Enter Your Phoneno." onChange={(e) => setPhone(e.target.value)} />
-                        </div>
-                    </>
-                        :
-                        <>
-                            <div className="text-sm text-mine-shaft-300 text-justify">{profile?.phone}</div>
-                        </>
-                }
-
             </div>
+
 
 
 
@@ -238,24 +290,24 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
                         value={newChild.username}
                         onChange={(e) => setNewChild({ ...newChild, username: e.target.value })}
                     /> */}
-                    <TextInput
+                    {/* <TextInput
                         label="Batch"
                         placeholder="Enter batch (e.g., Morning, Evening)"
                         value={newChild.batch}
                         onChange={(e) => setNewChild({ ...newChild, batch: e.target.value })}
-                    />
+                    /> */}
                     {/* <TextInput
                         label="Coach"
                         placeholder="Enter coach name"
                         value={newChild.coach}
                         onChange={(e) => setNewChild({ ...newChild, coach: e.target.value })}
                     /> */}
-                    <TextInput
+                    {/* <TextInput
                         label="Status"
                         placeholder="Enter status (ongoing, incoming, completed)"
                         value={newChild.status}
                         onChange={(e) => setNewChild({ ...newChild, status: e.target.value as "ongoing" | "incoming" | "completed" })}
-                    />
+                    /> */}
                     <Button onClick={handleAddChild} fullWidth color="blue">
                         Add Player
                     </Button>

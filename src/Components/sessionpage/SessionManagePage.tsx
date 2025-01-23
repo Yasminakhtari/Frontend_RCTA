@@ -102,6 +102,7 @@ const SessionManagePage: React.FC = () => {
    useEffect(() => {
       fetchSession();
     }, []);
+    
     if (loading) {
       return (
         <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-100 to-blue-200">
