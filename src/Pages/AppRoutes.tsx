@@ -85,6 +85,7 @@ const PaymentModalWrapper: React.FC = () => {
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/testimonial" element={<AllTestiPage />} />
+        <Route path="/locationcard" element ={<LocationCardPage />} />
 
         {/* User and Authentication */}
         <Route path="/signup" element={user ? <Navigate to="/" /> : <SignUpPage />} />
@@ -112,10 +113,11 @@ const PaymentModalWrapper: React.FC = () => {
         <Route path="/create/:id" element={<SessionCreatePage />} />
         <Route path="/location" element={<LocationCreate onSubmit={handleLocationSubmit} />} />
         <Route path="/studentdetails/:id" element={<StudentDetails />} />
+        
 
         {/* Notifications */}
         <Route path="/notification" element={<Notifications userId={userId} />} />
-        <Route path="/locationcard" element ={<LocationCardPage />} />
+        {/* <Route path="/locationcard" element ={<LocationCardPage />} /> */}
         {/* Not Found */}
         <Route path="*" element={<NotFound />} />
 
