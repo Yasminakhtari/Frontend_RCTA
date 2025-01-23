@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useUserContext } from "../Components/notification/UserContext";
@@ -38,6 +39,7 @@ import StudentDetails from "../Components/sessionpage/StudentDetails";
 
 import Notifications from "../Components/notification/Notifications";
 import NotFound from "../Components/notfound/NotFound";
+import PaymentModal from '../Components/productpage/PaymentModal';
 
 const AppRoutes = () => {
   const { userId } = useUserContext();
@@ -51,6 +53,14 @@ const AppRoutes = () => {
   }) => {
     console.log("Location Data Submitted:", data);
   };
+
+
+
+const PaymentModalWrapper: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(true); // You can toggle based on your logic
+
+  return <PaymentModal isOpen={isOpen} onClose={() => setIsOpen(false)} />;
+};
 
   return (
     <BrowserRouter>

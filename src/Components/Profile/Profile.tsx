@@ -253,17 +253,6 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
                     </div>
                 </div>
 
-                {/* {isEditingPhone ? (
-                    <Textarea
-                        value={phone}
-                        autosize
-                        minRows={3}
-                        placeholder="Enter Your Phone No."
-                        onChange={(e) => setPhone(e.target.value)}
-                    />
-                ) : (
-                    <div className="text-sm text-mine-shaft-300 text-justify">{phone || 'N/A'}</div>
-                )} */}
             </div>
 
 

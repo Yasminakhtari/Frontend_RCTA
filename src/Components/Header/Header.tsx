@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconAdCircle, IconBell, IconSettings, IconMenu2, IconX, IconShoppingCart } from '@tabler/icons-react';
+import { IconAdCircle, IconBell, IconSettings, IconMenu2, IconX, IconShoppingCart,IconDots } from '@tabler/icons-react';
 import { Avatar, Button, Indicator } from '@mantine/core';
 
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -7,11 +7,15 @@ import NavLinks from './NavLinks';
 import ProfileMenu from './ProfileMenu';
 import { useSelector } from 'react-redux';
 import { useCart } from '../productpage/CartContext';
+import AdminSidebar from '../admin/AdminHome/AdminSidebar';
 
 const Header = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cart } = useCart();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const closeSidebar = () => setIsSidebarOpen(false); // Helper to close sidebar
+
 
   const navigate = useNavigate();
  
@@ -24,9 +28,12 @@ const Header = () => {
     location.pathname !== "/signup" && location.pathname !== "/login" ? (
       <div className='w-full md:px-5  fixed top-0 z-50 px-4 lg:px-10 bg-blueRibbon-600 font-["poppins"] text-white h-20 flex justify-between items-center lg:h-20 '>
         {/* Logo Section */}
+        {/* Left Section with Sidebar Toggle */}
 
         <div className='flex gap-3 items-center text-blueRibbon-950 f'>
-          <IconAdCircle className='h-10 w-10 stroke-1.25' onClick={() => navigate("/")} />
+          {/* <IconDots className='h-8 w-8 cursor-pointer mr-3' onClick={() => setIsSidebarOpen(!isSidebarOpen)} /> */}
+          {/* <IconMenu2 className='h-8 w-8 cursor-pointer mr-3' onClick={() => setIsSidebarOpen(!isSidebarOpen)} /> */}
+          <IconAdCircle className='h-10 w-10 stroke-1.25' onClick={() => { navigate("/"); closeSidebar(); }} />
           <div className='text-2xl md:text-4xl  font-extrabold '>RC Tennis Academy</div>
         </div>
 
@@ -42,12 +49,14 @@ const Header = () => {
             <Avatar src="" alt="it's me" />
           </div> */}
           {/* <ProfileMenu/> */}
-          {user ? <ProfileMenu/>:<Link to="/login"><button >Login</button></Link>}
+          {user ? <ProfileMenu onClose={closeSidebar} /> : <Link to="/login" onClick={closeSidebar}><button>Login</button></Link>}
+
+          {/* {user ? <ProfileMenu/>:<Link to="/login"><button >Login</button></Link>} */}
            
 
           <div className='bg-mine-shaft-900 p-1.5 rounded-full hidden lg:block'>
             <Indicator color="blueRibbon.6" offset={5} size={12} withBorder processing>
-              <IconBell stroke={1.5} />
+              <IconBell stroke={1.5} onClick={closeSidebar} />
             </Indicator>
           </div>
 
@@ -59,13 +68,24 @@ const Header = () => {
               <IconShoppingCart stroke={1.5} onClick={() => navigate('/cart')} />
             </Indicator>
           </div> */}
-          <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer' onClick={() => navigate('/cart')}>
+          <div onClick={() => { navigate('/cart'); closeSidebar(); }} className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer'>
+          
             <Indicator color="blueRibbon.6" offset={5} size={12} withBorder label={cartItemCount > 0 ? cartItemCount : undefined}>
               <IconShoppingCart stroke={1.5} />
             </Indicator>
           </div>
-
         </div>
+
+        {/* Sidebar */}
+        {isSidebarOpen && (
+          // <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-40" onClick={() => setIsSidebarOpen(false)}>
+            <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-40" onClick={closeSidebar}>
+
+            <div onClick={(e) => e.stopPropagation()}>
+            <AdminSidebar onClose={closeSidebar} />
+            </div>
+          </div>
+        )}
 
         {/* Mobile Menu */}
         {isMenuOpen && (

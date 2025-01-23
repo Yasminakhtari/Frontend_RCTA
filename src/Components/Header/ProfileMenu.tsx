@@ -18,7 +18,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { removeUser } from '../../Slices/UserSlice';
 
-const ProfileMenu = () => {
+// Added onClose prop to handle sidebar close
+interface ProfileMenuProps {
+  onClose?: () => void;
+}
+
+const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
   
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.user);
@@ -34,6 +39,7 @@ const ProfileMenu = () => {
   const handleLogout = () => {
     dispatch(removeUser());
     localStorage.removeItem("token")
+    if (onClose) onClose(); // Close the sidebar when logging out
   }
   ////
 
@@ -59,7 +65,8 @@ const ProfileMenu = () => {
   return (
     <Menu shadow="md" width={200} opened={opened} onChange={setOpened}>
       <Menu.Target>
-        <button className='!text-gray-200 !bg-gray-900 w-min p-1 rounded-md shadow-md' >
+        <button className='!text-gray-200 !bg-gray-900 w-min p-1 rounded-md shadow-md'onClick={onClose} >
+          
           <div className='flex gap-1  cursor-pointer items-center'>
             {/* <div className='hidden lg:flex gap-2 items-center'> */}
 
@@ -71,14 +78,14 @@ const ProfileMenu = () => {
 
       <Menu.Dropdown onChange={() => setOpened(true)}>
 
-        <Link to="/profile" >
+        <Link to="/profile"  onClick={onClose} >
           <Menu.Item leftSection={<IconUserCircle style={{ width: rem(14), height: rem(14) }} />}>
             {user.data.userDetails.firstName}
           </Menu.Item>
         </Link>
 
         <Divider />
-        <Link to="/admin">
+        <Link to="/admin"  onClick={onClose}>
           <Menu.Item leftSection={<IconMan style={{ width: rem(14), height: rem(14) }} />}>
             ADMIN
           </Menu.Item>
