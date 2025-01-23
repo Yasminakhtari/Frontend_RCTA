@@ -40,6 +40,7 @@ import StudentDetails from "../Components/sessionpage/StudentDetails";
 import Notifications from "../Components/notification/Notifications";
 import NotFound from "../Components/notfound/NotFound";
 import PaymentModal from '../Components/productpage/PaymentModal';
+import PaymentPage from "../Components/productpage/PaymentPage";
 
 const AppRoutes = () => {
   const { userId } = useUserContext();
@@ -114,6 +115,11 @@ const PaymentModalWrapper: React.FC = () => {
 
         {/* Notifications */}
         <Route path="/notification" element={<Notifications userId={userId} />} />
+
+        {/* Payment */}
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/paymentmodal" element={<PaymentModalWrapper />} />
+
 
         {/* Not Found */}
         <Route path="*" element={<NotFound />} />
