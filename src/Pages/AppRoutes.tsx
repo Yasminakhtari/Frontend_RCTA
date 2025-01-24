@@ -40,11 +40,9 @@ import StudentDetails from "../Components/sessionpage/StudentDetails";
 import Notifications from "../Components/notification/Notifications";
 import NotFound from "../Components/notfound/NotFound";
 import PaymentModal from '../Components/productpage/PaymentModal';
-<<<<<<< HEAD
 import PaymentPage from "../Components/productpage/PaymentPage";
-=======
 import LocationCardPage from '../Components/sessionpage/LocationCardPage';
->>>>>>> 5cd770b9b1c27a934775e94b6a5b44f5fa79d8e2
+
 
 const AppRoutes = () => {
   const { userId } = useUserContext();
@@ -62,7 +60,7 @@ const AppRoutes = () => {
 
 
 const PaymentModalWrapper: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true); // You can toggle based on your logic
+  const [isOpen, setIsOpen] = useState(true); 
 
   return <PaymentModal isOpen={isOpen} onClose={() => setIsOpen(false)} />;
 };
@@ -121,18 +119,13 @@ const PaymentModalWrapper: React.FC = () => {
 
         {/* Notifications */}
         <Route path="/notification" element={<Notifications userId={userId} />} />
-<<<<<<< HEAD
 
         {/* Payment */}
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/paymentmodal" element={<PaymentModalWrapper/>} />
 
-        
-
-=======
         {/* <Route path="/locationcard" element ={<LocationCardPage />} /> */}
->>>>>>> 5cd770b9b1c27a934775e94b6a5b44f5fa79d8e2
-        {/* Not Found */}
+
         <Route path="*" element={<NotFound />} />
 
       </Routes>
