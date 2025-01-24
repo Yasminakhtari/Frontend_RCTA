@@ -2,21 +2,21 @@ import React, { useEffect, useState } from 'react';
 import LocationCard from './LocationCard';
 import { getAllLocation } from '../../Services/LocationService';
 
-const locations = [
-  { name: 'Pleasent Hills', address: 'california', city: 'Los Angel', state: 'USA', zipcode: '15626' },
-  { name: 'test123', address: 'test1', city: 'test2', state: 'test3', zipcode: '212333' },
-  { name: 'Ekamra Kanan', address: 'Villa Square', city: 'Bhubaneswar', state: 'Odisha', zipcode: '751011' },
-  { name: 'Kalinga Stadium', address: 'Acharya Vihar1', city: 'BBSR', state: 'Odisha', zipcode: '755004' },
-  { name: 'USA', address: 'california', city: 'Los Angel', state: 'US', zipcode: '72345' },
-];
+// const locations = [
+//   { name: 'Pleasent Hills', address: 'california', city: 'Los Angel', state: 'USA', zipcode: '15626' },
+//   { name: 'test123', address: 'test1', city: 'test2', state: 'test3', zipcode: '212333' },
+//   { name: 'Ekamra Kanan', address: 'Villa Square', city: 'Bhubaneswar', state: 'Odisha', zipcode: '751011' },
+//   { name: 'Kalinga Stadium', address: 'Acharya Vihar1', city: 'BBSR', state: 'Odisha', zipcode: '755004' },
+//   { name: 'USA', address: 'california', city: 'Los Angel', state: 'US', zipcode: '72345' },
+// ];
 
 // Define a TypeScript interface for the location object
 interface Location {
-  name: string;
+  locationName: string;
   address: string;
   city: string;
   state: string;
-  zipcode: string;
+  zipCode: string;
 }
 
 //const initialLocations: locations[] = [];
@@ -52,11 +52,11 @@ useEffect(() => {
         {locations.map((location, index) => (
           <div className="hover:scale-105 transform transition-transform duration-300" key={index}>
             <LocationCard
-              name={location.name}
+              locationName={location.locationName}
               address={location.address}
               city={location.city}
               state={location.state}
-              zipcode={location.zipcode}
+              zipCode={location.zipCode}
             />
           </div>
         ))}
