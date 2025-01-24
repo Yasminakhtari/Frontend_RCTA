@@ -118,8 +118,9 @@ const PaymentModalWrapper: React.FC = () => {
 
         {/* Payment */}
         <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/paymentmodal" element={<PaymentModalWrapper />} />
+        <Route path="/paymentmodal" element={<PaymentModalWrapper/>} />
 
+        
 
         {/* Not Found */}
         <Route path="*" element={<NotFound />} />
