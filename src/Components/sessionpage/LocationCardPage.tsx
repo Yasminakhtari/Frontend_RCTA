@@ -12,7 +12,7 @@ const locations = [
 
 // Define a TypeScript interface for the location object
 interface Location {
-  name: string;
+  locationName: string;
   address: string;
   city: string;
   state: string;
@@ -56,7 +56,7 @@ useEffect(() => {
         {locations.map((location, index) => (
           <div className="hover:scale-105 transform transition-transform duration-300" key={index}>
             <LocationCard
-              name={location.name}
+              name={location.locationName}
               address={location.address}
               city={location.city}
               state={location.state}
