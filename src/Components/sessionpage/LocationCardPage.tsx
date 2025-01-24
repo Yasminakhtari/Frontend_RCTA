@@ -16,7 +16,7 @@ interface Location {
   address: string;
   city: string;
   state: string;
-  zipcode: string;
+  zipCode: string;
 }
 
 //const initialLocations: locations[] = [];
@@ -30,7 +30,11 @@ const fetchLocations = async () => {
     setLoading(true);
     const data = await getAllLocation();
     console.log(data.data)
-    setLocations(Array.isArray(data.data) ? data.data : []);
+     // Filter the locations to include only those with status "active"
+     const activeLocations = Array.isArray(data.data)
+     ? data.data.filter((location: { status: string; }) => location.status === "active")
+     : [];
+    setLocations(activeLocations);
   } catch (error) {
     console.error('Failed to fetch locations:', error);
   } finally {
@@ -56,7 +60,7 @@ useEffect(() => {
               address={location.address}
               city={location.city}
               state={location.state}
-              zipcode={location.zipcode}
+              zipcode={location.zipCode}
             />
           </div>
         ))}
