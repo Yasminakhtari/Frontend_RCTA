@@ -5,8 +5,9 @@ import { IconCheck, IconEdit, IconMail, IconMapPin, IconPencil, IconTrash, IconU
 import { Radio } from '@mantine/core';
 import PlayersDetails from './PlayersDetails'; // Import PlayersDetails component
 import { useDispatch, useSelector } from 'react-redux';
-import { successNotification } from '../../Services/NotificationService';
+import { errorNotification, successNotification } from '../../Services/NotificationService';
 import { changeProfile } from '../../Slices/ProfileSlice';
+import { getUserById, updateUser } from '../../Services/UserService';
 
 interface Child {
     id: string;
@@ -37,6 +38,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
     const [isProfileDetailsModalOpen, setProfileDetailsModalOpen] = useState(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [userData, setUsers] = useState<any>();
+    const [userUpdate, setUsersDetails] = useState<any>();
     const [isMobile, setIsMobile] = useState(false); // State for checking mobile screen size
 
     const staticChildrenData: Child[] = [
@@ -67,8 +69,11 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
         setIsMobile(window.innerWidth <= 768);
     };
 
+    
+
     // Use effect to check for screen size on window resize
     useEffect(() => {
+        // fetchUserDataById();
         const userDetails = localStorage.getItem('loginData');
         console.log(userDetails)
         setUsers(userDetails ? JSON.parse(userDetails) : null); // Parse JSON if necessary
@@ -80,23 +85,27 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
         };
     }, []);
 
-    // Fetch all locations on component mount
-    const fetchUserDetails = async () => {
+    const fetchUserDataById = async () => {
         try {
-            setLoading(true);
-            const userDetails = localStorage.getItem('loginData');
-            console.log(userDetails)
-            setUsers(userDetails ? JSON.parse(userDetails) : null); // Parse JSON if necessary
+          setLoading(true);
+        //   const storedUserDetails = JSON.parse(localStorage.getItem("userDetails"));
+        const userDetails = JSON.parse(localStorage.getItem("loginData") || '{}');
+      if (userDetails?.userDetails?.id) {
+        const data = await getUserById(userDetails.userDetails.id);
+        setUsersDetails(data.data);
+      }
         } catch (error) {
-            console.error('Failed to fetch locations:', error);
+          console.error('Failed to fetch locations:', error);
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
-    };
+      };
 
-    //   useEffect(() => {
-    //     fetchUserDetails();
-    //   }, []); // Dependency array ensures this runs only once
+      useEffect(() => {
+        // Fetch data on component mount
+        fetchUserDataById();
+      }, []); // Empty dependency array ensures it runs only on mount
+
 
     const handleAddChild = () => {
         if (newChild.name && newChild.age) {
@@ -138,17 +147,68 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
     // }
 
 
-    const handleEditPhone = () => {
+    const handleEditPhone = async () => {
         setIsEditingPhone(!isEditingPhone);
-        if (isEditingPhone) {
-            successNotification("Success", "Phone number updated successfully");
+        if(isEditingPhone){
+        try {
+            const updatedUser = {
+                roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
+                firstName: userData.userDetails?.firstName,
+                lastName: userData.userDetails?.lastName,
+                username: userData.userDetails?.username,
+                email: userData.userDetails?.email,
+                password: userData.userDetails?.password, // Ensure this is hashed or handled securely
+                mobileNo: phone, // Updated mobile number
+                address: userUpdate?.address,
+              };
+        
+            // Assuming you have the `id` and `location` data
+            // const updatedUser = { payload, mobileNo: phone };
+            const userId = userData.userDetails.id;
+            const response = await updateUser(userId, updatedUser); // Call the updateUser service
+      
+            console.log("Contact updated successfully:", response);
+            successNotification("Success", "Contact No. updated successfully");
+            fetchUserDataById();
+          } catch (error) {
+            console.error("Error updating contact:", error);
+            // Optionally, you can display an error notification
+            errorNotification("Error", "Failed to update contact no");
+          }
+        }else{
+            setPhone(userUpdate?.mobileNo)
         }
     };
 
-    const handleEditLocation = () => {
+    const handleEditLocation = async () => {
         setIsEditingLocation(!isEditingLocation);
-        if (isEditingLocation) {
+        if(isEditingLocation){
+        try {
+            const updatedUser = {
+                roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
+                firstName: userData.userDetails?.firstName,
+                lastName: userData.userDetails?.lastName,
+                username: userData.userDetails?.username,
+                email: userData.userDetails?.email,
+                password: userData.userDetails?.password, // Ensure this is hashed or handled securely
+                mobileNo: userUpdate?.mobileNo, // Updated mobile number
+                address: location,
+              };
+            // Assuming you have the `id` and `location` data
+            // const updatedUser = { ...userData.userDetails, address: location };
+            const userId = userData.userDetails.id;
+            const response = await updateUser(userId, updatedUser); // Call the updateUser service
+      
+            console.log("Location updated successfully:", response);
             successNotification("Success", "Location updated successfully");
+            fetchUserDataById();
+          } catch (error) {
+            console.error("Error updating location:", error);
+            // Optionally, you can display an error notification
+            errorNotification("Error", "Failed to update location");
+          }
+        }else{
+            setLocation(userUpdate?.address || "");
         }
     };
 
@@ -202,7 +262,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
                         onChange={(e) => setLocation(e.target.value)}
                     />
                 ) : (
-                    <div className="text-lg ml-4 text-white font-bold  text-justify">{location || 'N/A'}</div>
+                    <div className="text-lg ml-4 text-white font-bold  text-justify">{userUpdate?.address || 'N/A'}</div>
                 )}
                 </span>
                
@@ -236,7 +296,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
                         onChange={(e) => setPhone(e.target.value)}
                     />
                 ) : (
-                    <div className="text-xl font-bold  text-white text-justify">{phone || 'N/A'}</div>
+                    <div className="text-xl font-bold  text-white text-justify">{userUpdate?.mobileNo || 'N/A'}</div>
                 )} 
                     </span>
                      
