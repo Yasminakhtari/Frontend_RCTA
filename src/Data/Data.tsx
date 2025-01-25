@@ -39,7 +39,7 @@ const footerLinks = [
     },
     {
         title: "Academy",
-        links: [{val: "About us",url: '/about-us'}, {val:"Our Coaches", url:''}, {val:"Facilities", url:''},{val: "Membership", url:''}]
+        links: [{val: "About us",url: '/about-us'}, {val:"Our Coaches", url:''}, {val:"Locations", url:'/locationcard'},{val: "Membership", url:''}]
     },
     {
         title: "Support",
