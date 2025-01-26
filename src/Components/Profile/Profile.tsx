@@ -3,28 +3,28 @@ import { Avatar, Badge, Button, Modal, TextInput, Divider, Textarea, ActionIcon 
 import { useHover } from '@mantine/hooks';
 import { IconCheck, IconEdit, IconMail, IconMapPin, IconPencil, IconTrash, IconUser, IconX } from '@tabler/icons-react';
 import { Radio } from '@mantine/core';
-import PlayersDetails from './PlayersDetails'; // Import PlayersDetails component
+import PlayersDetails from './PlayersDetails'; 
 import { useDispatch, useSelector } from 'react-redux';
 import { errorNotification, successNotification } from '../../Services/NotificationService';
 import { changeProfile } from '../../Slices/ProfileSlice';
 import { getUserById, updateUser } from '../../Services/UserService';
+import { savePlayer } from '../../Services/PlayerService';
 
-interface Child {
-    id: string;
+interface Player {
+    id: string; 
     name: string;
-    age: string;
-    username: string;
-    batch: string;
-    coach: string;
-    status: "ongoing" | "incoming" | "completed";
-
+    age: string ;
+    username: string ;
+    batch: string ;
+    coach: string ;
+    status: "ongoing" | "incoming" | "completed" ;
 }
 
 interface ProfileProps {
-    onSelectChild: (child: Child | null) => void;
+    onSelectPlayer: (player: Player | null) => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
+const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
 
 
     const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
     const { hovered, ref } = useHover();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isRemoveModalOpen, setRemoveModalOpen] = useState(false);
-    const [selectedChild, setSelectedChild] = useState<Child | null>(null);
+    const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
     const [selectedReason, setSelectedReason] = useState<string | null>(null);
     const [isProfileDetailsModalOpen, setProfileDetailsModalOpen] = useState(false);
     const [loading, setLoading] = useState<boolean>(true);
@@ -41,11 +41,11 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
     const [userUpdate, setUsersDetails] = useState<any>();
     const [isMobile, setIsMobile] = useState(false); // State for checking mobile screen size
 
-    const staticChildrenData: Child[] = [
-        { id: '1', name: 'John Doe', age: '10', username: 'johnny10', batch: 'Morning', coach: 'Alex', status: 'ongoing' },
-        { id: '2', name: 'Emily Clark', age: '12', username: 'emily12', batch: 'Evening', coach: 'Sarah', status: 'incoming' },
-        { id: '3', name: 'Michael Brown', age: '8', username: 'mike8', batch: 'Forenoon', coach: 'David', status: 'completed' },
-    ];
+    // const staticPlayersData: Player[] = [
+    //     { id: '1', name: 'John Doe', age: '10', username: 'johnny10', batch: 'Morning', coach: 'Alex', status: 'ongoing' },
+    //     { id: '2', name: 'Emily Clark', age: '12', username: 'emily12', batch: 'Evening', coach: 'Sarah', status: 'incoming' },
+    //     { id: '3', name: 'Michael Brown', age: '8', username: 'mike8', batch: 'Forenoon', coach: 'David', status: 'completed' },
+    // ];
 
     const [edit, setEdit] = useState(false);
     const [phone, setPhone] = useState("");
@@ -53,8 +53,8 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
     const [isEditingPhone, setIsEditingPhone] = useState(false);
     const [isEditingLocation, setIsEditingLocation] = useState(false);
 
-    const [children, setChildren] = useState<Child[]>(staticChildrenData);
-    const [newChild, setNewChild] = useState<Child>({
+    const [players, setPlayers] = useState<Player[]>([]);
+    const [newPlayer, setNewPlayer] = useState<Player>({
         id: '',
         name: '',
         age: '',
@@ -107,32 +107,56 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
       }, []); // Empty dependency array ensures it runs only on mount
 
 
-    const handleAddChild = () => {
-        if (newChild.name && newChild.age) {
-            setChildren((prevChildren) => [
-                ...prevChildren,
-                { ...newChild, id: (prevChildren.length + 1).toString() },
-            ]);
-            setNewChild({ id: '', name: '', age: '', username: '', batch: '', coach: '', status: 'ongoing' });
-            setModalOpen(false);
+    // const handleAddPlayer = () => {
+    //     if (newPlayer.name && newPlayer.age) {
+    //         setPlayers((prevPlayers) => [
+    //             ...prevPlayers,
+    //             { ...newPlayer, id: (prevPlayers.length + 1).toString() },
+    //         ]);
+    //         setNewPlayer({ id: '', name: '', age: '', username: '', batch: '', coach: '', status: 'ongoing' });
+    //         setModalOpen(false);
+    //     }
+    // };
+    const handleAddPlayer = async () => {
+        if (newPlayer.name && newPlayer.age) {
+            try {
+                // Call savePlayer to send the data to the backend
+                const savedPlayer = await savePlayer({
+                    ...newPlayer,
+                    id: (players.length + 1).toString(), // Optional: ID generation could also happen in the backend
+                });
+    
+                // If successful, update the local players state with the response
+                setPlayers((prevPlayers) => [...prevPlayers, savedPlayer]);
+    
+                // Reset the newPlayer object
+                setNewPlayer({ id: '', name: '', age: '', username: '', batch: '', coach: '', status: 'ongoing' });
+    
+                // Close the modal
+                setModalOpen(false);
+            } catch (error) {
+                console.error("Error saving player:", error);
+                alert("Failed to save player. Please try again.");
+            }
         }
     };
+    
 
-    const handleRemoveChild = (child: Child) => {
-        setSelectedChild(child);
+    const handleRemovePlayer = (player: Player) => {
+        setSelectedPlayer(player);
         setRemoveModalOpen(true);
     };
 
-    const confirmRemoveChild = () => {
-        if (selectedChild) {
-            setChildren(children.filter((child) => child.id !== selectedChild.id));
+    const confirmRemovePlayer = () => {
+        if (selectedPlayer) {
+            setPlayers(players.filter((player) => player.id !== selectedPlayer.id));
             setRemoveModalOpen(false);
-            setSelectedChild(null);
+            setSelectedPlayer(null);
         }
     };
 
-    const handleNameClick = (child: Child) => {
-        setSelectedChild(child);
+    const handleNameClick = (player: Player) => {
+        setSelectedPlayer(player);
         setProfileDetailsModalOpen(true); // Open ProfileDetails modal on name click
     };
 
@@ -328,47 +352,47 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
             <Modal
                 opened={isModalOpen}
                 onClose={() => setModalOpen(false)}
-                title="Add a New Child"
+                title="Add a New Player"
                 centered
             >
                 <div className="space-y-4">
                     <TextInput
                         label="Name"
-                        placeholder="Enter child's name"
-                        value={newChild.name}
-                        onChange={(e) => setNewChild({ ...newChild, name: e.target.value })}
+                        placeholder="Enter player's name"
+                        value={newPlayer.name}
+                        onChange={(e) => setNewPlayer({ ...newPlayer, name: e.target.value })}
                     />
                     <TextInput
                         label="Age"
-                        placeholder="Enter child's age"
-                        value={newChild.age}
-                        onChange={(e) => setNewChild({ ...newChild, age: e.target.value })}
+                        placeholder="Enter player's age"
+                        value={newPlayer.age}
+                        onChange={(e) => setNewPlayer({ ...newPlayer, age: e.target.value })}
                     />
                     {/* <TextInput
                         label="Username"
-                        placeholder="Enter child's username"
-                        value={newChild.username}
-                        onChange={(e) => setNewChild({ ...newChild, username: e.target.value })}
+                        placeholder="Enter player's username"
+                        value={newPlayer.username}
+                        onChange={(e) => setNewPlayer({ ...newPlayer, username: e.target.value })}
                     /> */}
                     {/* <TextInput
                         label="Batch"
                         placeholder="Enter batch (e.g., Morning, Evening)"
-                        value={newChild.batch}
-                        onChange={(e) => setNewChild({ ...newChild, batch: e.target.value })}
+                        value={newPlayer.batch}
+                        onChange={(e) => setNewPlayer({ ...newPlayer, batch: e.target.value })}
                     /> */}
                     {/* <TextInput
                         label="Coach"
                         placeholder="Enter coach name"
-                        value={newChild.coach}
-                        onChange={(e) => setNewChild({ ...newChild, coach: e.target.value })}
+                        value={newPlayer.coach}
+                        onChange={(e) => setNewPlayer({ ...newPlayer, coach: e.target.value })}
                     /> */}
                     {/* <TextInput
                         label="Status"
                         placeholder="Enter status (ongoing, incoming, completed)"
-                        value={newChild.status}
-                        onChange={(e) => setNewChild({ ...newChild, status: e.target.value as "ongoing" | "incoming" | "completed" })}
+                        value={newPlayer.status}
+                        onChange={(e) => setNewPlayer({ ...newPlayer, status: e.target.value as "ongoing" | "incoming" | "completed" })}
                     /> */}
-                    <Button onClick={handleAddChild} fullWidth color="blue">
+                    <Button onClick={handleAddPlayer} fullWidth color="blue">
                         Add Player
                     </Button>
                 </div>
@@ -382,32 +406,32 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
                     title="Player Details"
                     centered
                 >
-                    <PlayersDetails child={selectedChild} />
+                    <PlayersDetails player={selectedPlayer} />
                 </Modal>
             )}
 
             {/* Render PlayersDetails below Profile only for desktop */}
-            {!isMobile && selectedChild && <PlayersDetails child={selectedChild} />}
+            {!isMobile && selectedPlayer && <PlayersDetails player={selectedPlayer} />}
 
             <div className="mt-6">
                 <h2 className="text-lg font-bold mb-4">Player List</h2>
                 <div className="grid grid-cols-1 gap-4">
-                    {children.map((child) => (
+                    {players.map((player) => (
                         <div
-                            key={child.id}
+                            key={player.id}
                             className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg shadow-md cursor-pointer hover:shadow-lg transform hover:scale-105 transition duration-200"
-                            onClick={() => onSelectChild(child)}
+                            onClick={() => onSelectPlayer(player)}
                         >
                             <div>
                                 <h3
                                     className="text-xl font-bold cursor-pointer"
-                                    onClick={() => handleNameClick(child)} // Open the ProfileDetails modal when clicking on the name
+                                    onClick={() => handleNameClick(player)} // Open the ProfileDetails modal when clicking on the name
                                 >
-                                    {child.name}
+                                    {player.name}
                                 </h3>
                             </div>
                             <Button
-                                onClick={() => handleRemoveChild(child)}
+                                onClick={() => handleRemovePlayer(player)}
                                 color="red"
                                 variant="outline"
                                 className="mt-2"
@@ -427,7 +451,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
                 centered
             >
                 <div>
-                    <p>Are you sure you want to remove this child from the list?</p>
+                    <p>Are you sure you want to remove this player from the list?</p>
                     <Divider my="sm" />
                     <h3>Reason for Removal:</h3>
                     <Radio.Group name="removal-reason" value={selectedReason} onChange={(value) => setSelectedReason(value)}>
@@ -437,7 +461,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectChild }) => {
                         <Radio value="Other" label="Other" />
                     </Radio.Group>
                     <div className="flex justify-end mt-4">
-                        <Button onClick={confirmRemoveChild} className='!text-white font-bold !bg-red-700'>
+                        <Button onClick={confirmRemovePlayer} className='!text-white font-bold !bg-red-700'>
                             Confirm Remove
                         </Button>
                         <Button onClick={() => setRemoveModalOpen(false)} color="gray" className="ml-2">

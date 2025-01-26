@@ -10,7 +10,7 @@ import { getAllLocation } from '../../Services/LocationService';
 //   { name: 'USA', address: 'california', city: 'Los Angel', state: 'US', zipcode: '72345' },
 // ];
 
-// Define a TypeScript interface for the location object
+
 interface Location {
   locationName: string;
   address: string;

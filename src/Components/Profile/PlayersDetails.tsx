@@ -1,24 +1,24 @@
 import React from 'react';
 
-interface Child {
+interface Player {
   id: string;
   name: string;
   age: string;
   username: string;
   batch: string;
   coach: string;
-  status: "ongoing" | "incoming" | "completed";  // Adding a status for conditional rendering
+  status: "ongoing" | "incoming" | "completed";  
 }
 
 interface PlayersDetailsProps {
-  child: Child | null;
+  player: Player | null;
 }
 
-const PlayersDetails: React.FC<PlayersDetailsProps> = ({ child }) => {
-  if (!child) {
+const PlayersDetails: React.FC<PlayersDetailsProps> = ({ player }) => {
+  if (!player) {
     return (
       <p className="text-gray-500 text-center p-4 rounded-md bg-gray-100 shadow">
-        No child selected
+        No player selected
       </p>
     );
   }
@@ -30,19 +30,19 @@ const PlayersDetails: React.FC<PlayersDetailsProps> = ({ child }) => {
       </h2>
       <div className="space-y-3">
         <p>
-          <span className="font-semibold text-gray-700">Name:</span> {child.name}
+          <span className="font-semibold text-gray-700">Name:</span> {player.name}
         </p>
         <p>
-          <span className="font-semibold text-gray-700">Age:</span> {child.age}
+          <span className="font-semibold text-gray-700">Age:</span> {player.age}
         </p>
         {/* <p>
-          <span className="font-semibold text-gray-700">Username:</span> {child.username}
+          <span className="font-semibold text-gray-700">Username:</span> {player.username}
         </p> */}
         <p>
-          <span className="font-semibold text-gray-700">Batch:</span> {child.batch}
+          <span className="font-semibold text-gray-700">Batch:</span> {player.batch}
         </p>
         <p>
-          <span className="font-semibold text-gray-700">Coach:</span> {child.coach}
+          <span className="font-semibold text-gray-700">Coach:</span> {player.coach}
         </p>
 
         {/* Conditional Badge for Player Status */}
@@ -50,14 +50,14 @@ const PlayersDetails: React.FC<PlayersDetailsProps> = ({ child }) => {
           <span className="font-semibold text-gray-700">Status:</span>
           <span
             className={`ml-2 px-3 py-1 rounded-full text-white ${
-              child.status === "ongoing"
+              player.status === "ongoing"
                 ? "bg-yellow-500"
-                : child.status === "completed"
+                : player.status === "completed"
                 ? "bg-green-500"
                 : "bg-blue-500"
             }`}
           >
-            {child.status.charAt(0).toUpperCase() + child.status.slice(1)}
+            {player.status.charAt(0).toUpperCase() + player.status.slice(1)}
           </span>
         </p>
       </div>
