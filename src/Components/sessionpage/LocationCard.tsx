@@ -10,7 +10,8 @@ interface LocationCardProps {
 
 const LocationCard: React.FC<LocationCardProps> = ({ locationName, address, city, state, zipCode }) => {
   return (
-    <div className="bg-gradient-to-r from-blue-800 to-blue-600 text-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-300">
+    // <div className="bg-gradient-to-r from-blue-800 to-blue-600 text-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-300">
+    <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 h-64 bg-gradient-to-r from-blue-800 to-blue-600 text-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-300">
       <h3 className="text-xl font-semibold mb-2">{locationName}</h3>
       <p className="text-sm">{address}</p>
       <p className="text-sm">
