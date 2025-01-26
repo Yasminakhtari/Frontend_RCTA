@@ -10,7 +10,7 @@ import { getAllLocation } from '../../Services/LocationService';
 //   { name: 'USA', address: 'california', city: 'Los Angel', state: 'US', zipcode: '72345' },
 // ];
 
-// Define a TypeScript interface for the location object
+
 interface Location {
   locationName: string;
   address: string;
@@ -30,7 +30,11 @@ const fetchLocations = async () => {
     setLoading(true);
     const data = await getAllLocation();
     console.log(data.data)
-    setLocations(Array.isArray(data.data) ? data.data : []);
+     // Filter the locations to include only those with status "active"
+     const activeLocations = Array.isArray(data.data)
+     ? data.data.filter((location: { status: string; }) => location.status === "active")
+     : [];
+    setLocations(activeLocations);
   } catch (error) {
     console.error('Failed to fetch locations:', error);
   } finally {
@@ -52,11 +56,13 @@ useEffect(() => {
         {locations.map((location, index) => (
           <div className="hover:scale-105 transform transition-transform duration-300" key={index}>
             <LocationCard
+
               locationName={location.locationName}
               address={location.address}
               city={location.city}
               state={location.state}
               zipCode={location.zipCode}
+
             />
           </div>
         ))}

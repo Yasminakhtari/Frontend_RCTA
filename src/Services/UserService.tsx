@@ -72,5 +72,16 @@ const getAllUsers = async () => {
       throw error;
     }
   };
+
+  //Get User By ID
+
+  const getUserById = async (id: number) => {
+    return axios.get(`${base_url}/auth/userById`, {
+        params: { id }
+    })
+    .then(res => res.data)
+    .catch(error => { throw error; });
+};
+
   
-export {loginUser,registerUser,sendOtp,verifyOtp,changePass,getAllUsers,getAllRoles,updateUser};
+export {loginUser,registerUser,sendOtp,verifyOtp,changePass,getAllUsers,getAllRoles,updateUser,getUserById};
