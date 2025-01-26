@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Avatar, Badge, Button, Modal, TextInput, Divider, Textarea, ActionIcon } from '@mantine/core';
 import { useHover } from '@mantine/hooks';
-import { IconCheck, IconEdit, IconMail, IconMapPin, IconPencil, IconTrash, IconUser, IconX } from '@tabler/icons-react';
+import { IconCheck, IconEdit, IconMail, IconMapPin, IconPencil, IconTrash } from '@tabler/icons-react';
 import { Radio } from '@mantine/core';
-import PlayersDetails from './PlayersDetails'; 
+import PlayersDetails from './PlayersDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import { errorNotification, successNotification } from '../../Services/NotificationService';
-import { changeProfile } from '../../Slices/ProfileSlice';
+// import { changeProfile } from '../../Slices/ProfileSlice';
 import { getUserById, updateUser } from '../../Services/UserService';
-import { savePlayer } from '../../Services/PlayerService';
+import { getAllPlayers, savePlayer } from '../../Services/PlayerService';
 
 interface Player {
-    id: string; 
+    id: string;
     name: string;
-    age: string ;
-    username: string ;
-    batch: string ;
-    coach: string ;
-    status: "ongoing" | "incoming" | "completed" ;
+    age: string;
+    username: string;
+    batch: string;
+    coach: string;
+    status: "ongoing" | "incoming" | "completed";
 }
 
 interface ProfileProps {
@@ -25,8 +25,6 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
-
-
     const dispatch = useDispatch();
     const profile = useSelector((state: any) => state.profile || { picture: null });
 
@@ -39,13 +37,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [userData, setUsers] = useState<any>();
     const [userUpdate, setUsersDetails] = useState<any>();
-    const [isMobile, setIsMobile] = useState(false); // State for checking mobile screen size
-
-    // const staticPlayersData: Player[] = [
-    //     { id: '1', name: 'John Doe', age: '10', username: 'johnny10', batch: 'Morning', coach: 'Alex', status: 'ongoing' },
-    //     { id: '2', name: 'Emily Clark', age: '12', username: 'emily12', batch: 'Evening', coach: 'Sarah', status: 'incoming' },
-    //     { id: '3', name: 'Michael Brown', age: '8', username: 'mike8', batch: 'Forenoon', coach: 'David', status: 'completed' },
-    // ];
+    const [isMobile, setIsMobile] = useState(false);
 
     const [edit, setEdit] = useState(false);
     const [phone, setPhone] = useState("");
@@ -69,7 +61,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
         setIsMobile(window.innerWidth <= 768);
     };
 
-    
+
 
     // Use effect to check for screen size on window resize
     useEffect(() => {
@@ -87,25 +79,23 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
 
     const fetchUserDataById = async () => {
         try {
-          setLoading(true);
-        //   const storedUserDetails = JSON.parse(localStorage.getItem("userDetails"));
-        const userDetails = JSON.parse(localStorage.getItem("loginData") || '{}');
-      if (userDetails?.userDetails?.id) {
-        const data = await getUserById(userDetails.userDetails.id);
-        setUsersDetails(data.data);
-      }
+            setLoading(true);
+            //   const storedUserDetails = JSON.parse(localStorage.getItem("userDetails"));
+            const userDetails = JSON.parse(localStorage.getItem("loginData") || '{}');
+            if (userDetails?.userDetails?.id) {
+                const data = await getUserById(userDetails.userDetails.id);
+                setUsersDetails(data.data);
+            }
         } catch (error) {
-          console.error('Failed to fetch locations:', error);
+            console.error('Failed to fetch locations:', error);
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
-      };
+    };
 
-      useEffect(() => {
-        // Fetch data on component mount
+    useEffect(() => {
         fetchUserDataById();
-      }, []); // Empty dependency array ensures it runs only on mount
-
+    }, []);
 
     // const handleAddPlayer = () => {
     //     if (newPlayer.name && newPlayer.age) {
@@ -121,26 +111,49 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
         if (newPlayer.name && newPlayer.age) {
             try {
                 // Call savePlayer to send the data to the backend
-                const savedPlayer = await savePlayer({
+                // const savedPlayer = await savePlayer({
+                //     ...newPlayer,
+                //     id: (players.length + 1).toString(), // Optional: ID generation could also happen in the backend
+                // });
+                const playerData = {
                     ...newPlayer,
-                    id: (players.length + 1).toString(), // Optional: ID generation could also happen in the backend
-                });
-    
-                // If successful, update the local players state with the response
-                setPlayers((prevPlayers) => [...prevPlayers, savedPlayer]);
-    
+                    userId: userData?.userDetails?.id, // Assuming userId comes from the user data
+                    batch: newPlayer.batch || 'defaultBatch', // Set a default value for batch if empty
+                };
+
+                // Call savePlayer API with updated player data
+                const savedPlayer = await savePlayer(playerData);
+                console.log(savedPlayer);
+              
+               // setPlayers((prevPlayers) => [...prevPlayers, savedPlayer.data]);
                 // Reset the newPlayer object
-                setNewPlayer({ id: '', name: '', age: '', username: '', batch: '', coach: '', status: 'ongoing' });
-    
-                // Close the modal
-                setModalOpen(false);
+                // setNewPlayer({ id: '', name: '', age: '', username: '', batch: '', coach: '', status: 'ongoing' });
+                // Check if the player data was returned correctly
+                if (savedPlayer && savedPlayer?.data?.id) {
+                    setPlayers((prevPlayers) => [...prevPlayers, savedPlayer.data]);
+
+                    // Reset the form
+                    setNewPlayer({
+                        id: '',
+                        name: '',
+                        age: '',
+                        username: '',
+                        batch: '',  
+                        coach: '',
+                        status: 'ongoing',
+                    });
+
+                    // Close the modal
+                    setModalOpen(false);
+                } else {
+                    alert("Failed to save player data.");
+                }
             } catch (error) {
                 console.error("Error saving player:", error);
                 alert("Failed to save player. Please try again.");
             }
         }
     };
-    
 
     const handleRemovePlayer = (player: Player) => {
         setSelectedPlayer(player);
@@ -160,90 +173,126 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
         setProfileDetailsModalOpen(true); // Open ProfileDetails modal on name click
     };
 
-    //////////
-    // const handleEdit = () => {
-    //     if (!edit) {//jadi edit sethi nahi then setEdit true karidia
-    //         setEdit(true);
-    //         // setPhone(profile.phone);
-    //     } else {
-    //         setEdit(false);
-    //     }
-    // }
-
-
     const handleEditPhone = async () => {
         setIsEditingPhone(!isEditingPhone);
-        if(isEditingPhone){
-        try {
-            const updatedUser = {
-                roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
-                firstName: userData.userDetails?.firstName,
-                lastName: userData.userDetails?.lastName,
-                username: userData.userDetails?.username,
-                email: userData.userDetails?.email,
-                password: userData.userDetails?.password, // Ensure this is hashed or handled securely
-                mobileNo: phone, // Updated mobile number
-                address: userUpdate?.address,
-              };
-        
-            // Assuming you have the `id` and `location` data
-            // const updatedUser = { payload, mobileNo: phone };
-            const userId = userData.userDetails.id;
-            const response = await updateUser(userId, updatedUser); // Call the updateUser service
-      
-            console.log("Contact updated successfully:", response);
-            successNotification("Success", "Contact No. updated successfully");
-            fetchUserDataById();
-          } catch (error) {
-            console.error("Error updating contact:", error);
-            // Optionally, you can display an error notification
-            errorNotification("Error", "Failed to update contact no");
-          }
-        }else{
+        if (isEditingPhone) {
+            try {
+                const updatedUser = {
+                    roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
+                    firstName: userData.userDetails?.firstName,
+                    lastName: userData.userDetails?.lastName,
+                    username: userData.userDetails?.username,
+                    email: userData.userDetails?.email,
+                    password: userData.userDetails?.password, // Ensure this is hashed or handled securely
+                    mobileNo: phone, // Updated mobile number
+                    address: userUpdate?.address,
+                };
+
+                // Assuming you have the `id` and `location` data
+                // const updatedUser = { payload, mobileNo: phone };
+                const userId = userData.userDetails.id;
+                const response = await updateUser(userId, updatedUser); // Call the updateUser service
+
+                console.log("Contact updated successfully:", response);
+                successNotification("Success", "Contact No. updated successfully");
+                //fetchUserDataById();
+            } catch (error) {
+                console.error("Error updating contact:", error);
+                // Optionally, you can display an error notification
+                errorNotification("Error", "Failed to update contact no");
+            }
+        } else {
             setPhone(userUpdate?.mobileNo)
         }
     };
 
     const handleEditLocation = async () => {
         setIsEditingLocation(!isEditingLocation);
-        if(isEditingLocation){
-        try {
-            const updatedUser = {
-                roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
-                firstName: userData.userDetails?.firstName,
-                lastName: userData.userDetails?.lastName,
-                username: userData.userDetails?.username,
-                email: userData.userDetails?.email,
-                password: userData.userDetails?.password, // Ensure this is hashed or handled securely
-                mobileNo: userUpdate?.mobileNo, // Updated mobile number
-                address: location,
-              };
-            // Assuming you have the `id` and `location` data
-            // const updatedUser = { ...userData.userDetails, address: location };
-            const userId = userData.userDetails.id;
-            const response = await updateUser(userId, updatedUser); // Call the updateUser service
-      
-            console.log("Location updated successfully:", response);
-            successNotification("Success", "Location updated successfully");
-            fetchUserDataById();
-          } catch (error) {
-            console.error("Error updating location:", error);
-            // Optionally, you can display an error notification
-            errorNotification("Error", "Failed to update location");
-          }
-        }else{
+        if (isEditingLocation) {
+            try {
+                const updatedUser = {
+                    roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
+                    firstName: userData.userDetails?.firstName,
+                    lastName: userData.userDetails?.lastName,
+                    username: userData.userDetails?.username,
+                    email: userData.userDetails?.email,
+                    password: userData.userDetails?.password, // Ensure this is hashed or handled securely
+                    mobileNo: userUpdate?.mobileNo, // Updated mobile number
+                    address: location,
+                };
+                // Assuming you have the `id` and `location` data
+                // const updatedUser = { ...userData.userDetails, address: location };
+                const userId = userData.userDetails.id;
+                const response = await updateUser(userId, updatedUser); // Call the updateUser service
+
+                console.log("Location updated successfully:", response);
+                successNotification("Success", "Location updated successfully");
+               fetchUserDataById();
+            } catch (error) {
+                console.error("Error updating location:", error);
+                // Optionally, you can display an error notification
+                errorNotification("Error", "Failed to update location");
+            }
+        } else {
             setLocation(userUpdate?.address || "");
         }
     };
+    ////////////////added 26-01-2025 /////////
+    useEffect(() => {
+        const fetchPlayers = async () => {
+            try {
+              
+                const userId = userData?.userDetails?.id;
+                const response = await getAllPlayers(userId);
+                const playerData = response?.data;
+                console.log(playerData)
+                if (playerData) {
+                    setPlayers(playerData);
+                }
+                else {
+                    console.error("Expected an array, but received:", playerData);
+                    setPlayers([]);
+                }
+            } catch (error) {
+                console.log(error)
+                console.error("Failed to fetch Players", error);
+            }
+        };
 
+        fetchPlayers();
+    }, [userData?.userDetails?.id]);
+    
 
-    const handleSave = () => {
-        setEdit(false);
-        // let updatedProfile = { ...profile, phone: phone,location:location}
-        //now i have use dispatch to ...........
-        // dispatch(changeProfile(updatedProfile));
-        successNotification("Success", "Updated Sucessfully");
-    }
+    // useEffect(() => {
+    //     const fetchPlayers = async () => {
+    //         try {
+    //             const storedPlayers = localStorage.getItem('players');
+    //             if (storedPlayers) {
+    //                 // If players are in localStorage, use them
+    //                 setPlayers(JSON.parse(storedPlayers));
+    //             } else {
+    //                 // Otherwise, fetch players from the API
+    //                 const userId = userData.userDetails.id;
+    //                 const response = await getAllPlayers(userId);
+    //                 const playerData = response.data;
+    //                 if (Array.isArray(playerData)) {
+    //                     setPlayers(playerData);
+    //                     // Save the fetched players to localStorage for persistence
+    //                     localStorage.setItem('players', JSON.stringify(playerData));
+    //                 } else {
+    //                     console.error("Expected an array, but received:", playerData);
+    //                     setPlayers([]);
+    //                 }
+    //             }
+    //         } catch (error) {
+    //             console.error("Failed to fetch Players", error);
+    //         }
+    //     };
+    
+    //     fetchPlayers();
+    // }, [userData]);
+    
+    ////////////////added 26-01-2025 /////////
 
 
 
@@ -277,19 +326,19 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
             <div className="flex gap-1 text-mine-shaft-300 text-lg items-center">
                 <IconMapPin className="h-5 w-5" stroke={1.5} />
                 Location <span>
-                {isEditingLocation ? (
-                    <Textarea
-                        value={location}
-                        autosize
-                        minRows={3}
-                        placeholder="Update Your Location."
-                        onChange={(e) => setLocation(e.target.value)}
-                    />
-                ) : (
-                    <div className="text-lg ml-4 text-white font-bold  text-justify">{userUpdate?.address || 'N/A'}</div>
-                )}
+                    {isEditingLocation ? (
+                        <Textarea
+                            value={location}
+                            autosize
+                            minRows={3}
+                            placeholder="Update Your Location."
+                            onChange={(e) => setLocation(e.target.value)}
+                        />
+                    ) : (
+                        <div className="text-lg ml-4 text-white font-bold  text-justify">{userUpdate?.address || 'N/A'}</div>
+                    )}
                 </span>
-               
+
                 <div>
                     {isEditingLocation ? (
                         <ActionIcon onClick={handleEditLocation} size="lg" color="green.8" variant="subtle">
@@ -302,7 +351,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                     )}
                 </div>
 
-                
+
             </div>
 
 
@@ -310,20 +359,20 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
             <div className="px-3">
                 <div className="text-lg font-semibold mb-3 flex justify-between">
                     Contact no. <span className="!ml-0">
-                    {isEditingPhone ? (
-                    <Textarea
-                        
-                        value={phone}
-                        autosize
-                        minRows={3}
-                        placeholder="Enter Your Phone No."
-                        onChange={(e) => setPhone(e.target.value)}
-                    />
-                ) : (
-                    <div className="text-xl font-bold  text-white text-justify">{userUpdate?.mobileNo || 'N/A'}</div>
-                )} 
+                        {isEditingPhone ? (
+                            <Textarea
+
+                                value={phone}
+                                autosize
+                                minRows={3}
+                                placeholder="Enter Your Phone No."
+                                onChange={(e) => setPhone(e.target.value)}
+                            />
+                        ) : (
+                            <div className="text-xl font-bold  text-white text-justify">{userUpdate?.mobileNo || 'N/A'}</div>
+                        )}
                     </span>
-                     
+
                     <div>
                         {isEditingPhone ? (
                             <ActionIcon onClick={handleEditPhone} size="lg" color="green.8" variant="subtle">
@@ -338,8 +387,6 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                 </div>
 
             </div>
-
-
 
 
 
@@ -369,24 +416,6 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                         onChange={(e) => setNewPlayer({ ...newPlayer, age: e.target.value })}
                     />
                     {/* <TextInput
-                        label="Username"
-                        placeholder="Enter player's username"
-                        value={newPlayer.username}
-                        onChange={(e) => setNewPlayer({ ...newPlayer, username: e.target.value })}
-                    /> */}
-                    {/* <TextInput
-                        label="Batch"
-                        placeholder="Enter batch (e.g., Morning, Evening)"
-                        value={newPlayer.batch}
-                        onChange={(e) => setNewPlayer({ ...newPlayer, batch: e.target.value })}
-                    /> */}
-                    {/* <TextInput
-                        label="Coach"
-                        placeholder="Enter coach name"
-                        value={newPlayer.coach}
-                        onChange={(e) => setNewPlayer({ ...newPlayer, coach: e.target.value })}
-                    /> */}
-                    {/* <TextInput
                         label="Status"
                         placeholder="Enter status (ongoing, incoming, completed)"
                         value={newPlayer.status}
@@ -414,7 +443,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
             {!isMobile && selectedPlayer && <PlayersDetails player={selectedPlayer} />}
 
             <div className="mt-6">
-                <h2 className="text-lg font-bold mb-4">Player List</h2>
+                <h2 className="text-lg font-bold mb-4">Players</h2>
                 <div className="grid grid-cols-1 gap-4">
                     {players.map((player) => (
                         <div
