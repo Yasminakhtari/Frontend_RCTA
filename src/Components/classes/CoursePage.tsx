@@ -163,6 +163,7 @@ const CoursePage: React.FC = () => {
             <thead>
               <tr>
                 <th className="border border-gray-300 px-4 py-2">Coach</th>
+                <th className="border border-gray-300 px-4 py-2">Location</th>
                 <th className="border border-gray-300 px-4 py-2">Start Date</th>
                 <th className="border border-gray-300 px-4 py-2">End Date</th>
                 <th className="border border-gray-300 px-4 py-2">Days</th>
@@ -176,6 +177,7 @@ const CoursePage: React.FC = () => {
                 sessions.map((session: any) => (
                   <tr key={session.id}>
                     <td className="border border-gray-300 px-4 py-2">{session.coachName || "TBD"}</td>
+                    <td className="border border-gray-300 px-4 py-2">{session.locationName || "N/A"}</td>
                     <td className="border border-gray-300 px-4 py-2">
                       {session.fromDate}
                       </td>
