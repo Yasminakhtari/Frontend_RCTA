@@ -255,8 +255,8 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     useEffect(() => {
         const fetchPlayers = async () => {
             try {
-
-                const userId = userData?.userDetails?.id;
+                const data = JSON.parse(localStorage.getItem("loginData") || '{}');
+                const userId = data?.userDetails?.id;
                 const response = await getAllPlayers(userId);
                 const playerData = response?.data;
                 console.log(playerData)
