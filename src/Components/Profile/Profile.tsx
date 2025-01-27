@@ -207,7 +207,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
 
                 console.log("Contact updated successfully:", response);
                 successNotification("Success", "Contact No. updated successfully");
-                //fetchUserDataById();
+                fetchUserDataById();
             } catch (error) {
                 console.error("Error updating contact:", error);
                 // Optionally, you can display an error notification
@@ -375,12 +375,18 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                     Contact no. <span className="!ml-0">
                         {isEditingPhone ? (
                             <Textarea
-
                                 value={phone}
                                 autosize
-                                minRows={3}
+                                minRows={1}
                                 placeholder="Enter Your Phone No."
-                                onChange={(e) => setPhone(e.target.value)}
+                                maxLength={10}
+                                // onChange={(e) => setPhone(e.target.value)}
+                                onInput={(e) => {
+                                    // Explicitly cast e.target as HTMLInputElement
+                                    const input = e.target as HTMLInputElement;
+                                    const value = input.value.replace(/\D/g, '').slice(0, 10); // Remove non-numeric characters
+                                    setPhone(value);
+                                  }}
                             />
                         ) : (
                             <div className="text-xl font-bold  text-white text-justify">{userUpdate?.mobileNo || 'N/A'}</div>
