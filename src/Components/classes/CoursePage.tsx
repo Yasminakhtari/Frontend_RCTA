@@ -93,6 +93,7 @@ const CoursePage: React.FC = () => {
   //   }
   // };
   const handleRegister = (sessionId: number, courseId: number) => {
+    alert(" item added to cart successfully")
     if (!isBooked(sessionId)) {
       const selectedSession = sessions.find((session) => session.id === sessionId);
   
