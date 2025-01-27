@@ -5,10 +5,12 @@ import { IconCheck, IconEdit, IconMail, IconMapPin, IconPencil, IconTrash } from
 import { Radio } from '@mantine/core';
 import PlayersDetails from './PlayersDetails';
 import { useDispatch, useSelector } from 'react-redux';
-import { errorNotification, successNotification } from '../../Services/NotificationService';
+// import { errorNotification, successNotification } from '../../Services/NotificationService';
 // import { changeProfile } from '../../Slices/ProfileSlice';
 import { getUserById, updateUser } from '../../Services/UserService';
-import { getAllPlayers, savePlayer } from '../../Services/PlayerService';
+import { deletePlayer, getAllPlayers, savePlayer } from '../../Services/PlayerService';
+import { error } from 'console';
+import { errorNotification, successNotification } from '../../Services/NotificationService';
 
 interface Player {
     id: string;
@@ -124,8 +126,9 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                 // Call savePlayer API with updated player data
                 const savedPlayer = await savePlayer(playerData);
                 console.log(savedPlayer);
-              
-               // setPlayers((prevPlayers) => [...prevPlayers, savedPlayer.data]);
+                successNotification("Success","Player Added Successfully");
+
+                // setPlayers((prevPlayers) => [...prevPlayers, savedPlayer.data]);
                 // Reset the newPlayer object
                 // setNewPlayer({ id: '', name: '', age: '', username: '', batch: '', coach: '', status: 'ongoing' });
                 // Check if the player data was returned correctly
@@ -138,7 +141,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                         name: '',
                         age: '',
                         username: '',
-                        batch: '',  
+                        batch: '',
                         coach: '',
                         status: 'ongoing',
                     });
@@ -146,7 +149,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                     // Close the modal
                     setModalOpen(false);
                 } else {
-                    alert("Failed to save player data.");
+                    errorNotification("Error","Failed to add Player data 🥲 try again")
                 }
             } catch (error) {
                 console.error("Error saving player:", error);
@@ -160,11 +163,20 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
         setRemoveModalOpen(true);
     };
 
-    const confirmRemovePlayer = () => {
-        if (selectedPlayer) {
-            setPlayers(players.filter((player) => player.id !== selectedPlayer.id));
-            setRemoveModalOpen(false);
-            setSelectedPlayer(null);
+    const confirmRemovePlayer = async () => {
+
+        if (selectedPlayer && selectedReason) {
+            try {
+                await deletePlayer(Number(selectedPlayer.id), selectedReason);
+                setPlayers(players.filter((player) => player.id !== selectedPlayer.id));//ya mane players r sabu ja data asuchi,so except deletes players modal chadiki au baki modal r data ku setplayers r rakhi dia 
+                setRemoveModalOpen(false);
+                setSelectedPlayer(null);
+                successNotification("Success","Player Deleted Successfully");
+            } catch (error) {
+                console.log("Error removing players:", error)
+            }
+        } else {
+            errorNotification("Error","Player or reason not selected");
         }
     };
 
@@ -210,6 +222,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
         setIsEditingLocation(!isEditingLocation);
         if (isEditingLocation) {
             try {
+
                 const updatedUser = {
                     roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
                     firstName: userData.userDetails?.firstName,
@@ -227,7 +240,8 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
 
                 console.log("Location updated successfully:", response);
                 successNotification("Success", "Location updated successfully");
-               fetchUserDataById();
+                fetchUserDataById();
+
             } catch (error) {
                 console.error("Error updating location:", error);
                 // Optionally, you can display an error notification
@@ -241,7 +255,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     useEffect(() => {
         const fetchPlayers = async () => {
             try {
-              
+
                 const userId = userData?.userDetails?.id;
                 const response = await getAllPlayers(userId);
                 const playerData = response?.data;
@@ -261,7 +275,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
 
         fetchPlayers();
     }, [userData?.userDetails?.id]);
-    
+
 
     // useEffect(() => {
     //     const fetchPlayers = async () => {
@@ -288,10 +302,10 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     //             console.error("Failed to fetch Players", error);
     //         }
     //     };
-    
+
     //     fetchPlayers();
     // }, [userData]);
-    
+
     ////////////////added 26-01-2025 /////////
 
 
