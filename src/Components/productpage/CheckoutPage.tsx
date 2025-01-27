@@ -1,8 +1,10 @@
 // import React from "react";
-// import { useNavigate } from "react-router-dom";
+// import { useLocation, useNavigate } from "react-router-dom";
 
 // const CheckoutPage: React.FC = () => {
 //   const navigate = useNavigate();
+//   const location = useLocation();
+//   const isClassOnly = location.state?.isClassOnly || false;
 
 //   return (
 //     <div className="min-h-screen bg-gray-100 flex justify-center items-center mt-16">
@@ -39,79 +41,83 @@
 //               placeholder="john.doe@example.com"
 //             />
 //           </div>
-//         </div>
-
-//         <div className="mt-4">
+//           <div className="mt-4">
 //           <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
 //             Phone
-//           </label>
-//           <input
+//          </label>
+//            <input
 //             type="tel"
 //             id="phone"
 //             className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 //             placeholder="123-456-7890"
 //           />
 //         </div>
-
-//         <h2 className="text-xl font-semibold text-center mt-6 mb-4">Shipping Address ( For products)</h2>
-
-//         <div className="space-y-4">
-//           <div>
-//             <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700">
-//               Address Line 1
-//             </label>
-//             <input
-//               type="text"
-//               id="addressLine1"
-//               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-//               placeholder="123 Main St"
-//             />
-//           </div>
-//           <div>
-//             <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700">
-//               Address Line 2
-//             </label>
-//             <input
-//               type="text"
-//               id="addressLine2"
-//               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-//               placeholder="Apartment, suite, etc. (optional)"
-//             />
-//           </div>
-//           <div>
-//             <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-//               City
-//             </label>
-//             <input
-//               type="text"
-//               id="city"
-//               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-//               placeholder="City"
-//             />
-//           </div>
-//           <div>
-//             <label htmlFor="state" className="block text-sm font-medium text-gray-700">
-//               State
-//             </label>
-//             <input
-//               type="text"
-//               id="state"
-//               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-//               placeholder="State"
-//             />
-//           </div>
-//           <div>
-//             <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
-//               Zip Code
-//             </label>
-//             <input
-//               type="text"
-//               id="zipCode"
-//               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-//               placeholder="Zip Code"
-//             />
-//           </div>
 //         </div>
+
+//         {!isClassOnly && (
+//           <>
+//             <h2 className="text-xl font-semibold text-center mt-6 mb-4">
+//               Shipping Address (For Products)
+//             </h2>
+//             <div className="space-y-4">
+//               <div>
+//                 <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700">
+//                   Address Line 1
+//                 </label>
+//                 <input
+//                   type="text"
+//                   id="addressLine1"
+//                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+//                   placeholder="123 Main St"
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700">
+//                   Address Line 2
+//                 </label>
+//                 <input
+//                   type="text"
+//                   id="addressLine2"
+//                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+//                   placeholder="Apartment, suite, etc. (optional)"
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+//                   City
+//                 </label>
+//                 <input
+//                   type="text"
+//                   id="city"
+//                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+//                   placeholder="City"
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="state" className="block text-sm font-medium text-gray-700">
+//                   State
+//                 </label>
+//                 <input
+//                   type="text"
+//                   id="state"
+//                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+//                   placeholder="State"
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
+//                   Zip Code
+//                 </label>
+//                 <input
+//                   type="text"
+//                   id="zipCode"
+//                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+//                   placeholder="Zip Code"
+//                 />
+//               </div>
+//             </div>
+//           </>
+//         )}
 
 //         <div className="mt-6">
 //           <button
@@ -127,7 +133,6 @@
 // };
 
 // export default CheckoutPage;
-
 
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -173,16 +178,16 @@ const CheckoutPage: React.FC = () => {
             />
           </div>
           <div className="mt-4">
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-            Phone
-         </label>
-           <input
-            type="tel"
-            id="phone"
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="123-456-7890"
-          />
-        </div>
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+              Phone
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="123-456-7890"
+            />
+          </div>
         </div>
 
         {!isClassOnly && (
