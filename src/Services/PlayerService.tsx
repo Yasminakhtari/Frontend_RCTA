@@ -27,7 +27,8 @@ const getPlayersById = async (id: number) => {
 const updatePlayers=async (id: number, updatedPlayer: any)=>{
     try {
         const response = await axios.put(`${base_url}/players/updatePlayers`, updatedPlayer, {
-          params: { id }, // Send the ID as a request parameter
+          params: { id}, 
+
         });
         return response.data;
       } catch (error) {
@@ -36,12 +37,13 @@ const updatePlayers=async (id: number, updatedPlayer: any)=>{
       }
 }
 
-const deletePlayer=async (id: number)=>{
+const deletePlayer=async (id: number,reason : string)=>{
     return axios.delete(`${base_url}/players`,{
-        params: { id }
+        params: { id ,reason}
     })
     .then(res=>res.data)
     .catch(error=>{throw error;});
 }
+
 
 export {savePlayer,getAllPlayers,getPlayersById,updatePlayers,deletePlayer};
