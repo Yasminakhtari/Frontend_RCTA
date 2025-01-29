@@ -12,7 +12,7 @@ interface Session {
   location: string;
   updatedOn: string;
 }
-
+const userId:number=0;
 const initialSessions: Session[] = [
   
 ];
@@ -75,7 +75,7 @@ const SessionManagePage: React.FC = () => {
   const fetchSession = async () => {
     try {
       setLoading(true);
-      const response = await getAllSession();
+      const response = await getAllSession(userId);
       if (response.data) {
         const transformedSessions = response.data.map((item: any) => ({
           sessionNo: item.id,
