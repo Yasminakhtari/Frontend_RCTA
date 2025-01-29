@@ -16,7 +16,7 @@ interface Row {
   email: string;
   firstName: string;
   lastName: string;
-  mobile: string;
+  mobileNo: string;
   role: { id: number; name: string };
   enrolledSession: string;
   sessionStartDate: string;
@@ -51,7 +51,7 @@ const List: React.FC = () => {
     (row.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
     (row.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
     (row.role?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
-    (row.mobile?.includes(searchQuery) ?? false)
+    (row.mobileNo?.includes(searchQuery) ?? false)
   );
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedTableData = filteredRows.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -237,7 +237,7 @@ const List: React.FC = () => {
                   <TableCell>{row.email}</TableCell>
                   <TableCell>{row.firstName}</TableCell>
                   <TableCell>{row.lastName}</TableCell>
-                  <TableCell>{row.mobile}</TableCell>
+                  <TableCell>{row.mobileNo}</TableCell>
                   <TableCell
                     className={`text-sm font-bold px-2 py-1 rounded ${row.role.name === "Admin"
                         ? "bg-red-100 text-red-700"
