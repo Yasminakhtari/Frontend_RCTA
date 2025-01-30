@@ -3,15 +3,54 @@ import { useState } from "react";
 const PayTable = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([
-    { id: 1, name: "John Doe", phone: "123-456-7890", totalItems: 5, totalAmount: "$50" },
-    { id: 2, name: "Jane Smith", phone: "987-654-3210", totalItems: 3, totalAmount: "$30" },
-    { id: 3, name: "Alice Johnson", phone: "555-666-7777", totalItems: 8, totalAmount: "$80" },
-    { id: 4, name: "Bob Brown", phone: "111-222-3333", totalItems: 2, totalAmount: "$20" },
-    { id: 5, name: "Charlie Green", phone: "444-555-6666", totalItems: 6, totalAmount: "$60" },
+    {
+      id: 1,
+      name: "John Doe",
+      phone: "123-456-7890",
+      details: ["pure Aerro", "ball", "Tennis Foundations (for beginners)"],
+      totalAmount: "$50",
+      paymentStatus: "Pending",
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      phone: "987-654-3210",
+      details: ["pure Aerro", "ball", "Tennis Foundations (for beginners)"],
+      totalAmount: "$30",
+      paymentStatus: "Pending",
+    },
+    {
+      id: 3,
+      name: "Alice Johnson",
+      phone: "555-666-7777",
+      details: ["pure Aerro", "ball", "Tennis Foundations (for beginners)"],
+      totalAmount: "$80",
+      paymentStatus: "Pending",
+    },
+    {
+      id: 4,
+      name: "Bob Brown",
+      phone: "111-222-3333",
+      details: ["pure Aerro", "ball", "Tennis Foundations (for beginners)"],
+      totalAmount: "$20",
+      paymentStatus: "Pending",
+    },
+    {
+      id: 5,
+      name: "Charlie Green",
+      phone: "444-555-6666",
+      details: ["pure Aerro", "ball", "Tennis Foundations (for beginners)"],
+      totalAmount: "$60",
+      paymentStatus: "Pending",
+    },
   ]);
 
-  const handlePay = (name: string) => {
-    alert(`Payment processing for ${name}`);
+  const handlePay = (id: number) => {
+    setData((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, paymentStatus: "Paid" } : item
+      )
+    );
   };
 
   const filteredData = data.filter(
@@ -35,9 +74,9 @@ const PayTable = () => {
             <tr>
               <th className="border border-blue-500 p-2">Name</th>
               <th className="border border-blue-500 p-2">Phone No.</th>
-              <th className="border border-blue-500 p-2">Total Items</th>
+              <th className="border border-blue-500 p-2">Details</th>
               <th className="border border-blue-500 p-2">Total Amount</th>
-              <th className="border border-blue-500 p-2">Pay</th>
+              <th className="border border-blue-500 p-2">Payment Status</th>
             </tr>
           </thead>
           <tbody>
@@ -45,15 +84,26 @@ const PayTable = () => {
               <tr key={index} className="text-center">
                 <td className="border border-blue-500 p-2">{item.name}</td>
                 <td className="border border-blue-500 p-2">{item.phone}</td>
-                <td className="border border-blue-500 p-2">{item.totalItems}</td>
+                <td className="border border-blue-500 p-2 text-left">
+                  <ul className="list-disc pl-4 text-blue-700">
+                    {item.details.map((product, idx) => (
+                      <li key={idx}>{product}</li>
+                    ))}
+                  </ul>
+                  <p className="text-sm text-gray-500">Total Items: {item.details.length}</p>
+                </td>
                 <td className="border border-blue-500 p-2">{item.totalAmount}</td>
                 <td className="border border-blue-500 p-2">
-                  <button
-                    onClick={() => handlePay(item.name)}
-                    className="bg-blue-600 text-white px-4 py-1 rounded"
-                  >
-                    Pay
-                  </button>
+                  {item.paymentStatus === "Pending" ? (
+                    <button
+                      onClick={() => handlePay(item.id)}
+                      className="bg-blue-600 text-white px-4 py-1 rounded"
+                    >
+                      Pay
+                    </button>
+                  ) : (
+                    <span className="text-green-600 font-semibold">Paid</span>
+                  )}
                 </td>
               </tr>
             ))}
