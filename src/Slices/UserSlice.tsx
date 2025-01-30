@@ -12,6 +12,7 @@ import { getItem, removeItem, setItem } from "../Services/LocalStorageService";
 const UserSlice = createSlice({  
     name: 'user',         // Name of the slice
     initialState:getItem("user"), // Initial state
+
     reducers: {              // Reducers to update state
       setUser:(state,action)=>{
         //payload means ame jo bi object send karuchachanti athi ku, ta basis r current state ku update pai
@@ -23,10 +24,33 @@ const UserSlice = createSlice({
         removeItem("user");
         state = null;
         return state;
+      },
+      //new Reducer for profile updates
+      updateUserProfile:(state,action) => {
+        
+        if(state){
+          const updateUser = {
+            // ...state,...action.payload
+            ...state,
+            data: {
+              ...state.data,
+              userDetails: {
+                  ...state.data.userDetails,
+                  ...action.payload.data.userDetails
+              }
+          }
+
+          };
+          
+          setItem("user",updateUser);
+          console.log(updateUser);
+          return updateUser;
+        }
+        return state;
       }
 
     },
 });
 
-export const {setUser,removeUser} = UserSlice.actions;
+export const {setUser,removeUser,updateUserProfile} = UserSlice.actions;
 export default UserSlice.reducer;
