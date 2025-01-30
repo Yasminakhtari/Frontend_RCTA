@@ -353,6 +353,12 @@ const CoursePage: React.FC = () => {
     }
   }, [sessions, isBooked]);
 
+const scrollToSessions = () => {
+  if (sessionRef.current) {
+    sessionRef.current.scrollIntoView({ behavior: "smooth" });
+  }
+};
+
   const handlePlayerSelect = (sessionId: number, player: string) => {
     setSelectedPlayers((prev) => {
       const prevSelected = prev[sessionId] || [];
@@ -367,6 +373,23 @@ const CoursePage: React.FC = () => {
   const toggleDropdown = (sessionId: number) => {
     setDropdownOpen((prev) => ({ ...prev, [sessionId]: !prev[sessionId] }));
   };
+
+  //If course is not found, display a fallback message
+  if (!courses) {
+    return (
+      <div className="bg-gray-50 min-h-screen p-8 text-center">
+        <h1 className="text-4xl font-bold text-red-500">Course Not Found</h1>
+        <p className="text-gray-700 mt-4">The course you're looking for does not exist.</p>
+      </div>
+    );
+  }
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-100 to-blue-200">
+        <p className="text-gray-700 text-lg font-semibold">Loading ...</p>
+      </div>
+    );
+  }
 
   const handleRegister = (sessionId: number, courseId: number) => {
     alert(" item added to cart successfully")
@@ -390,11 +413,45 @@ const CoursePage: React.FC = () => {
 
   return (
     <div className="bg-white-500 min-h-screen p-8">
+          {/* Breadcrumb Navigation */}
+      <nav className="text-gray-500 text-sm mb-4">
+      <span>Classes</span> <span className="mx-2">&gt;</span>
+      <span>{courses.subcategory} ({courses.category || "No Category"})</span>
+    </nav>
+
+        {/* Course Title Section */}
       <header className="mb-8 mt-16">
-        <h1 className="text-4xl font-extrabold text-gray-900">
-          {courses.subcategory} ({courses.category})
-        </h1>
-      </header>
+      <h1 className="text-4xl font-extrabold text-gray-900">
+        {courses.subcategory} ({courses.category})
+      </h1>
+      <p className="text-gray-700 text-lg mt-2">
+        Learn more about
+        {courses.subcategory} ({courses.category})
+        and its sessions below.
+      </p>
+    </header>
+
+
+    {/* Tabs for Navigation */}
+    <div className="flex space-x-4 border-b border-gray-300 mb-6">
+    <button className="px-4 py-2 text-gray-900 border-b-2 border-blue-500 font-medium focus:outline-none">
+      Description
+    </button>
+    <button
+      className="px-4 py-2 text-gray-500 hover:text-gray-900 focus:outline-none"
+      onClick={scrollToSessions}
+    >
+      Sessions
+    </button>
+  </div>
+
+
+  {/* Course Description */}
+  <div className="mb-12">
+  <p className="text-gray-700 text-lg leading-relaxed"
+    dangerouslySetInnerHTML={{ __html: courses.description }}
+  />
+</div>
 
       <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Session Details:</h2>
@@ -405,6 +462,9 @@ const CoursePage: React.FC = () => {
               <tr>
                 <th className="border border-gray-300 px-4 py-2">Coach</th>
                 <th className="border border-gray-300 px-4 py-2">Location</th>
+                <th className="border border-gray-300 px-4 py-2">Start Date</th>
+                <th className="border border-gray-300 px-4 py-2">End Date</th>
+                <th className="border border-gray-300 px-4 py-2">Days</th>
                 <th className="border border-gray-300 px-4 py-2">Price</th>
                 <th className="border border-gray-300 px-4 py-2">Select Players</th>
                 <th className="border border-gray-300 px-4 py-2">Register</th>
@@ -416,6 +476,12 @@ const CoursePage: React.FC = () => {
                   <tr key={session.id}>
                     <td className="border border-gray-300 px-4 py-2">{session.coachName || "TBD"}</td>
                     <td className="border border-gray-300 px-4 py-2">{session.locationName || "N/A"}</td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {session.fromDate}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">{session.toDate}</td>
+                    <td className="border border-gray-300 px-4 py-2">{session.days?.join(", ") || "N/A"}</td>
+                    <td className="border border-gray-300 px-4 py-2">{session.startTime} – {session.endTime}</td>
                     <td className="border border-gray-300 px-4 py-2">${session.price.toFixed(2)}</td>
                     <td className="border border-gray-300 px-4 py-2">
                       <div className="relative inline-block text-left" ref={(el) => (dropdownRefs.current[session.id] = el)}>
