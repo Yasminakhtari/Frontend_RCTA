@@ -8,8 +8,10 @@ const saveSession=async (data:any)=>{
     .catch(error=>{throw error;});
 }
 
-const getAllSession=async ()=>{
-    return axios.get(`${base_url}/session`)
+const getAllSession=async (userId:number)=>{
+    return axios.get(`${base_url}/session`,{
+        params: { userId }
+    })
     .then(res=>res.data)
     .catch(error=>{throw error;});
 }

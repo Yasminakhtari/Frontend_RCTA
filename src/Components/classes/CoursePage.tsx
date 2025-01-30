@@ -23,6 +23,20 @@ const CoursePage: React.FC = () => {
   const [loading, setLoading] = useState(true); // Loading state to handle async data fetching
   const [isAnyBooked, setIsAnyBooked] = useState(false); // Track if any session is booked.
 
+  const [selectedPlayer, setSelectedPlayer] = useState<{ [key: number]: string }>({});
+  const [dropdownOpen, setDropdownOpen] = useState<{ [key: number]: boolean }>({});
+  const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+
+  const handlePlayerSelect = (sessionId: number, player: string) => {
+    setSelectedPlayer((prev) => ({ ...prev, [sessionId]: player }));
+    setDropdownOpen((prev) => ({ ...prev, [sessionId]: false })); // Close dropdown after selection
+  };
+  
+  const toggleDropdown = (sessionId: number) => {
+    setDropdownOpen((prev) => ({ ...prev, [sessionId]: !prev[sessionId] }));
+  };
+  
+  
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -93,6 +107,7 @@ const CoursePage: React.FC = () => {
   //   }
   // };
   const handleRegister = (sessionId: number, courseId: number) => {
+    alert(" item added to cart successfully")
     if (!isBooked(sessionId)) {
       const selectedSession = sessions.find((session) => session.id === sessionId);
   
@@ -111,6 +126,14 @@ const CoursePage: React.FC = () => {
       }
     }
   };
+
+  // function handlePlayerSelect(id: any, player: string): void {
+  //   throw new Error("Function not implemented.");
+  // }
+
+  // function toggleDropdown(id: any): void {
+  //   throw new Error("Function not implemented.");
+  // }
 
   // Always return a valid React element or null
   return (
@@ -208,6 +231,39 @@ const CoursePage: React.FC = () => {
                           Register
                         </button>
                       )} */}
+
+<div className="relative inline-block text-left" ref={(el) => (dropdownRefs.current[session.id] = el)}>
+                  <button
+                    onClick={() => toggleDropdown(session.id)}
+                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-300 transition duration-200"
+                  >
+                    <span>{selectedPlayer[session.id] || "Select"}</span>
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {dropdownOpen[session.id] && (
+                    <div className="absolute left-0 mt-2 w-32 bg-white border rounded-lg shadow-lg z-10">
+                      {["Player 1", "Player 2", "Player 3"].map((player) => (
+                        <button
+                          key={player}
+                          onClick={() => handlePlayerSelect(session.id, player)}
+                          className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
+                        >
+                          {player}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                        <button
             className={`px-4 py-2 rounded-md text-white ${
               isBooked(session.id)
