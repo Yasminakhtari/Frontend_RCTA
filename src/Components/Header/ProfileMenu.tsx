@@ -27,13 +27,23 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
   
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.user);
-  const profile = useSelector((state: any) => state.profile || { picture: null });
+  // const profile = useSelector((state: any) => state.profile || { picture: null });
+
+console.log("User State:", user);
+// console.log("First Name:", user?.userDetails?.firstName);
+// console.log("First Name:", user?.firstName);
+
 
   const [checked, setChecked] = useState(false);
   const [opened, setOpened] = useState(false);
 
 
-  console.log(user.data.userDetails.firstName);
+//   console.log(user.data.userDetails.firstName);
+//   console.log("User Data:", user?.data);
+// console.log("User Details:", user?.data?.userDetails);
+// console.log("profile:", user?.data?.userDetails?.profile);
+// console.log("prorrr",user?.profile);
+
 
   ////
   const handleLogout = () => {
@@ -71,8 +81,14 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
             {/* <div className='hidden lg:flex gap-2 items-center'> */}
 
             {/* <div className='text-xs' >{user.data.userDetails.firstName}</div> */}
-            <Avatar src={profile.picture?`data:image/jpeg;base64,${profile.picture}`:"iranian-8594205_1280.jpg"} alt="it's me" />
+            {/* <Avatar src={user.data.userDetails.profile?`data:image/jpeg;base64,${user.data.userDetails.profile}`:"iranian-8594205_1280.jpg"} alt="it's me" /> */}
+           
+            <Avatar 
+            src={user?.data?.userDetails?.profile || "iranian-8594205_1280.jpg"}
+            alt={`${user?.data?.userDetails?.firstName}'s profile`}
+        />
           </div>
+          
         </button>
       </Menu.Target>
 

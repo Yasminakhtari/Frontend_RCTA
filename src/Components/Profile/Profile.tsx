@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Badge, Button, Modal, TextInput, Divider, Textarea, ActionIcon } from '@mantine/core';
+import {  Badge, Button, Modal, TextInput, Divider, Textarea, ActionIcon, } from '@mantine/core';
 import { useHover } from '@mantine/hooks';
-import { IconCheck, IconEdit, IconMail, IconMapPin, IconPencil, IconTrash } from '@tabler/icons-react';
+import { IconCheck,IconMail, IconMapPin, IconPencil, IconTrash } from '@tabler/icons-react';
 import { Radio } from '@mantine/core';
 import PlayersDetails from './PlayersDetails';
 import { useDispatch, useSelector } from 'react-redux';
-// import { errorNotification, successNotification } from '../../Services/NotificationService';
-// import { changeProfile } from '../../Slices/ProfileSlice';
 import { getUserById, updateUser } from '../../Services/UserService';
 import { deletePlayer, getAllPlayers, savePlayer } from '../../Services/PlayerService';
-import { error } from 'console';
 import { errorNotification, successNotification } from '../../Services/NotificationService';
+// import ImageUpload from '../../common/ImageUpload';
+import ProfileImageUpload from './ProfileImageUpload';
+import { updateUserProfile } from '../../Slices/UserSlice';
+
 
 interface Player {
     id: string;
@@ -28,8 +29,8 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     const dispatch = useDispatch();
-    const profile = useSelector((state: any) => state.profile || { picture: null });
-
+    const user = useSelector((state:any) => state.user);
+    // console.log(user);
     const { hovered, ref } = useHover();
     const [isModalOpen, setModalOpen] = useState(false);
     const [isRemoveModalOpen, setRemoveModalOpen] = useState(false);
@@ -42,10 +43,13 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     const [isMobile, setIsMobile] = useState(false);
 
     const [edit, setEdit] = useState(false);
-    const [phone, setPhone] = useState("");
-    const [location, setLocation] = useState("");
+    // const [phone, setPhone] = useState("");
+    // const [location, setLocation] = useState("");
+    const [phone, setPhone] = useState(user?.data?.userDetails?.mobileNo ||  "");
+    const [location, setLocation] = useState(user?.data?.userDetails?.address || "");
     const [isEditingPhone, setIsEditingPhone] = useState(false);
     const [isEditingLocation, setIsEditingLocation] = useState(false);
+
 
     const [players, setPlayers] = useState<Player[]>([]);
     const [newPlayer, setNewPlayer] = useState<Player>({
@@ -57,14 +61,10 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
         coach: '',
         status: 'ongoing',
     });
-
     // Set isMobile based on window width
     const checkIfMobile = () => {
         setIsMobile(window.innerWidth <= 768);
     };
-
-
-
     // Use effect to check for screen size on window resize
     useEffect(() => {
         // fetchUserDataById();
@@ -78,7 +78,8 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
             window.removeEventListener('resize', checkIfMobile);
         };
     }, []);
-
+    //////////////////////////////////////////
+    ///////////////////////////////////////////
     const fetchUserDataById = async () => {
         try {
             setLoading(true);
@@ -87,6 +88,18 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
             if (userDetails?.userDetails?.id) {
                 const data = await getUserById(userDetails.userDetails.id);
                 setUsersDetails(data.data);
+
+
+                // Set initial values for profile image
+                if (data.data.profile) {
+                    setUsers((prev: any) => ({
+                        ...prev,
+                        userDetails: {
+                            ...prev.userDetails,
+                            profile: data.data.profile
+                        }
+                    }));
+                }
             }
         } catch (error) {
             console.error('Failed to fetch locations:', error);
@@ -94,29 +107,16 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
             setLoading(false);
         }
     };
-
+    ///////////////////////////////////////////
+    ///////////////////////////////////////////
     useEffect(() => {
         fetchUserDataById();
     }, []);
-
-    // const handleAddPlayer = () => {
-    //     if (newPlayer.name && newPlayer.age) {
-    //         setPlayers((prevPlayers) => [
-    //             ...prevPlayers,
-    //             { ...newPlayer, id: (prevPlayers.length + 1).toString() },
-    //         ]);
-    //         setNewPlayer({ id: '', name: '', age: '', username: '', batch: '', coach: '', status: 'ongoing' });
-    //         setModalOpen(false);
-    //     }
-    // };
+    //////////////////////////////////////////
+    ///////////////////////////////////////////
     const handleAddPlayer = async () => {
         if (newPlayer.name && newPlayer.age) {
             try {
-                // Call savePlayer to send the data to the backend
-                // const savedPlayer = await savePlayer({
-                //     ...newPlayer,
-                //     id: (players.length + 1).toString(), // Optional: ID generation could also happen in the backend
-                // });
                 const playerData = {
                     ...newPlayer,
                     userId: userData?.userDetails?.id, // Assuming userId comes from the user data
@@ -126,12 +126,8 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                 // Call savePlayer API with updated player data
                 const savedPlayer = await savePlayer(playerData);
                 console.log(savedPlayer);
-                successNotification("Success","Player Added Successfully");
+                successNotification("Success", "Player Added Successfully");
 
-                // setPlayers((prevPlayers) => [...prevPlayers, savedPlayer.data]);
-                // Reset the newPlayer object
-                // setNewPlayer({ id: '', name: '', age: '', username: '', batch: '', coach: '', status: 'ongoing' });
-                // Check if the player data was returned correctly
                 if (savedPlayer && savedPlayer?.data?.id) {
                     setPlayers((prevPlayers) => [...prevPlayers, savedPlayer.data]);
 
@@ -149,7 +145,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                     // Close the modal
                     setModalOpen(false);
                 } else {
-                    errorNotification("Error","Failed to add Player data 🥲 try again")
+                    errorNotification("Error", "Failed to add Player data 🥲 try again")
                 }
             } catch (error) {
                 console.error("Error saving player:", error);
@@ -157,11 +153,15 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
             }
         }
     };
+    //////////////////////////////////////////
+    ///////////////////////////////////////////
 
     const handleRemovePlayer = (player: Player) => {
         setSelectedPlayer(player);
         setRemoveModalOpen(true);
     };
+    //////////////////////////////////////////
+    ///////////////////////////////////////////
 
     const confirmRemovePlayer = async () => {
 
@@ -171,92 +171,173 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                 setPlayers(players.filter((player) => player.id !== selectedPlayer.id));//ya mane players r sabu ja data asuchi,so except deletes players modal chadiki au baki modal r data ku setplayers r rakhi dia 
                 setRemoveModalOpen(false);
                 setSelectedPlayer(null);
-                successNotification("Success","Player Deleted Successfully");
+                successNotification("Success", "Player Deleted Successfully");
             } catch (error) {
                 console.log("Error removing players:", error)
             }
         } else {
-            errorNotification("Error","Player or reason not selected");
+            errorNotification("Error", "Player or reason not selected");
         }
     };
-
+    //////////////////////////////////////////
+    ///////////////////////////////////////////
     const handleNameClick = (player: Player) => {
         setSelectedPlayer(player);
         setProfileDetailsModalOpen(true); // Open ProfileDetails modal on name click
     };
+    //////////////////////////////////////////
+    ///////////////////////////////////////////
+    // const handleEditPhone = async () => {
+    //     setIsEditingPhone(!isEditingPhone);
+    //     if (isEditingPhone) {
+    //         try {
+    //             const updatedUser = {
+    //                 roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
+    //                 firstName: userData.userDetails?.firstName,
+    //                 lastName: userData.userDetails?.lastName,
+    //                 username: userData.userDetails?.username,
+    //                 email: userData.userDetails?.email,
+    //                 password: userData.userDetails?.password, // Ensure this is hashed or handled securely
+    //                 mobileNo: phone, // Updated mobile number
+    //                 address: userUpdate?.address,
+    //                 profile: userUpdate?.profile
+    //             };
 
-    const handleEditPhone = async () => {
-        setIsEditingPhone(!isEditingPhone);
-        if (isEditingPhone) {
-            try {
-                const updatedUser = {
-                    roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
-                    firstName: userData.userDetails?.firstName,
-                    lastName: userData.userDetails?.lastName,
-                    username: userData.userDetails?.username,
-                    email: userData.userDetails?.email,
-                    password: userData.userDetails?.password, // Ensure this is hashed or handled securely
-                    mobileNo: phone, // Updated mobile number
-                    address: userUpdate?.address,
-                };
+    //             // Assuming you have the `id` and `location` data
+    //             // const updatedUser = { payload, mobileNo: phone };
+    //             const userId = userData.userDetails.id;
+    //             const response = await updateUser(userId, updatedUser); // Call the updateUser service
 
-                // Assuming you have the `id` and `location` data
-                // const updatedUser = { payload, mobileNo: phone };
-                const userId = userData.userDetails.id;
-                const response = await updateUser(userId, updatedUser); // Call the updateUser service
+    //             console.log("Contact updated successfully:", response);
+    //             successNotification("Success", "Contact No. updated successfully");
+    //             fetchUserDataById();
+    //         } catch (error) {
+    //             console.error("Error updating contact:", error);
+    //             // Optionally, you can display an error notification
+    //             errorNotification("Error", "Failed to update contact no");
+    //         }
+    //     } else {
+    //         setPhone(userUpdate?.mobileNo)
+    //     }
+    // };
 
-                console.log("Contact updated successfully:", response);
-                successNotification("Success", "Contact No. updated successfully");
-                fetchUserDataById();
-            } catch (error) {
-                console.error("Error updating contact:", error);
-                // Optionally, you can display an error notification
-                errorNotification("Error", "Failed to update contact no");
+        const handleEditPhone = async()=>{
+            if(isEditingPhone){
+                try{
+                    const updatedUser = {
+                        ...user.data.userDetails,
+                        mobileNo: phone
+                    };
+                    const response = await updateUser(user?.data?.userDetails?.id , updatedUser);
+                    console.log(response);
+                    //here i am updating redux store
+                    //dispatch(updateUserProfile({...user,user:response.data}));//may be error will cause here
+                    dispatch(updateUserProfile({
+                        ...user,
+                        data: {
+                            ...user.data,
+                            userDetails: response.data
+                        }
+                    }));
+                   successNotification("Success", "Contact No. updated!");
+                } catch (error) {
+                    errorNotification("Error", "Failed to update contact");
+                } 
             }
-        } else {
-            setPhone(userUpdate?.mobileNo)
+            setIsEditingPhone(!isEditingPhone);
         }
-    };
+    //////////////////////////////////////////
+    ///////////////////////////////////////////
+    // const handleEditLocation = async () => {
+    //     setIsEditingLocation(!isEditingLocation);
+    //     if (isEditingLocation) {
+    //         try {
 
-    const handleEditLocation = async () => {
+    //             const updatedUser = {
+    //                 roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
+    //                 firstName: userData.userDetails?.firstName,
+    //                 lastName: userData.userDetails?.lastName,
+    //                 username: userData.userDetails?.username,
+    //                 email: userData.userDetails?.email,
+    //                 password: userData.userDetails?.password, // Ensure this is hashed or handled securely
+    //                 mobileNo: userUpdate?.mobileNo, // Updated mobile number
+    //                 address: location,
+    //                 profile: userUpdate?.profile
+    //             };
+    //             // Assuming you have the `id` and `location` data
+    //             // const updatedUser = { ...userData.userDetails, address: location };
+    //             const userId = userData.userDetails.id;
+    //             const response = await updateUser(userId, updatedUser); // Call the updateUser service
+
+    //             console.log("Location updated successfully:", response);
+    //             successNotification("Success", "Location updated successfully");
+    //             fetchUserDataById();
+
+    //         } catch (error) {
+    //             console.error("Error updating location:", error);
+    //             // Optionally, you can display an error notification
+    //             errorNotification("Error", "Failed to update location");
+    //         }
+    //     } else {
+    //         setLocation(userUpdate?.address || "");
+    //     }
+    // };
+    const handleEditLocation = async()=>{
+        if(isEditingLocation){
+            try{
+                const updatedUser = {
+                    ...user.data.userDetails,
+                    address:location,
+                };
+                const response = await updateUser(user?.data?.userDetails?.id , updatedUser);
+                console.log(response);
+                //here i am updating redux store
+                dispatch(updateUserProfile({
+                    ...user,
+                    data: {
+                        ...user.data,
+                        userDetails: response.data
+                    }
+                }));
+               successNotification("Success", "Location updated!");
+            } catch (error) {
+                errorNotification("Error", "Failed to update Location");
+            } 
+        }
         setIsEditingLocation(!isEditingLocation);
-        if (isEditingLocation) {
-            try {
-
+    }
+    //////////////////////////////////////////
+    ///////////////////////////////////////////
+    const handleImageUpload = async(url: string)=>{
+        
+            try{
                 const updatedUser = {
-                    roleId: userData.userDetails?.role?.id, // Assuming roleId is nested inside `role`
-                    firstName: userData.userDetails?.firstName,
-                    lastName: userData.userDetails?.lastName,
-                    username: userData.userDetails?.username,
-                    email: userData.userDetails?.email,
-                    password: userData.userDetails?.password, // Ensure this is hashed or handled securely
-                    mobileNo: userUpdate?.mobileNo, // Updated mobile number
-                    address: location,
+                    ...user.data.userDetails,
+                    profile :url,
                 };
-                // Assuming you have the `id` and `location` data
-                // const updatedUser = { ...userData.userDetails, address: location };
-                const userId = userData.userDetails.id;
-                const response = await updateUser(userId, updatedUser); // Call the updateUser service
-
-                console.log("Location updated successfully:", response);
-                successNotification("Success", "Location updated successfully");
-                fetchUserDataById();
-
+                const response = await updateUser(user?.data?.userDetails?.id , updatedUser);
+                console.log(response);
+                //here i am updating redux store
+                dispatch(updateUserProfile({
+                    ...user,
+                    data: {
+                        ...user.data,
+                        userDetails: response.data
+                    }
+                }));
+               successNotification("Success", "Profile image updated!");
             } catch (error) {
-                console.error("Error updating location:", error);
-                // Optionally, you can display an error notification
-                errorNotification("Error", "Failed to update location");
-            }
-        } else {
-            setLocation(userUpdate?.address || "");
-        }
-    };
-    ////////////////added 26-01-2025 /////////
+                errorNotification("Error", "Failed to update Profile Image");
+            } 
+    }
+    //////////////////////////////////////////
+    ///////////////////////////////////////////
     useEffect(() => {
         const fetchPlayers = async () => {
             try {
-                const data = JSON.parse(localStorage.getItem("loginData") || '{}');
-                const userId = data?.userDetails?.id;
+
+                // const userId = userData?.userDetails?.id;
+                const userId = user?.data?.userDetails?.id;
                 const response = await getAllPlayers(userId);
                 const playerData = response?.data;
                 console.log(playerData)
@@ -274,40 +355,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
         };
 
         fetchPlayers();
-    }, [userData?.userDetails?.id]);
-
-
-    // useEffect(() => {
-    //     const fetchPlayers = async () => {
-    //         try {
-    //             const storedPlayers = localStorage.getItem('players');
-    //             if (storedPlayers) {
-    //                 // If players are in localStorage, use them
-    //                 setPlayers(JSON.parse(storedPlayers));
-    //             } else {
-    //                 // Otherwise, fetch players from the API
-    //                 const userId = userData.userDetails.id;
-    //                 const response = await getAllPlayers(userId);
-    //                 const playerData = response.data;
-    //                 if (Array.isArray(playerData)) {
-    //                     setPlayers(playerData);
-    //                     // Save the fetched players to localStorage for persistence
-    //                     localStorage.setItem('players', JSON.stringify(playerData));
-    //                 } else {
-    //                     console.error("Expected an array, but received:", playerData);
-    //                     setPlayers([]);
-    //                 }
-    //             }
-    //         } catch (error) {
-    //             console.error("Failed to fetch Players", error);
-    //         }
-    //     };
-
-    //     fetchPlayers();
-    // }, [userData]);
-
-    ////////////////added 26-01-2025 /////////
-
+    }, [user?.data?.userDetails?.id]);
 
 
     return (
@@ -315,15 +363,91 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
             <div className="relative">
                 <img className="rounded-t-2xl" src="/banner.jpg" alt="Banner" />
                 <div ref={ref} className="absolute flex items-center justify-center left-3 -bottom-1/3">
-                    <Avatar className="rounded-full   !h-24 !w-24 md:!h-48 md:!w-48 mb-10 border-mine-shaft-950 border-8" src={profile.picture ? `data:image/jpeg;base64,${profile.picture}` : "iranian-8594205_1280.jpg"} alt="it's me" />
+                    {/* Updated Avatar to use local state */}
+                    {/* <Avatar
+                        className="rounded-full !h-24 !w-24 md:!h-48 md:!w-48 mb-10 border-mine-shaft-950 border-8"
 
-                    {hovered && <IconEdit className="absolute z-10 !w-16 !h-16" />}
+                        alt="Profile"
+                    />
+                    {hovered && <Overlay className="!rounded-full" color="#000" backgroundOpacity={0.75} />}
+                    {hovered && <IconEdit className="absolute z-[300] !w-16 !h-16" />}
+                    {hovered && (
+                        <FileInput
+                            // onChange={handleFileChange}
+                            className="absolute z-[301] [&_*]:!h-full [&_*]:!rounded-full !h-full w-full"
+                            variant="transparent"
+                            accept="image/png,image/jpeg"
+                        />
+                    )} */}
+
+                    {/* <Avatar
+                        className="rounded-full !h-24 !w-24 md:!h-48 md:!w-48 mb-10 border-mine-shaft-950 border-8"
+                        src={userUpdate?.profile} // Use the profile URL from state
+                        alt="Profile"
+                    /> */}
+                    {/* <ImageUpload
+                        setImageUrl={async (url) => {
+                            try {
+                                // Update the user's profile in backend
+                                const updatedUser = {
+                                    ...userData.userDetails,
+                                    profile: url
+                                };
+                                await updateUser(userData.userDetails.id, updatedUser);
+                                successNotification("Success", "Profile image updated!");
+                                fetchUserDataById(); // Refresh user data
+                            } catch (error) {
+                                errorNotification("Error", "Failed to update profile image");
+                            }
+                        }}
+
+                    /> */}
+                    {/* <div ref={ref} className="absolute flex items-center justify-center left-3 -bottom-1/3">
+                        <ProfileImageUpload
+                            currentImage={userUpdate?.profile}
+                            onUploadSuccess={async (url) => {
+                                try {
+                                    const updatedUser = {
+                                        ...userData.userDetails,
+                                        profile: url
+                                    };
+                                    await updateUser(userData.userDetails.id, updatedUser);
+                                    fetchUserDataById();
+                                } catch (error) {
+                                    console.error("Profile image update failed:", error);
+                                }
+                            }}
+                        />
+                    </div> */}
+
+                    {/* In Profile component */}
+<div className="absolute flex items-center justify-center left-3 -bottom-1/3">
+  {/* <ProfileImageUpload
+    currentImage={userUpdate?.profile}
+    onUploadSuccess={async (url) => {
+      try {
+        const updatedUser = {
+          ...userData.userDetails,
+          profile: url
+        };
+        await updateUser(userData.userDetails.id, updatedUser);
+        fetchUserDataById();
+      } catch (error) {
+        console.error("Profile image update failed:", error);
+      }
+    }}
+  /> */}
+                    <ProfileImageUpload
+                        currentImage={user?.data?.userDetails?.profile}
+                        onUploadSuccess={handleImageUpload}
+                    />
+</div>
                 </div>
             </div>
 
             <div className=" flex  md:justify-between md:items-center mt-6 px-3">
                 <h1 className=" text-xl md:text-3xl font-bold lg:font-semibold w-2/5 md:w-auto ">
-                    {userData?.userDetails?.firstName} {userData?.userDetails?.lastName}
+                    {user?.data?.userDetails?.firstName} {user?.data?.userDetails?.lastName}
                 </h1>
                 <div className=" text-xs md:text-xl flex items-center gap-2">
                     <Badge color="blue" variant="filled">Player</Badge>
@@ -334,7 +458,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
 
             <div className="flex gap-1 text-mine-shaft-300 text-lg items-center">
                 <IconMail className="h-5 w-5" stroke={1.5} />
-                {userData?.userDetails?.email}
+                {user?.data?.userDetails?.email}
             </div>
             {/* Location */}
             <div className="flex gap-1 text-mine-shaft-300 text-lg items-center">
@@ -386,10 +510,12 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                                     const input = e.target as HTMLInputElement;
                                     const value = input.value.replace(/\D/g, '').slice(0, 10); // Remove non-numeric characters
                                     setPhone(value);
-                                  }}
+                                }}
                             />
                         ) : (
-                            <div className="text-xl font-bold  text-white text-justify">{userUpdate?.mobileNo || 'N/A'}</div>
+                            // <div className="text-xl font-bold  text-white text-justify">{userUpdate?.mobileNo || 'N/A'}</div>
+                            <div className="text-xl font-bold  text-white text-justify">{user?.data?.userDetails?.mobileNo || 'N/A'}</div>
+                            
                         )}
                     </span>
 
@@ -435,12 +561,6 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                         value={newPlayer.age}
                         onChange={(e) => setNewPlayer({ ...newPlayer, age: e.target.value })}
                     />
-                    {/* <TextInput
-                        label="Status"
-                        placeholder="Enter status (ongoing, incoming, completed)"
-                        value={newPlayer.status}
-                        onChange={(e) => setNewPlayer({ ...newPlayer, status: e.target.value as "ongoing" | "incoming" | "completed" })}
-                    /> */}
                     <Button onClick={handleAddPlayer} fullWidth color="blue">
                         Add Player
                     </Button>
