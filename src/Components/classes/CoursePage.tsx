@@ -465,6 +465,7 @@ const scrollToSessions = () => {
                 <th className="border border-gray-300 px-4 py-2">Start Date</th>
                 <th className="border border-gray-300 px-4 py-2">End Date</th>
                 <th className="border border-gray-300 px-4 py-2">Days</th>
+                <th className="border border-gray-300 px-4 py-2">Time</th>
                 <th className="border border-gray-300 px-4 py-2">Price</th>
                 <th className="border border-gray-300 px-4 py-2">Select Players</th>
                 <th className="border border-gray-300 px-4 py-2">Register</th>
