@@ -156,18 +156,23 @@
 //                       <h2 className="text-gray-700 ml-4">Total: ${productTotal.toFixed(2)}</h2>
 //                     </div>
 //                   )}
-//                   {/* Player Selection for Class Items */}
 //                   {product.category === "Class" && (
 //                     <div className="mt-2">
 //                       <label className="block text-gray-700">Select Player:</label>
 //                       <select
 //                         className="border rounded p-2 w-full"
-//                         onChange={(e) => handlePlayerChange(product.id, e.target.value)}
+//                         onChange={(e) => {
+//                           if (e.target.value) {
+//                             handlePlayerChange(product.id, e.target.value);
+//                           }
+//                         }}
 //                       >
 //                         <option value="">Select a Player</option>
-//                         {playersList.map((player) => (
-//                           <option key={player} value={player}>{player}</option>
-//                         ))}
+//                         {playersList
+//                           .filter((player) => !(selectedPlayers[product.id] || []).includes(player))
+//                           .map((player) => (
+//                             <option key={player} value={player}>{player}</option>
+//                           ))}
 //                       </select>
 //                       <div className="mt-2">
 //                         {selectedPlayers[product.id]?.map((player) => (
@@ -194,14 +199,12 @@
 //               </div>
 //             );
 //           })}
-
 //           {classItems.length > 0 && (
 //             <div className="mt-4 sm:mt-6 p-4 bg-blue-100 rounded-lg shadow-md">
 //               <h2 className="text-lg sm:text-xl font-bold text-blue-900">Price : ${classItems.reduce((sum, product) => sum + product.price, 0).toFixed(2)}</h2>
 //               <h2 className="text-lg sm:text-xl font-bold text-blue-900">Total: ${classTotal.toFixed(2)}</h2>
 //             </div>
 //           )}
-
 //           <div className="mt-4 sm:mt-6">
 //             <h2 className="text-lg sm:text-xl font-bold">Total: ${total.toFixed(2)}</h2>
 //             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-2">
@@ -227,7 +230,7 @@
 
 // export default ShoppingCart;
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "./CartContext";
 import { useNavigate } from "react-router-dom";
 
@@ -247,10 +250,13 @@ const ShoppingCart: React.FC = () => {
   };
 
   const handlePlayerChange = (id: number, player: string) => {
-    setSelectedPlayers((prev) => ({
-      ...prev,
-      [id]: [...(prev[id] || []), player]
-    }));
+    setSelectedPlayers((prev) => {
+      const currentPlayers = prev[id] || [];
+      if (!currentPlayers.includes(player)) {  // Prevent duplicates
+        return { ...prev, [id]: [...currentPlayers, player] };
+      }
+      return prev;
+    });
   };
 
   const handleRemovePlayer = (id: number, player: string) => {
@@ -259,6 +265,10 @@ const ShoppingCart: React.FC = () => {
       return { ...prev, [id]: updatedPlayers };
     });
   };
+
+  useEffect(() => {
+    console.log("Updated Selected Players:", selectedPlayers);
+  }, [selectedPlayers]);
 
   const total = cart.reduce((sum, product) => sum + product.price * product.quantity, 0);
   const classItems = cart.filter((product) => product.category === "Class");
@@ -340,12 +350,6 @@ const ShoppingCart: React.FC = () => {
               </div>
             );
           })}
-          {classItems.length > 0 && (
-            <div className="mt-4 sm:mt-6 p-4 bg-blue-100 rounded-lg shadow-md">
-              <h2 className="text-lg sm:text-xl font-bold text-blue-900">Price : ${classItems.reduce((sum, product) => sum + product.price, 0).toFixed(2)}</h2>
-              <h2 className="text-lg sm:text-xl font-bold text-blue-900">Total: ${classTotal.toFixed(2)}</h2>
-            </div>
-          )}
           <div className="mt-4 sm:mt-6">
             <h2 className="text-lg sm:text-xl font-bold">Total: ${total.toFixed(2)}</h2>
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-2">
@@ -370,4 +374,3 @@ const ShoppingCart: React.FC = () => {
 };
 
 export default ShoppingCart;
-
