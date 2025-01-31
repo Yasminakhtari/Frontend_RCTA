@@ -391,25 +391,56 @@ const scrollToSessions = () => {
     );
   }
 
+  // const handleRegister = (sessionId: number, courseId: number) => {
+  //   alert(" item added to cart successfully")
+  //   if (!isBooked(sessionId)) {
+  //     const selectedSession = sessions.find((session) => session.id === sessionId);
+  //     if (selectedSession) {
+  //       addToCart({
+  //         id: selectedSession.id,
+  //         courseId: courseId,
+  //         name: `${courses.subcategory} (${courses.category})` || "General",
+  //         price: selectedSession.price,
+  //         description: `Session with ${selectedSession.coachName || "TBD"}`,
+  //         category: "Sports",
+  //         image: "/path/to/image",
+  //       });
+  //       setIsAnyBooked(true);
+  //       navigate("/cart");
+  //     }
+  //   }
+  // };
   const handleRegister = (sessionId: number, courseId: number) => {
-    alert(" item added to cart successfully")
-    if (!isBooked(sessionId)) {
-      const selectedSession = sessions.find((session) => session.id === sessionId);
-      if (selectedSession) {
-        addToCart({
-          id: selectedSession.id,
-          courseId: courseId,
-          name: `${courses.subcategory} (${courses.category})` || "General",
-          price: selectedSession.price,
-          description: `Session with ${selectedSession.coachName || "TBD"}`,
-          category: "Sports",
-          image: "/path/to/image",
-        });
-        setIsAnyBooked(true);
-        navigate("/cart");
-      }
+    if (isBooked(sessionId)) {
+      alert("This session is already booked!");
+      return;
+    }
+  
+    const selectedSession = sessions.find((session) => session.id === sessionId);
+  
+    if (selectedSession) {
+      const selectedPlayersCount = selectedPlayers[sessionId]?.length || 1; // Default to 1 if no player selected
+      const totalPrice = selectedSession.price * selectedPlayersCount;
+  
+      const cartItem = {
+        id: selectedSession.id,
+        courseId: courseId,
+        name: `${courses.subcategory} (${courses.category})` || "General",
+        price: totalPrice, // Updated price calculation
+        description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
+        category: "Sports",
+        image: "/path/to/image",
+      };
+  
+      addToCart(cartItem);
+  
+      setIsAnyBooked(true);
+      alert(`Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
+      navigate("/cart");
     }
   };
+  
+  
 
   return (
     <div className="bg-white-500 min-h-screen p-8">

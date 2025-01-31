@@ -65,7 +65,7 @@
 //             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-2">
 //               <button
 //                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-//                 onClick={() => navigate("/payment")}
+//                 onClick={() => navigate("/payment", { state: { isClassOnly } })}
 //               >
 //                 Checkout
 //               </button>
@@ -104,7 +104,9 @@ const ShoppingCart: React.FC = () => {
 
   const total = cart.reduce((sum, product) => sum + product.price * product.quantity, 0);
 
-  const isClassOnly = cart.every((product) => product.category === "Class");
+  // Filter out class items and calculate total for class section
+  const classItems = cart.filter((product) => product.category === "Class");
+  const classTotal = classItems.reduce((sum, product) => sum + product.price * product.quantity, 0);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 p-4 sm:p-8 mt-14">
@@ -148,12 +150,20 @@ const ShoppingCart: React.FC = () => {
               </div>
             );
           })}
+          
+          {/* Display class total if there are class items */}
+          {classItems.length > 0 && (
+            <div className="mt-4 sm:mt-6 p-4 bg-blue-100 rounded-lg shadow-md">
+              <h2 className="text-lg sm:text-xl font-bold text-blue-900">Class Total: ${classTotal.toFixed(2)}</h2>
+            </div>
+          )}
+
           <div className="mt-4 sm:mt-6">
             <h2 className="text-lg sm:text-xl font-bold">Total: ${total.toFixed(2)}</h2>
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-2">
               <button
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-                onClick={() => navigate("/payment", { state: { isClassOnly } })}
+                onClick={() => navigate("/payment", { state: { isClassOnly: classItems.length > 0 } })}
               >
                 Checkout
               </button>
