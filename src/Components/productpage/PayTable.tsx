@@ -127,7 +127,7 @@ const PayTable = () => {
       phone: "123-456-7890",
       details: ["pure Aerro", "ball", "Tennis Foundations (for beginners)"],
       totalAmount: "$50",
-      paymentStatus: "Pending",
+      paymentStatus: "Pay", // Initially "Pay"
     },
     {
       id: 2,
@@ -135,7 +135,7 @@ const PayTable = () => {
       phone: "987-654-3210",
       details: ["pure Aerro", "ball", "Tennis Foundations (for beginners)"],
       totalAmount: "$30",
-      paymentStatus: "Pending",
+      paymentStatus: "Pay",
     },
     {
       id: 3,
@@ -143,7 +143,7 @@ const PayTable = () => {
       phone: "555-666-7777",
       details: ["pure Aerro", "ball", "Tennis Foundations (for beginners)"],
       totalAmount: "$80",
-      paymentStatus: "Pending",
+      paymentStatus: "Pay",
     },
     {
       id: 4,
@@ -151,7 +151,7 @@ const PayTable = () => {
       phone: "111-222-3333",
       details: ["pure Aerro", "ball", "Tennis Foundations (for beginners)"],
       totalAmount: "$20",
-      paymentStatus: "Pending",
+      paymentStatus: "Pay",
     },
     {
       id: 5,
@@ -159,22 +159,22 @@ const PayTable = () => {
       phone: "444-555-6666",
       details: ["pure Aerro", "ball", "Tennis Foundations (for beginners)"],
       totalAmount: "$60",
-      paymentStatus: "Pending",
+      paymentStatus: "Pay",
     },
   ]);
 
-  // Toggle payment status between "Pending" and "Paid"
-  const handlePay = (id: number) => {
+  // Toggle payment status between "Pay" and "Paid"
+  const handleTogglePay = (id: number) => {
     setData((prevData) =>
       prevData.map((item) =>
         item.id === id
-          ? { ...item, paymentStatus: item.paymentStatus === "Pending" ? "Paid" : "Pending" }
+          ? { ...item, paymentStatus: item.paymentStatus === "Pay" ? "Paid" : "Pay" }
           : item
       )
     );
   };
 
-  // Filter the table data based on search input
+  // Filter table data based on search input
   const filteredData = data.filter(
     (item) =>
       item.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -219,14 +219,14 @@ const PayTable = () => {
                 <td className="border border-blue-500 p-2">{item.totalAmount}</td>
                 <td className="border border-blue-500 p-2">
                   <button
-                    onClick={() => handlePay(item.id)}
+                    onClick={() => handleTogglePay(item.id)}
                     className={`px-4 py-1 rounded ${
                       item.paymentStatus === "Pay"
                         ? "bg-blue-600 text-white"
                         : "bg-green-500 text-white"
                     }`}
                   >
-                    {item.paymentStatus === "Pay" ? "Pay" : "Paid"}
+                    {item.paymentStatus}
                   </button>
                 </td>
               </tr>
@@ -239,4 +239,5 @@ const PayTable = () => {
 };
 
 export default PayTable;
+
 
