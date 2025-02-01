@@ -136,12 +136,59 @@
 
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { saveOrder } from "../../Services/OrderService";
+import { errorNotification, successNotification } from "../../Services/NotificationService";
 
 const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isClassOnly = location.state?.isClassOnly || false;
+  const orderId = location.state?.orderId || 0;
+  const cartData = location.state?.cartData || {}
+  console.log(cartData)
 
+  const handleProceedToPayment = async () => {
+    try {
+       // Ensure items are properly formatted as an array
+       let formattedItems = cartData.items;
+
+       if (typeof formattedItems === "string") {
+        // Convert items string to valid JSON format
+        formattedItems = formattedItems
+            .replace(/(\w+)=/g, '"$1":') // Wrap keys with quotes
+            .replace(/:\s*([\w\s&()-]+)/g, ': "$1"') // Wrap string values in quotes
+            .replace(/"\s*([\d.]+)"/g, "$1"); // Remove quotes around numbers
+
+        // Parse the formatted string into an actual array
+        formattedItems = JSON.parse(formattedItems);
+    }
+      // Prepare JSON payload
+      console.log((cartData?.items))
+      const payload = {
+        orderId, // Include orderId when present
+        userId:cartData.userId,
+        total: cartData.total,
+        paymentMethod: cartData.paymentMethod,
+        items: formattedItems, // Ensure it's sent as JSON
+      };
+  
+      console.log("Sending Payload:", JSON.stringify(payload));
+  
+      // Call the saveOrder function with JSON payload
+      const savedOrder = await saveOrder(JSON.stringify(payload));
+      console.log("Saved Order Response:", savedOrder);
+
+      successNotification("Success", "Payment Successfull");
+  
+      // Navigate to checkout page with the updated order ID
+      if (savedOrder.data?.paymentStatus === "Success") {
+        navigate("/cart", { state: { saveOrder: savedOrder.data?.paymentStatus } });
+      }
+    } catch (error) {
+      console.error("Error saving order:", error);
+      errorNotification("Error", "Failed to save the order");
+    }
+  }
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center mt-16">
       <div className="w-full max-w-xl bg-white shadow-lg rounded-lg p-6">
@@ -257,8 +304,9 @@ const CheckoutPage: React.FC = () => {
 
         <div className="mt-6">
           <button
-            type="button"
+            type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            onClick={handleProceedToPayment}
           >
             Pay Now
           </button>

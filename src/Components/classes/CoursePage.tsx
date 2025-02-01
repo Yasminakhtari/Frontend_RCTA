@@ -309,6 +309,7 @@ interface Course {
   subcategory: string;
   description: string;
   price: number;
+  groups:string;
 }
 
 const CoursePage: React.FC = () => {
@@ -432,6 +433,7 @@ const scrollToSessions = () => {
         category: "Sports",
         image: "/path/to/image",
         players: selectedPlayerNames,  // Save selected players
+        groups:`${courses.groups}`
       };
   
       addToCart(cartItem);

@@ -233,14 +233,22 @@
 
 import React, { useState, useEffect } from "react";
 import { useCart } from "./CartContext";
-import { useNavigate } from "react-router-dom";
+import {  useLocation, useNavigate } from "react-router-dom";
 
 const playersList = ["Player 1", "Player 2", "Player 3", "Player 4"]; // Sample player list
 
 const ShoppingCart: React.FC = () => {
+  const { state } = useLocation();
+
+const successStatus =  state?.saveOrder;
   const { cart, removeFromCart, clearCart, setCart } = useCart();
   const navigate = useNavigate();
   const [selectedPlayers, setSelectedPlayers] = useState<Record<number, string[]>>({});
+  useEffect(() => {
+    if (successStatus) {
+      clearCart(); // Clear cart if order is successful
+    }
+  }, []);
 
   const handleQuantityChange = (id: number, amount: number) => {
     setCart((prevCart) =>
@@ -391,7 +399,7 @@ const ShoppingCart: React.FC = () => {
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-2">
               <button
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-                onClick={() => navigate("/payment", { state: { isClassOnly: classItems.length > 0, selectedPlayers } })}
+                onClick={() => navigate("/payment", { state: { isClassOnly: classItems.length > 0, selectedPlayers,cart,total } })}
               >
                 Checkout
               </button>
