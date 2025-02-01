@@ -419,7 +419,7 @@ const ShoppingCart: React.FC = () => {
 
   const total = cart.reduce((sum, product) => sum + product.price * product.quantity, 0);
   const classItems = cart.filter((product) => product.category === "Class");
-  
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 p-4 sm:p-8 mt-14">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Shopping Cart</h1>
@@ -432,27 +432,8 @@ const ShoppingCart: React.FC = () => {
               <div>
                 <h2 className="text-lg font-semibold">{product.name}</h2>
                 <p className="mb-1 sm:mb-2"> Price: ${product.price.toFixed(2)}</p>
-                
-                {product.category !== "Class" ? (
-                  <>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-200"
-                        onClick={() => handleQuantityChange(product.id, -1)}
-                      >
-                        -
-                      </button>
-                      <span className="text-lg">{product.quantity}</span>
-                      <button
-                        className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-200"
-                        onClick={() => handleQuantityChange(product.id, 1)}
-                      >
-                        +
-                      </button>
-                    </div>
-                    <p className="font-bold mt-2">Total: ${(product.price * product.quantity).toFixed(2)}</p>
-                  </>
-                ) : (
+
+                {product.category === "Class" ? (
                   <>
                     <label className="block text-gray-700 mt-2">Select Player:</label>
                     <select
@@ -483,6 +464,25 @@ const ShoppingCart: React.FC = () => {
                     </div>
 
                     <p className="font-bold mt-2">Class Price: ${product.price.toFixed(2)}</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-200"
+                        onClick={() => handleQuantityChange(product.id, -1)}
+                      >
+                        -
+                      </button>
+                      <span className="text-lg">{product.quantity}</span>
+                      <button
+                        className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-200"
+                        onClick={() => handleQuantityChange(product.id, 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+                    <p className="font-bold mt-2">Total: ${(product.price * product.quantity).toFixed(2)}</p>
                   </>
                 )}
               </div>
@@ -520,3 +520,4 @@ const ShoppingCart: React.FC = () => {
 };
 
 export default ShoppingCart;
+
