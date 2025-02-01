@@ -86,7 +86,7 @@
 // export default ShoppingCart;
 
 
-// import React, { useState } from "react";
+// import React, { useState, useEffect } from "react";
 // import { useCart } from "./CartContext";
 // import { useNavigate } from "react-router-dom";
 
@@ -106,10 +106,13 @@
 //   };
 
 //   const handlePlayerChange = (id: number, player: string) => {
-//     setSelectedPlayers((prev) => ({
-//       ...prev,
-//       [id]: [...(prev[id] || []), player]
-//     }));
+//     setSelectedPlayers((prev) => {
+//       const currentPlayers = prev[id] || [];
+//       if (!currentPlayers.includes(player)) {  // Prevent duplicates
+//         return { ...prev, [id]: [...currentPlayers, player] };
+//       }
+//       return prev;
+//     });
 //   };
 
 //   const handleRemovePlayer = (id: number, player: string) => {
@@ -118,6 +121,10 @@
 //       return { ...prev, [id]: updatedPlayers };
 //     });
 //   };
+
+//   useEffect(() => {
+//     console.log("Updated Selected Players:", selectedPlayers);
+//   }, [selectedPlayers]);
 
 //   const total = cart.reduce((sum, product) => sum + product.price * product.quantity, 0);
 //   const classItems = cart.filter((product) => product.category === "Class");
@@ -199,12 +206,6 @@
 //               </div>
 //             );
 //           })}
-//           {classItems.length > 0 && (
-//             <div className="mt-4 sm:mt-6 p-4 bg-blue-100 rounded-lg shadow-md">
-//               <h2 className="text-lg sm:text-xl font-bold text-blue-900">Price : ${classItems.reduce((sum, product) => sum + product.price, 0).toFixed(2)}</h2>
-//               <h2 className="text-lg sm:text-xl font-bold text-blue-900">Total: ${classTotal.toFixed(2)}</h2>
-//             </div>
-//           )}
 //           <div className="mt-4 sm:mt-6">
 //             <h2 className="text-lg sm:text-xl font-bold">Total: ${total.toFixed(2)}</h2>
 //             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mt-2">
@@ -289,6 +290,7 @@ const ShoppingCart: React.FC = () => {
                   <h2 className="text-lg font-semibold">{product.name}</h2>
                   <p className="mb-1 sm:mb-2"> Price: ${product.price.toFixed(2)}</p>
                   <p className="mb-1 sm:mb-2 font-bold"> Total: ${productTotal.toFixed(2)}</p>
+
                   {product.category !== "Sports" && (
                     <div className="flex items-center space-x-2">
                       <button
@@ -307,6 +309,7 @@ const ShoppingCart: React.FC = () => {
                       <h2 className="text-gray-700 ml-4">Total: ${productTotal.toFixed(2)}</h2>
                     </div>
                   )}
+
                   {product.category === "Class" && (
                     <div className="mt-2">
                       <label className="block text-gray-700">Select Player:</label>
@@ -338,6 +341,17 @@ const ShoppingCart: React.FC = () => {
                           </div>
                         ))}
                       </div>
+                    </div>
+                  )}
+
+                  {product.category === "Sports" && product.players?.length > 0 && (
+                    <div className="mt-2">
+                      <h3 className="text-gray-700">Selected Players:</h3>
+                      <ul className="list-disc pl-5">
+                        {product.players.map((player: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined, index: React.Key | null | undefined) => (
+                          <li key={index}>{player}</li>
+                        ))}
+                      </ul>
                     </div>
                   )}
                 </div>

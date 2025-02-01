@@ -421,6 +421,7 @@ const scrollToSessions = () => {
     if (selectedSession) {
       const selectedPlayersCount = selectedPlayers[sessionId]?.length || 1; // Default to 1 if no player selected
       const totalPrice = selectedSession.price * selectedPlayersCount;
+      const selectedPlayerNames = selectedPlayers[sessionId] || ["Default Player"]; // Ensure at least 1 player
   
       const cartItem = {
         id: selectedSession.id,
@@ -430,6 +431,7 @@ const scrollToSessions = () => {
         description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
         category: "Sports",
         image: "/path/to/image",
+        players: selectedPlayerNames,  // Save selected players
       };
   
       addToCart(cartItem);
