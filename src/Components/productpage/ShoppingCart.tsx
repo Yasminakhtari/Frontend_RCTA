@@ -250,22 +250,44 @@ const ShoppingCart: React.FC = () => {
     );
   };
 
+  // const handlePlayerChange = (id: number, player: string) => {
+  //   setSelectedPlayers((prev) => {
+  //     const currentPlayers = prev[id] || [];
+  //     if (!currentPlayers.includes(player)) {  // Prevent duplicates
+  //       return { ...prev, [id]: [...currentPlayers, player] };
+  //     }
+  //     return prev;
+  //   });
+  // };
+
   const handlePlayerChange = (id: number, player: string) => {
-    setSelectedPlayers((prev) => {
-      const currentPlayers = prev[id] || [];
-      if (!currentPlayers.includes(player)) {  // Prevent duplicates
-        return { ...prev, [id]: [...currentPlayers, player] };
-      }
-      return prev;
-    });
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id
+          ? { ...item, players: [...(item.players || []), player] } // Ensure players array is updated
+          : item
+      )
+    );
   };
+  
+
+  // const handleRemovePlayer = (id: number, player: string) => {
+  //   setSelectedPlayers((prev) => {
+  //     const updatedPlayers = prev[id]?.filter((p) => p !== player) || [];
+  //     return { ...prev, [id]: updatedPlayers };
+  //   });
+  // };
 
   const handleRemovePlayer = (id: number, player: string) => {
-    setSelectedPlayers((prev) => {
-      const updatedPlayers = prev[id]?.filter((p) => p !== player) || [];
-      return { ...prev, [id]: updatedPlayers };
-    });
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id
+          ? { ...item, players: item.players.filter((p) => p !== player) }
+          : item
+      )
+    );
   };
+  
 
   useEffect(() => {
     console.log("Updated Selected Players:", selectedPlayers);
