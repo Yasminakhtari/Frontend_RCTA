@@ -193,6 +193,7 @@ import { errorNotification, successNotification } from "../../Services/Notificat
 
 const PaymentPage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>("contact");
+  const [showContactPaymentMessage, setShowContactPaymentMessage] = useState(false); // New state to control message display
   const { state } = useLocation();
   const isClassOnly = state?.isClassOnly || false;
   const isCart = state?.cart || false;
@@ -261,6 +262,9 @@ const PaymentPage: React.FC = () => {
           cartData:savedCart.data
          } })
       }
+      else{
+        setShowContactPaymentMessage(true); // Show the message for contact payment
+      }
     } catch (error) {
       console.error("Error saving order:", error);
   
@@ -290,7 +294,17 @@ const PaymentPage: React.FC = () => {
             </button>
           </div>
         </div>
-      ) : (
+      ) : showContactPaymentMessage ? ( // Show message after successful contact payment
+        <div className="w-full max-w-lg bg-white shadow-lg rounded-lg">
+          <div className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Payment Processing - Contact Admin</h3>
+            <p className="text-sm mb-6">
+            Please reach out to the Admin for further instructions to complete your payment securely.
+            </p>
+          </div>
+        </div>
+      )
+      : (
         <div className="w-full max-w-lg bg-white shadow-lg rounded-lg">
           <div className="p-6">
             <h3 className="text-lg font-semibold mb-4">Choose Payment Method</h3>

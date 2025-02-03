@@ -79,6 +79,7 @@ const PaymentModalWrapper: React.FC = () => {
           <Route path="alluser" element={<Table />} />
           <Route path="locationtable" element={<LocationTable />} />
           <Route path="players" element={<Table />} />
+          <Route path="paytable" element={<PayTable />} />
         </Route>
 
         {/* Public Routes */}
@@ -100,7 +101,7 @@ const PaymentModalWrapper: React.FC = () => {
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/details/:id" element={<ProductDetails />} />
-        <Route path="/paytable" element={<PayTable />} />
+        
 
         {/* Classes */}
         <Route path="/classes" element={<Classes />} />

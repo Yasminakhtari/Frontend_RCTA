@@ -11,4 +11,9 @@ const saveOrder=async (data:any)=>{
     .then(res=>res.data)
     .catch(error=>{throw error;});
 }
-export { saveOrder };
+const getAllOrder=async ()=>{
+    return axios.get(`${base_url}/order/getAllOrder`)
+    .then(res=>res.data)
+    .catch(error=>{throw error;});
+}
+export { saveOrder,getAllOrder };

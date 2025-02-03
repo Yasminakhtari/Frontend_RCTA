@@ -234,6 +234,7 @@
 import React, { useState, useEffect } from "react";
 import { useCart } from "./CartContext";
 import {  useLocation, useNavigate } from "react-router-dom";
+import { getAllOrder } from "../../Services/OrderService";
 
 const playersList = ["Player 1", "Player 2", "Player 3", "Player 4"]; // Sample player list
 
@@ -249,7 +250,7 @@ const successStatus =  state?.saveOrder;
       clearCart(); // Clear cart if order is successful
     }
   }, []);
-
+  
   const handleQuantityChange = (id: number, amount: number) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
@@ -257,16 +258,6 @@ const successStatus =  state?.saveOrder;
       )
     );
   };
-
-  // const handlePlayerChange = (id: number, player: string) => {
-  //   setSelectedPlayers((prev) => {
-  //     const currentPlayers = prev[id] || [];
-  //     if (!currentPlayers.includes(player)) {  // Prevent duplicates
-  //       return { ...prev, [id]: [...currentPlayers, player] };
-  //     }
-  //     return prev;
-  //   });
-  // };
 
   const handlePlayerChange = (id: number, player: string) => {
     setCart((prevCart) =>
@@ -278,13 +269,6 @@ const successStatus =  state?.saveOrder;
     );
   };
   
-
-  // const handleRemovePlayer = (id: number, player: string) => {
-  //   setSelectedPlayers((prev) => {
-  //     const updatedPlayers = prev[id]?.filter((p) => p !== player) || [];
-  //     return { ...prev, [id]: updatedPlayers };
-  //   });
-  // };
 
   const handleRemovePlayer = (id: number, player: string) => {
     setCart((prevCart) =>
@@ -309,7 +293,12 @@ const successStatus =  state?.saveOrder;
     <div className="flex flex-col min-h-screen bg-gray-100 p-4 sm:p-8 mt-14">
       <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Shopping Cart</h1>
       {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
+        successStatus ? (
+          <p className="text-green-600 font-bold text-lg">Your payment was successful! Thank you for your purchase.</p>
+          // Show success message if payment was successful
+        ) : (
+          <p>Your cart is empty.</p> // Show empty cart message if cart has no items
+        )
       ) : (
         <div>
           {cart.map((product) => {

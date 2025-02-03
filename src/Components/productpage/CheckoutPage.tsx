@@ -149,19 +149,19 @@ const CheckoutPage: React.FC = () => {
 
   const handleProceedToPayment = async () => {
     try {
-       // Ensure items are properly formatted as an array
-       let formattedItems = cartData.items;
+      // Ensure items are properly formatted as an array
+      let formattedItems = cartData.items;
 
-       if (typeof formattedItems === "string") {
+      if (typeof formattedItems === "string") {
         // Convert items string to valid JSON format
         formattedItems = formattedItems
-            .replace(/(\w+)=/g, '"$1":') // Wrap keys with quotes
-            .replace(/:\s*([\w\s&()-]+)/g, ': "$1"') // Wrap string values in quotes
-            .replace(/"\s*([\d.]+)"/g, "$1"); // Remove quotes around numbers
+          .replace(/(\w+)=/g, '"$1":') // Wrap keys with quotes
+          .replace(/:\s*([\w\s&()-]+)/g, ': "$1"') // Wrap string values in quotes
+          .replace(/"\s*([\d.]+)"/g, "$1"); // Remove quotes around numbers
 
         // Parse the formatted string into an actual array
         formattedItems = JSON.parse(formattedItems);
-    }
+      }
       // Prepare JSON payload
       console.log((cartData?.items))
       const payload = {
@@ -171,15 +171,15 @@ const CheckoutPage: React.FC = () => {
         paymentMethod: cartData.paymentMethod,
         items: formattedItems, // Ensure it's sent as JSON
       };
-  
+
       console.log("Sending Payload:", JSON.stringify(payload));
-  
+
       // Call the saveOrder function with JSON payload
       const savedOrder = await saveOrder(JSON.stringify(payload));
       console.log("Saved Order Response:", savedOrder);
 
       successNotification("Success", "Payment Successfull");
-  
+
       // Navigate to checkout page with the updated order ID
       if (savedOrder.data?.paymentStatus === "Success") {
         navigate("/cart", { state: { saveOrder: savedOrder.data?.paymentStatus } });

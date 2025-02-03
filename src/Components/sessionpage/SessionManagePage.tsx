@@ -128,7 +128,7 @@ const SessionManagePage: React.FC = () => {
       </div>
       <div className="overflow-x-auto shadow-md rounded-lg">
         <table className="min-w-full bg-white">
-          <thead className="bg-blue-600 text-white">
+          <thead className="bg-blue-600 text-white"> 
             <tr>
               <th className="border border-gray-400 p-2">Session#</th>
               <th className="border border-gray-400 p-2">Class</th>

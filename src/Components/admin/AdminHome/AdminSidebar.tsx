@@ -12,6 +12,7 @@ import {
   PsychologyOutlined,
   TableBar,
   AddLocation,
+  Payment,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { IconUser } from '@tabler/icons-react';
@@ -36,6 +37,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
         { to: 'manage', icon: TableBar, label: 'Session Table' },
         { to: 'alluser', icon: IconUser, label: 'Get All Users' },
         { to: 'locationtable', icon: AddLocation, label: 'Locations' },
+        { to: 'paytable', icon: Payment, label: 'Pending Payment' },
       ],
     },
     {
