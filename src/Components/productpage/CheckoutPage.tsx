@@ -134,7 +134,7 @@
 
 // export default CheckoutPage;
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { saveOrder } from "../../Services/OrderService";
 import { errorNotification, successNotification } from "../../Services/NotificationService";
@@ -146,7 +146,44 @@ const CheckoutPage: React.FC = () => {
   const orderId = location.state?.orderId || 0;
   const cartData = location.state?.cartData || {}
   console.log(cartData)
+  let formattedItems = cartData.items;
 
+  if (typeof formattedItems === "string") {
+    // Convert items string to valid JSON format
+    formattedItems = formattedItems
+      // Wrap object keys with quotes
+      .replace(/(\w+)=/g, '"$1":')
+      // Wrap string values (like "Products") with quotes
+      .replace(/:\s*([A-Za-z0-9&()\-_\s]+)/g, ': "$1"')
+      // Remove unnecessary quotes around numbers (e.g., 123 instead of "123")
+      .replace(/:\s*([\d.]+)(?=\s*[^,}])/g, ': $1')
+      // Handle any remaining quotes around numbers
+      .replace(/"(\d+\.\d+)"/g, '$1')
+      .replace(/"(\d+)"/g, '$1');
+
+    // Log formattedItems before parsing
+    console.log("Formatted Items (before parsing):", formattedItems);
+
+    // Parse the formatted string into an actual array
+    try {
+      formattedItems = JSON.parse(formattedItems);
+    } catch (error) {
+      console.error("JSON Parsing Error:", error);
+      formattedItems = []; // Fallback to empty array if parsing fails
+    }
+  }
+
+
+  console.log("Formatted Items:", formattedItems);
+
+  const hasProducts = Array.isArray(formattedItems) && formattedItems.some((item: any) => {
+    console.log("Item Groups:", item.groups); // Log the value of groups for each item
+    return String(item.groups).trim().toLowerCase() === "products";
+  });
+
+  console.log("Has Products:", hasProducts); // Log the result of the condition
+
+  console.log("Has Products:", hasProducts);
   const handleProceedToPayment = async () => {
     try {
       // Ensure items are properly formatted as an array
@@ -166,7 +203,7 @@ const CheckoutPage: React.FC = () => {
       console.log((cartData?.items))
       const payload = {
         orderId, // Include orderId when present
-        userId:cartData.userId,
+        userId: cartData.userId,
         total: cartData.total,
         paymentMethod: cartData.paymentMethod,
         items: formattedItems, // Ensure it's sent as JSON
@@ -189,6 +226,11 @@ const CheckoutPage: React.FC = () => {
       errorNotification("Error", "Failed to save the order");
     }
   }
+  useEffect(() => {
+    console.log("Cart Data:", cartData);
+    console.log("Cart Items:", cartData?.items);
+    console.log("Has Products:", hasProducts);
+  }, [cartData]); // Runs whenever cartData changes
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center mt-16">
       <div className="w-full max-w-xl bg-white shadow-lg rounded-lg p-6">
@@ -237,7 +279,8 @@ const CheckoutPage: React.FC = () => {
           </div>
         </div>
 
-        {!isClassOnly && (
+
+        {hasProducts && (
           <>
             <h2 className="text-xl font-semibold text-center mt-6 mb-4">
               Shipping Address (For Products)
