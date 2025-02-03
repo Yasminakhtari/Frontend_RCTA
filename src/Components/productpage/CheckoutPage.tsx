@@ -227,7 +227,6 @@ const CheckoutPage: React.FC = () => {
     }
   }
   useEffect(() => {
-    console.log("Cart Data:", cartData);
     console.log("Cart Items:", cartData?.items);
     console.log("Has Products:", hasProducts);
   }, [cartData]); // Runs whenever cartData changes
