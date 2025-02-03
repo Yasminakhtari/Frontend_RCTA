@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../productpage/CartContext";
 import { getTennisSessionDetails } from "../../Services/TennisService";
+import { useSelector } from "react-redux";
+import { getAllPlayers } from "../../Services/PlayerService";
 // Define a list of courses
 // const courses = [];
 interface Course {
@@ -15,6 +17,7 @@ interface Course {
 
 const CoursePage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Retrieve course ID from URL
+  const user = useSelector((state: any) => state.user);
   const navigate = useNavigate();
   const { addToCart, isBooked } = useCart();
   const sessionRef = useRef<HTMLDivElement | null>(null);
@@ -26,22 +29,24 @@ const CoursePage: React.FC = () => {
   const [selectedPlayer, setSelectedPlayer] = useState<{ [key: number]: string }>({});
   const [dropdownOpen, setDropdownOpen] = useState<{ [key: number]: boolean }>({});
   const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const [players, setPlayers] = useState<any[]>([]);
 
   const handlePlayerSelect = (sessionId: number, player: string) => {
     setSelectedPlayer((prev) => ({ ...prev, [sessionId]: player }));
     setDropdownOpen((prev) => ({ ...prev, [sessionId]: false })); // Close dropdown after selection
   };
-  
+
   const toggleDropdown = (sessionId: number) => {
     setDropdownOpen((prev) => ({ ...prev, [sessionId]: !prev[sessionId] }));
   };
-  
-  
+
+
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
         setLoading(true);
+        console.log("get Tennis Session Details id is " + id);
         const data = await getTennisSessionDetails(id);
         console.log(data.tennisData.category)
         setCourse(data.tennisData || {}); // Set course data as an array (in case of empty data)
@@ -60,15 +65,40 @@ const CoursePage: React.FC = () => {
 
   // Find the course by ID
   // const course = courses.find((course: { id: string | undefined }) => course.id === id);
-    // Update if any session is booked
-    useEffect(() => {
-      if (sessions.length > 0) {
-        const anySessionBooked = sessions.some((session: any) => isBooked(session.id));
-        setIsAnyBooked(anySessionBooked);
-      } else {
-        setIsAnyBooked(false);
+  // Update if any session is booked
+  useEffect(() => {
+    if (sessions.length > 0) {
+      const anySessionBooked = sessions.some((session: any) => isBooked(session.id));
+      setIsAnyBooked(anySessionBooked);
+    } else {
+      setIsAnyBooked(false);
+    }
+  }, [sessions, isBooked]);
+
+  useEffect(()=>{
+    const fetchPlayers = async()=>{
+      try{
+
+        const userId = user?.data.userDetails?.id;
+        const response = await getAllPlayers(userId);
+        const playerData = response?.Data;
+        console.log(playerData);
+        if(playerData){
+          setPlayers(playerData);
+        }else{
+          console.error("Expected an array, but received:", playerData);
+          setPlayers([]);
+        }
       }
-    }, [sessions, isBooked]);
+      catch(error){
+        console.log(error);
+        console.error("Failed to fetch Players",error);
+      }
+
+    }
+
+    fetchPlayers();
+  },[user?.data.userDetails?.id])
 
   const scrollToSessions = () => {
     if (sessionRef.current) {
@@ -110,7 +140,7 @@ const CoursePage: React.FC = () => {
     alert(" item added to cart successfully")
     if (!isBooked(sessionId)) {
       const selectedSession = sessions.find((session) => session.id === sessionId);
-  
+
       if (selectedSession) {
         addToCart({
           id: selectedSession.id,
@@ -136,6 +166,8 @@ const CoursePage: React.FC = () => {
   // }
 
   // Always return a valid React element or null
+ 
+  
   return (
     <div className="bg-white-500 min-h-screen p-8">
       {/* Breadcrumb Navigation */}
@@ -203,7 +235,7 @@ const CoursePage: React.FC = () => {
                     <td className="border border-gray-300 px-4 py-2">{session.locationName || "N/A"}</td>
                     <td className="border border-gray-300 px-4 py-2">
                       {session.fromDate}
-                      </td>
+                    </td>
                     <td className="border border-gray-300 px-4 py-2">{session.toDate}</td>
                     <td className="border border-gray-300 px-4 py-2">{session.days?.join(", ") || "N/A"}</td>
                     <td className="border border-gray-300 px-4 py-2">{session.startTime} – {session.endTime}</td>
@@ -232,51 +264,51 @@ const CoursePage: React.FC = () => {
                         </button>
                       )} */}
 
-<div className="relative inline-block text-left" ref={(el) => (dropdownRefs.current[session.id] = el)}>
-                  <button
-                    onClick={() => toggleDropdown(session.id)}
-                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-300 transition duration-200"
-                  >
-                    <span>{selectedPlayer[session.id] || "Select"}</span>
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                  </button>
-
-                  {/* Dropdown Menu */}
-                  {dropdownOpen[session.id] && (
-                    <div className="absolute left-0 mt-2 w-32 bg-white border rounded-lg shadow-lg z-10">
-                      {["Player 1", "Player 2", "Player 3"].map((player) => (
+                      <div className="relative inline-block text-left" ref={(el) => (dropdownRefs.current[session.id] = el)}>
                         <button
-                          key={player}
-                          onClick={() => handlePlayerSelect(session.id, player)}
-                          className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
+                          onClick={() => toggleDropdown(session.id)}
+                          className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-300 transition duration-200"
                         >
-                          {player}
+                          <span>{selectedPlayer[session.id] || "Select"}</span>
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                          </svg>
                         </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                       <button
-            className={`px-4 py-2 rounded-md text-white ${
-              isBooked(session.id)
-                ? "bg-gray-500 cursor-not-allowed"
-                : isAnyBooked && !isBooked(session.id)
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600"
-            }`}
-            disabled={isBooked(session.id) || (isAnyBooked && !isBooked(session.id))}
-            onClick={() => handleRegister(session.id!, courses.id!)}
-          >
-            {isBooked(session.id) ? "Booked" : "Register"}
-          </button>
+
+                        {/* Dropdown Menu */}
+                        {dropdownOpen[session.id] && (
+                          <div className="absolute left-0 mt-2 w-32 bg-white border rounded-lg shadow-lg z-10">
+                            {players.map((player) => (
+                              <button
+                                key={player}
+                                onClick={() => handlePlayerSelect(session.id, player)}
+                                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
+                              >
+                                {player}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <button
+                        className={`px-4 py-2 rounded-md text-white ${isBooked(session.id)
+                            ? "bg-gray-500 cursor-not-allowed"
+                            : isAnyBooked && !isBooked(session.id)
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-blue-500 hover:bg-blue-600"
+                          }`}
+                        disabled={isBooked(session.id) || (isAnyBooked && !isBooked(session.id))}
+                        onClick={() => handleRegister(session.id!, courses.id!)}
+                      >
+                        {isBooked(session.id) ? "Booked" : "Register"}
+                      </button>
                     </td>
                   </tr>
                 ))
