@@ -302,6 +302,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../productpage/CartContext";
 import { getTennisSessionDetails } from "../../Services/TennisService";
+import { getAllPlayers } from "../../Services/PlayerService";
+import { useSelector } from "react-redux";
 
 interface Course {
   id?: number;
@@ -314,6 +316,7 @@ interface Course {
 
 const CoursePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const user = useSelector((state:any) => state.user);
   const navigate = useNavigate();
   const { addToCart, isBooked } = useCart();
   const sessionRef = useRef<HTMLDivElement | null>(null);
@@ -321,6 +324,7 @@ const CoursePage: React.FC = () => {
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAnyBooked, setIsAnyBooked] = useState(false);
+  const [players, setPlayers] = useState<any[]>([]);
 
   const [selectedPlayers, setSelectedPlayers] = useState<{ [key: number]: string[] }>({});
   const [dropdownOpen, setDropdownOpen] = useState<{ [key: number]: boolean }>({});
@@ -359,6 +363,31 @@ const scrollToSessions = () => {
     sessionRef.current.scrollIntoView({ behavior: "smooth" });
   }
 };
+
+useEffect(() => {
+  const fetchPlayers = async () => {
+      try {
+
+          // const userId = userData?.userDetails?.id;
+          const userId = user?.data?.userDetails?.id;
+          const response = await getAllPlayers(userId);
+          const playerData = response?.data;
+          console.log(playerData)
+          if (playerData) {
+              setPlayers(playerData);
+          }
+          else {
+              console.error("Expected an array, but received:", playerData);
+              setPlayers([]);
+          }
+      } catch (error) {
+          console.log(error)
+          console.error("Failed to fetch Players", error);
+      }
+  };
+
+  fetchPlayers();
+}, [user?.data?.userDetails?.id]);
 
   const handlePlayerSelect = (sessionId: number, player: string) => {
     setSelectedPlayers((prev) => {
@@ -418,6 +447,7 @@ const scrollToSessions = () => {
     }
   
     const selectedSession = sessions.find((session) => session.id === sessionId);
+    console.log(selectedSession)
   
     if (selectedSession) {
       const selectedPlayersCount = selectedPlayers[sessionId]?.length || 1; // Default to 1 if no player selected
@@ -543,25 +573,29 @@ const scrollToSessions = () => {
                         </button>
 
                         {dropdownOpen[session.id] && (
-                          <div className="absolute left-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
-                            {["Player 1", "Player 2", "Player 3"].map((player) => (
+                        <div className="absolute left-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
+                          {players.length > 0 ? (
+                            players.map((player) => (
                               <button
-                                key={player}
-                                onClick={() => handlePlayerSelect(session.id, player)}
+                                key={player.id} // Ensure a unique key
+                                onClick={() => handlePlayerSelect(session.id, player.name)}
                                 className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
                               >
                                 <input
                                   type="checkbox"
-                                  checked={selectedPlayers[session.id]?.includes(player)}
+                                  checked={selectedPlayers[session.id]?.includes(player.name)}
                                   readOnly
                                   className="mr-2"
                                 />
-                                {player}
+                                {player.name}
                               </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                            ))
+                          ) : (
+                            <p className="px-4 py-2 text-gray-500">No players found</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       <button

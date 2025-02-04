@@ -254,7 +254,7 @@ const PaymentPage: React.FC = () => {
       }
   
       // If successful, show success notification
-      successNotification("Success", "Order Added Successfully");
+      successNotification("Success", "Card Payment Details");
       console.log(savedCart.data)
       if(savedCart.data?.paymentMethod === 'card'){
         navigate("/checkout",{ state: { isClassOnly,
@@ -317,7 +317,7 @@ const PaymentPage: React.FC = () => {
                 defaultChecked={paymentMethod === "contact"}
                 onChange={() => handlePaymentSelection("contact")}
               />
-              <label htmlFor="contact">Contact Payment</label>
+              <label htmlFor="contact">Contact For Payment</label>
             </div>
             <div className="flex items-center">
               <input
