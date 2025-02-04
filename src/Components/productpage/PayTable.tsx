@@ -17,6 +17,8 @@ const PayTable = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
   // {
   //   id: 1,
   //   name: "John Doe",
@@ -140,6 +142,13 @@ const PayTable = () => {
   );
 
 
+  // function setCurrentPage(arg0: (prev: number) => number): void {
+  //   throw new Error("Function not implemented.");
+  // }
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <div className="p-4 min-h-screen mt-5">
       {/* Search Input */}
@@ -155,6 +164,7 @@ const PayTable = () => {
         {loading ? (
           <p className="text-center text-gray-600">Loading orders...</p>
         ) : (
+          <>
           <table className="min-w-full bg-white">
             <thead className="bg-blue-500 text-white">
               <tr>
@@ -253,6 +263,26 @@ const PayTable = () => {
               )}
             </tbody>
           </table>
+          
+         {/* Pagination Controls */}
+         <div className="flex justify-center mt-4">
+         <button
+           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+           disabled={currentPage === 1}
+           className="px-3 py-1 mx-1 border rounded bg-gray-200 disabled:opacity-50"
+         >
+           Previous
+         </button>
+         <span className="px-3 py-1 mx-1">Page {currentPage} of {totalPages}</span>
+         <button
+           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+           disabled={currentPage === totalPages}
+           className="px-3 py-1 mx-1 border rounded bg-gray-200 disabled:opacity-50"
+         >
+           Next
+         </button>
+       </div>
+       </> 
         )}
       </div>
     </div>
