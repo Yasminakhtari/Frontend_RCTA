@@ -411,7 +411,7 @@ const LocationTable: React.FC = () => {
 
 
   return (
-    <div className="max-w-6xl min-h-screen mx-auto p-6 mt-10">
+    <div className="max-w-6xl min-h-screen mx-auto p-6 mt-6">
       <h2 className="text-2xl font-bold mb-4">Locations</h2>
       <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <input

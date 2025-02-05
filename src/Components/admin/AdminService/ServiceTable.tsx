@@ -346,7 +346,7 @@ const ServiceTable: React.FC = () => {
 
 
   return (
-    <div className="bg-white p-4 rounded shadow mt-24 lg:mt-16">
+    <div className="bg-white p-4 rounded shadow mt-24 lg:mt-6">
       <h1 className="text-2xl font-bold">All Services</h1>
 
       {/* Add Service Button */}

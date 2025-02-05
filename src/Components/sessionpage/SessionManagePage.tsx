@@ -13,6 +13,7 @@ interface Session {
   updatedOn: string;
 }
 const userId:number=0;
+const itemsPerPage = 5; // Number of sessions per page
 const initialSessions: Session[] = [
   
 ];
@@ -21,6 +22,7 @@ const SessionManagePage: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>(initialSessions);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   const handleEdit = (sessionNo: number) => {
@@ -71,6 +73,13 @@ const SessionManagePage: React.FC = () => {
     return `${formattedFrom} - ${formattedTo}`;
   };
   
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentSessions = filteredSessions.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredSessions.length / itemsPerPage);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const fetchSession = async () => {
     try {
@@ -111,7 +120,7 @@ const SessionManagePage: React.FC = () => {
       );
     }
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 bg-white rounded shadow min-h-screen mt-16">
+    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 bg-white rounded shadow min-h-screen mt-6">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-5 gap-3">
         <h1 className="text-lg sm:text-2xl font-semibold">Sessions</h1>
         <input
@@ -119,7 +128,11 @@ const SessionManagePage: React.FC = () => {
           placeholder="Search by class"
           className="w-1/3 px-1 py-1 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          //onChange={e => setSearchTerm(e.target.value)}
+          onChange={e => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1); // Reset to first page when searching
+          }}
         />
       </div>
       <div className="mb-5 flex flex-col sm:flex-row gap-2">
@@ -178,6 +191,24 @@ const SessionManagePage: React.FC = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-4">
+        <button 
+          onClick={() => paginate(currentPage - 1)} 
+          disabled={currentPage === 1} 
+          className="px-3 py-1 mx-1 bg-gray-300 rounded-md disabled:opacity-50"
+        >
+          ◀ Previous
+        </button>
+        <span className="px-3 py-1">Page {currentPage} of {totalPages}</span>
+        <button 
+          onClick={() => paginate(currentPage + 1)} 
+          disabled={currentPage === totalPages} 
+          className="px-3 py-1 mx-1 bg-gray-300 rounded-md disabled:opacity-50"
+        >
+          Next ▶
+        </button>
       </div>
     </div>
   );
