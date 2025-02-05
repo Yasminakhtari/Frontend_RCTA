@@ -334,6 +334,7 @@ const CoursePage: React.FC = () => {
     const fetchCourseDetails = async () => {
       try {
         setLoading(true);
+        console.log("get Tennis Session Details id is " + id);
         const data = await getTennisSessionDetails(id);
         setCourse(data.tennisData || {});
         setSessions(data.sessions || []);

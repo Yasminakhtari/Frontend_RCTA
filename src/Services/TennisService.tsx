@@ -82,6 +82,7 @@ const getAllCategoriesAndSubCategories = async () => {
   };
 
   const getTennisSessionDetails = async (id: any) => {
+   
     try {
       const response = await axios.get(`${base_url}/v1/sessionDetail/${id}`, {
       });

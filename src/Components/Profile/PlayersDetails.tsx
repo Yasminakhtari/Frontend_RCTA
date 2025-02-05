@@ -50,14 +50,14 @@ const PlayersDetails: React.FC<PlayersDetailsProps> = ({ player }) => {
           <span className="font-semibold text-gray-700">Status:</span>
           <span
             className={`ml-2 px-3 py-1 rounded-full text-white ${
-              player.status === "ongoing"
+              player?.status === "ongoing"
                 ? "bg-yellow-500"
                 : player.status === "completed"
                 ? "bg-green-500"
                 : "bg-blue-500"
             }`}
           >
-            {player.status.charAt(0).toUpperCase() + player.status.slice(1)}
+            {player?.status?.charAt(0).toUpperCase() + player?.status?.slice(1)}
           </span>
         </p>
       </div>

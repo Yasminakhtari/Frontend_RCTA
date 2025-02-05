@@ -10,13 +10,19 @@ const saveSession=async (data:any)=>{
 
 const getAllSession=async (userId:number)=>{
     return axios.get(`${base_url}/session`,{
-        params: { userId }
+        params: { userId}
     })
     .then(res=>res.data)
     .catch(error=>{throw error;});
 }
 
 const getSessionById=async (id: number)=>{
+    return axios.get(`${base_url}/session/${id}`)
+    .then(res=>res.data)
+    .catch(error=>{throw error;});
+}
+
+const getSessionByIddd=async (id: string)=>{
     return axios.get(`${base_url}/session/${id}`)
     .then(res=>res.data)
     .catch(error=>{throw error;});
@@ -34,4 +40,4 @@ const deleteSession=async (id: number)=>{
     .catch(error=>{throw error;});
 }
 
-export {saveSession,getAllSession,getSessionById,updateSession,deleteSession};
+export {saveSession,getAllSession,getSessionById,updateSession,deleteSession,getSessionByIddd};

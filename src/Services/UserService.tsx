@@ -52,7 +52,7 @@ const getAllUsers = async () => {
       throw error;
     }
   };
-
+  
   const getAllRoles = async () => {
     try {
       const response = await axios.get(`${base_url}/roles`);

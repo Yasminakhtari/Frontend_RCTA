@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {  Badge, Button, Modal, TextInput, Divider, Textarea, ActionIcon, } from '@mantine/core';
+import { Badge, Button, Modal, TextInput, Divider, Textarea, ActionIcon, } from '@mantine/core';
 import { useHover } from '@mantine/hooks';
-import { IconCheck,IconMail, IconMapPin, IconPencil, IconTrash } from '@tabler/icons-react';
+import { IconCheck, IconMail, IconMapPin, IconPencil, IconTrash } from '@tabler/icons-react';
 import { Radio } from '@mantine/core';
 import PlayersDetails from './PlayersDetails';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import { errorNotification, successNotification } from '../../Services/Notificat
 // import ImageUpload from '../../common/ImageUpload';
 import ProfileImageUpload from './ProfileImageUpload';
 import { updateUserProfile } from '../../Slices/UserSlice';
+import axios from 'axios';
 
 
 interface Player {
@@ -29,7 +30,7 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     const dispatch = useDispatch();
-    const user = useSelector((state:any) => state.user);
+    const user = useSelector((state: any) => state.user);
     // console.log(user);
     const { hovered, ref } = useHover();
     const [isModalOpen, setModalOpen] = useState(false);
@@ -45,7 +46,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     const [edit, setEdit] = useState(false);
     // const [phone, setPhone] = useState("");
     // const [location, setLocation] = useState("");
-    const [phone, setPhone] = useState(user?.data?.userDetails?.mobileNo ||  "");
+    const [phone, setPhone] = useState(user?.data?.userDetails?.mobileNo || "");
     const [location, setLocation] = useState(user?.data?.userDetails?.address || "");
     const [isEditingPhone, setIsEditingPhone] = useState(false);
     const [isEditingLocation, setIsEditingLocation] = useState(false);
@@ -65,6 +66,11 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     const checkIfMobile = () => {
         setIsMobile(window.innerWidth <= 768);
     };
+   
+
+
+
+
     // Use effect to check for screen size on window resize
     useEffect(() => {
         // fetchUserDataById();
@@ -221,31 +227,31 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     //     }
     // };
 
-        const handleEditPhone = async()=>{
-            if(isEditingPhone){
-                try{
-                    const updatedUser = {
-                        ...user.data.userDetails,
-                        mobileNo: phone
-                    };
-                    const response = await updateUser(user?.data?.userDetails?.id , updatedUser);
-                    console.log(response);
-                    //here i am updating redux store
-                    //dispatch(updateUserProfile({...user,user:response.data}));//may be error will cause here
-                    dispatch(updateUserProfile({
-                        ...user,
-                        data: {
-                            ...user.data,
-                            userDetails: response.data
-                        }
-                    }));
-                   successNotification("Success", "Contact No. updated!");
-                } catch (error) {
-                    errorNotification("Error", "Failed to update contact");
-                } 
+    const handleEditPhone = async () => {
+        if (isEditingPhone) {
+            try {
+                const updatedUser = {
+                    ...user.data.userDetails,
+                    mobileNo: phone
+                };
+                const response = await updateUser(user?.data?.userDetails?.id, updatedUser);
+                console.log(response);
+                //here i am updating redux store
+                //dispatch(updateUserProfile({...user,user:response.data}));//may be error will cause here
+                dispatch(updateUserProfile({
+                    ...user,
+                    data: {
+                        ...user.data,
+                        userDetails: response.data
+                    }
+                }));
+                successNotification("Success", "Contact No. updated!");
+            } catch (error) {
+                errorNotification("Error", "Failed to update contact");
             }
-            setIsEditingPhone(!isEditingPhone);
         }
+        setIsEditingPhone(!isEditingPhone);
+    }
     //////////////////////////////////////////
     ///////////////////////////////////////////
     // const handleEditLocation = async () => {
@@ -282,14 +288,14 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     //         setLocation(userUpdate?.address || "");
     //     }
     // };
-    const handleEditLocation = async()=>{
-        if(isEditingLocation){
-            try{
+    const handleEditLocation = async () => {
+        if (isEditingLocation) {
+            try {
                 const updatedUser = {
                     ...user.data.userDetails,
-                    address:location,
+                    address: location,
                 };
-                const response = await updateUser(user?.data?.userDetails?.id , updatedUser);
+                const response = await updateUser(user?.data?.userDetails?.id, updatedUser);
                 console.log(response);
                 //here i am updating redux store
                 dispatch(updateUserProfile({
@@ -299,36 +305,36 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                         userDetails: response.data
                     }
                 }));
-               successNotification("Success", "Location updated!");
+                successNotification("Success", "Location updated!");
             } catch (error) {
                 errorNotification("Error", "Failed to update Location");
-            } 
+            }
         }
         setIsEditingLocation(!isEditingLocation);
     }
     //////////////////////////////////////////
     ///////////////////////////////////////////
-    const handleImageUpload = async(url: string)=>{
-        
-            try{
-                const updatedUser = {
-                    ...user.data.userDetails,
-                    profile :url,
-                };
-                const response = await updateUser(user?.data?.userDetails?.id , updatedUser);
-                console.log(response);
-                //here i am updating redux store
-                dispatch(updateUserProfile({
-                    ...user,
-                    data: {
-                        ...user.data,
-                        userDetails: response.data
-                    }
-                }));
-               successNotification("Success", "Profile image updated!");
-            } catch (error) {
-                errorNotification("Error", "Failed to update Profile Image");
-            } 
+    const handleImageUpload = async (url: string) => {
+
+        try {
+            const updatedUser = {
+                ...user.data.userDetails,
+                profile: url,
+            };
+            const response = await updateUser(user?.data?.userDetails?.id, updatedUser);
+            console.log(response);
+            //here i am updating redux store
+            dispatch(updateUserProfile({
+                ...user,
+                data: {
+                    ...user.data,
+                    userDetails: response.data
+                }
+            }));
+            successNotification("Success", "Profile image updated!");
+        } catch (error) {
+            errorNotification("Error", "Failed to update Profile Image");
+        }
     }
     //////////////////////////////////////////
     ///////////////////////////////////////////
@@ -421,27 +427,27 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                     </div> */}
 
                     {/* In Profile component */}
-<div className="absolute flex items-center justify-center left-3 -bottom-1/3">
-  {/* <ProfileImageUpload
-    currentImage={userUpdate?.profile}
-    onUploadSuccess={async (url) => {
-      try {
-        const updatedUser = {
-          ...userData.userDetails,
-          profile: url
-        };
-        await updateUser(userData.userDetails.id, updatedUser);
-        fetchUserDataById();
-      } catch (error) {
-        console.error("Profile image update failed:", error);
-      }
-    }}
-  /> */}
-                    <ProfileImageUpload
-                        currentImage={user?.data?.userDetails?.profile}
-                        onUploadSuccess={handleImageUpload}
-                    />
-</div>
+                    <div className="absolute flex items-center justify-center left-3 -bottom-1/3">
+                        {/* <ProfileImageUpload
+                            currentImage={userUpdate?.profile}
+                            onUploadSuccess={async (url) => {
+                            try {
+                                const updatedUser = {
+                                ...userData.userDetails,
+                                profile: url
+                                };
+                                await updateUser(userData.userDetails.id, updatedUser);
+                                fetchUserDataById();
+                            } catch (error) {
+                                console.error("Profile image update failed:", error);
+                            }
+                            }}
+                        /> */}
+                        <ProfileImageUpload
+                            currentImage={user?.data?.userDetails?.profile}
+                            onUploadSuccess={handleImageUpload}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -515,7 +521,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                         ) : (
                             // <div className="text-xl font-bold  text-white text-justify">{userUpdate?.mobileNo || 'N/A'}</div>
                             <div className="text-xl font-bold  text-white text-justify">{user?.data?.userDetails?.mobileNo || 'N/A'}</div>
-                            
+
                         )}
                     </span>
 
@@ -561,6 +567,12 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                         value={newPlayer.age}
                         onChange={(e) => setNewPlayer({ ...newPlayer, age: e.target.value })}
                     />
+                    {/* <TextInput
+                        label="GroundLocation"
+                        placeholder="Select your tennis court "
+                        value={newPlayer.courtLocation}
+                        onChange={(e) => setNewPlayer({ ...newPlayer, courtLocation: e.target.value })}
+                    /> */}
                     <Button onClick={handleAddPlayer} fullWidth color="blue">
                         Add Player
                     </Button>
