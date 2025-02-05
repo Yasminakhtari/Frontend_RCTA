@@ -1,5 +1,240 @@
+// import React, { useEffect, useState  } from 'react';
+// import { getAllLocation, getLocationById, saveLocation, updateLocation, updateLocationStatus } from '../../Services/LocationService';
+
+// interface LocationData {
+//   id?: any; // Optional to handle cases where ID might not exist initially
+//   locationName: string;
+//   address: string;
+//   city: string;
+//   state: string;
+//   zipCode: string;
+//   status: string;
+// }
+
+
+// const initialLocations: LocationData[] = [];
+
+
+
+// const LocationTable: React.FC = () => {
+//   const [locations, setLocations] = useState<LocationData[]>(initialLocations);
+//   const [searchTerm, setSearchTerm] = useState('');
+//   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+//   const [editFormData, setEditFormData] = useState<LocationData | null>(null);
+//   const [isNewLocation, setIsNewLocation] = useState(false);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const itemsPerPage = 5;
+
+//   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+//   const filteredLocations: LocationData[] = locations.filter(/* filtering logic */);
+
+
+//   const indexOfLastItem = currentPage * itemsPerPage;
+//   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+//   const currentItems = filteredLocations.slice(indexOfFirstItem, indexOfLastItem);
+//   //const filteredLocations = locations.filter(...);
+
+
+//   // Fetch all locations on component mount
+//   const fetchLocations = async () => {
+//     try {
+//       setLoading(true);
+//       const data = await getAllLocation();
+//       console.log(data.data)
+//       setLocations(Array.isArray(data.data) ? data.data : []);
+//     } catch (error) {
+//       console.error('Failed to fetch locations:', error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+
+//   // Call fetchLocations in useEffect
+//   useEffect(() => {
+//     fetchLocations();
+//   }, []);
+
+//   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const term = e.target.value.toLowerCase();
+//     setSearchTerm(term);
+//     if (term === "") {
+//       // Fetch all data if the search box is cleared
+//       fetchLocations();
+//     } else {
+//       // Filter locations based on the search term
+//       // const filteredLocations = locations.filter(location =>
+//       //   location.locationName.toLowerCase().includes(term) ||
+//       //   location.address.toLowerCase().includes(term) ||
+//       //   location.city.toLowerCase().includes(term) ||
+//       //   location.state.toLowerCase().includes(term) ||
+//       //   location.zipCode.includes(term)
+//       // const filteredLocations = locations.filter((location) =>
+//       //   location.locationName.toLowerCase().includes(searchTerm) ||
+//       //   location.address.toLowerCase().includes(searchTerm) ||
+//       //   location.city.toLowerCase().includes(searchTerm) ||
+//       //   location.state.toLowerCase().includes(searchTerm) ||
+//       //   location.zipCode.includes(searchTerm)
+//       // );
+//       const filteredLocations: LocationData[] = locations.filter((location) =>
+//         searchTerm === '' || // If searchTerm is empty, show all locations
+//         location.locationName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         location.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         location.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         location.state.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//         location.zipCode.includes(searchTerm)
+        
+//       );
+      
+      
+      
+   
+//       setLocations(filteredLocations);
+//       //location.locationName.toLowerCase().includes(searchTerm.toLowerCase())
+//     }
+
+//   };
+
+//   const handleAddLocation = () => {
+//     const newLocation: LocationData = {
+//       locationName: '', address: '', city: '', state: '', zipCode: '', status: 'active',
+
+//     };
+//     setLocations([...locations, newLocation]);
+//     setEditFormData(newLocation);
+//     setEditingIndex(locations.length);
+//     setEditFormData(newLocation);
+//     setIsNewLocation(true);
+//   };
+
+//   const handleRemoveNewLocation = () => {
+//     if (editingIndex !== null) {
+//       const updatedLocations = locations.slice(0, editingIndex).concat(locations.slice(editingIndex + 1));
+//       setLocations(updatedLocations);
+//       setEditingIndex(null);
+//       setEditFormData(null);
+//     }
+//   };
+
+//   const handleEditClick = async (index: number) => {
+//     setEditingIndex(index);
+//     setIsNewLocation(false); // Mark as editing an existing location
+//     try {
+//       // Get the ID of the selected location
+//       const selectedLocation = locations[index];
+//       const id = selectedLocation?.id; // Assuming 'id' exists on the location object
+
+//       if (!id) {
+//         console.error('Location ID is not available');
+//         return;
+//       }
+
+//       // Fetch data from the server using getLocationById
+//       const fetchedData = await getLocationById(id);
+//       console.log('Fetched location data:', fetchedData);
+
+//       // Update the editFormData state with the fetched data
+//       setEditFormData({ ...fetchedData.data });
+//     } catch (error) {
+//       console.error('Failed to fetch location by ID:', error);
+//     }
+//   };
+
+//   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { name, value } = e.target;
+//     if (name === 'zipCode' && (!/^\d*$/.test(value) || value.length > 6)) return;
+//     if (editFormData) {
+//       setEditFormData({ ...editFormData, [name]: value });
+//     }
+//   };
+
+//   const handleEditSubmit = async () => {
+//     if (editFormData) {
+//       try {
+//         if (isNewLocation) {
+//           // Save a new location
+//           const savedLocation = await saveLocation(editFormData);
+//           console.log('Location saved successfully:', savedLocation);
+
+//           alert('The location has been saved successfully!');
+//         } else {
+//           // Update an existing location
+//           const id = editFormData.id;
+//           if (!id) {
+//             console.error('Location ID is required for updating.');
+//             return;
+//           }
+
+//           const updatedLocation = await updateLocation(id, editFormData);
+//           console.log('Location updated successfully:', updatedLocation);
+
+//           alert('The location has been updated successfully!');
+//         }
+
+//         // Refresh locations and reset form state
+//         await fetchLocations();
+//         setEditingIndex(null);
+//         setEditFormData(null);
+//         setIsNewLocation(false);
+//       } catch (error) {
+//         console.error('Error saving/updating location:', error);
+//         alert('There was an issue saving or updating the location. Please try again.');
+//       }
+//     }
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-100 to-blue-200">
+//         <p className="text-gray-700 text-lg font-semibold">Loading ...</p>
+//       </div>
+//     );
+//   }
+
+
+//   // const toggleStatus = (index: number) => {
+//   //   const updatedLocations = [...locations];
+//   //   updatedLocations[index].isActive = !updatedLocations[index].isActive;
+//   //   setLocations(updatedLocations);
+//   // };
+//   const toggleStatus = async (index: number) => {
+//     const location = locations[index];
+//     if (!location.id) {
+//       alert('Invalid location ID.');
+//       return;
+//     }
+  
+//     try {
+//       // Determine the new status
+//       const newStatus = location.status === 'active' ? 'inactive' : 'active';
+  
+//       // Pass the id and new status as a payload
+//       await updateLocationStatus(location.id, newStatus);
+  
+//       // Refresh the locations to reflect changes
+//       await fetchLocations();
+//       alert('Location status updated successfully!');
+//     } catch (error) {
+//       console.error('Failed to update status:', error);
+//       alert('Error updating location status. Please try again.');
+//     }
+//   };
+  
+  
+
+//   // function setCurrentPage(arg0: number): void {
+//   //   throw new Error('Function not implemented.');
+//   // }
+
 import React, { useEffect, useState } from 'react';
-import { getAllLocation, getLocationById, saveLocation, updateLocation, updateLocationStatus } from '../../Services/LocationService';
+import {
+  getAllLocation,
+  getLocationById,
+  saveLocation,
+  updateLocation,
+  updateLocationStatus,
+} from '../../Services/LocationService';
 
 interface LocationData {
   id?: any; // Optional to handle cases where ID might not exist initially
@@ -13,8 +248,6 @@ interface LocationData {
 
 const initialLocations: LocationData[] = [];
 
-
-
 const LocationTable: React.FC = () => {
   const [locations, setLocations] = useState<LocationData[]>(initialLocations);
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,14 +255,32 @@ const LocationTable: React.FC = () => {
   const [editFormData, setEditFormData] = useState<LocationData | null>(null);
   const [isNewLocation, setIsNewLocation] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  // Fetch all locations on component mount
+  // 🔹 Filtering logic - Fixes the TS error
+  const filteredLocations: LocationData[] = locations.filter((location) =>
+    searchTerm === '' || // If search box is empty, return all locations
+    location.locationName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    location.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    location.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    location.state.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    location.zipCode.includes(searchTerm)
+  );
+
+  // 🔹 Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredLocations.slice(indexOfFirstItem, indexOfLastItem);
+
+  // 🔹 Fetch all locations on component mount
   const fetchLocations = async () => {
     try {
       setLoading(true);
       const data = await getAllLocation();
-      console.log(data.data)
+      console.log(data.data);
       setLocations(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
       console.error('Failed to fetch locations:', error);
@@ -38,77 +289,63 @@ const LocationTable: React.FC = () => {
     }
   };
 
-
-  // Call fetchLocations in useEffect
+  // 🔹 useEffect to fetch locations when component mounts
   useEffect(() => {
     fetchLocations();
   }, []);
 
+  // 🔹 Handle Search Functionality
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
-    if (term === "") {
-      // Fetch all data if the search box is cleared
-      fetchLocations();
-    } else {
-      // Filter locations based on the search term
-      const filteredLocations = locations.filter(location =>
-        location.locationName.toLowerCase().includes(term) ||
-        location.address.toLowerCase().includes(term) ||
-        location.city.toLowerCase().includes(term) ||
-        location.state.toLowerCase().includes(term) ||
-        location.zipCode.includes(term)
-      );
-      setLocations(filteredLocations);
-    }
-
   };
 
+  // 🔹 Add New Location
   const handleAddLocation = () => {
     const newLocation: LocationData = {
-      locationName: '', address: '', city: '', state: '', zipCode: '', status: 'active',
-
+      locationName: '',
+      address: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      status: 'active',
     };
     setLocations([...locations, newLocation]);
     setEditFormData(newLocation);
     setEditingIndex(locations.length);
-    setEditFormData(newLocation);
     setIsNewLocation(true);
   };
 
+  // 🔹 Remove New Unsaved Location
   const handleRemoveNewLocation = () => {
     if (editingIndex !== null) {
-      const updatedLocations = locations.slice(0, editingIndex).concat(locations.slice(editingIndex + 1));
+      const updatedLocations = locations.filter((_, index) => index !== editingIndex);
       setLocations(updatedLocations);
       setEditingIndex(null);
       setEditFormData(null);
     }
   };
 
+  // 🔹 Handle Edit Click
   const handleEditClick = async (index: number) => {
     setEditingIndex(index);
-    setIsNewLocation(false); // Mark as editing an existing location
+    setIsNewLocation(false);
     try {
-      // Get the ID of the selected location
       const selectedLocation = locations[index];
-      const id = selectedLocation?.id; // Assuming 'id' exists on the location object
-
+      const id = selectedLocation?.id;
       if (!id) {
         console.error('Location ID is not available');
         return;
       }
-
-      // Fetch data from the server using getLocationById
       const fetchedData = await getLocationById(id);
       console.log('Fetched location data:', fetchedData);
-
-      // Update the editFormData state with the fetched data
       setEditFormData({ ...fetchedData.data });
     } catch (error) {
       console.error('Failed to fetch location by ID:', error);
     }
   };
 
+  // 🔹 Handle Form Changes During Edit
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === 'zipCode' && (!/^\d*$/.test(value) || value.length > 6)) return;
@@ -117,30 +354,24 @@ const LocationTable: React.FC = () => {
     }
   };
 
+  // 🔹 Handle Save or Update Location
   const handleEditSubmit = async () => {
     if (editFormData) {
       try {
         if (isNewLocation) {
-          // Save a new location
           const savedLocation = await saveLocation(editFormData);
           console.log('Location saved successfully:', savedLocation);
-
           alert('The location has been saved successfully!');
         } else {
-          // Update an existing location
           const id = editFormData.id;
           if (!id) {
             console.error('Location ID is required for updating.');
             return;
           }
-
           const updatedLocation = await updateLocation(id, editFormData);
           console.log('Location updated successfully:', updatedLocation);
-
           alert('The location has been updated successfully!');
         }
-
-        // Refresh locations and reset form state
         await fetchLocations();
         setEditingIndex(null);
         setEditFormData(null);
@@ -149,6 +380,24 @@ const LocationTable: React.FC = () => {
         console.error('Error saving/updating location:', error);
         alert('There was an issue saving or updating the location. Please try again.');
       }
+    }
+  };
+
+  // 🔹 Handle Status Toggle
+  const toggleStatus = async (index: number) => {
+    const location = locations[index];
+    if (!location.id) {
+      alert('Invalid location ID.');
+      return;
+    }
+    try {
+      const newStatus = location.status === 'active' ? 'inactive' : 'active';
+      await updateLocationStatus(location.id, newStatus);
+      await fetchLocations();
+      alert('Location status updated successfully!');
+    } catch (error) {
+      console.error('Failed to update status:', error);
+      alert('Error updating location status. Please try again.');
     }
   };
 
@@ -161,38 +410,8 @@ const LocationTable: React.FC = () => {
   }
 
 
-  // const toggleStatus = (index: number) => {
-  //   const updatedLocations = [...locations];
-  //   updatedLocations[index].isActive = !updatedLocations[index].isActive;
-  //   setLocations(updatedLocations);
-  // };
-  const toggleStatus = async (index: number) => {
-    const location = locations[index];
-    if (!location.id) {
-      alert('Invalid location ID.');
-      return;
-    }
-  
-    try {
-      // Determine the new status
-      const newStatus = location.status === 'active' ? 'inactive' : 'active';
-  
-      // Pass the id and new status as a payload
-      await updateLocationStatus(location.id, newStatus);
-  
-      // Refresh the locations to reflect changes
-      await fetchLocations();
-      alert('Location status updated successfully!');
-    } catch (error) {
-      console.error('Failed to update status:', error);
-      alert('Error updating location status. Please try again.');
-    }
-  };
-  
-
-
   return (
-    <div className="max-w-6xl min-h-screen mx-auto p-6 mt-16">
+    <div className="max-w-6xl min-h-screen mx-auto p-6 mt-6">
       <h2 className="text-2xl font-bold mb-4">Locations</h2>
       <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <input
@@ -327,7 +546,34 @@ const LocationTable: React.FC = () => {
             ))}
           </tbody>
         </table>
+         {/* Pagination Controls */}
+         <div className="flex justify-between mt-4">
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="text-sm text-gray-700">Page {currentPage} of {Math.ceil(filteredLocations.length / itemsPerPage)}</span>
+        {/* <button
+          onClick={() => paginate(currentPage + 1)}
+          disabled={indexOfLastItem >= filteredLocations.length}
+          className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50"
+        >
+          Next
+        </button> */}
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          disabled={indexOfLastItem >= (filteredLocations?.length || 0)}
+          className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+
       </div>
+      </div>
+      
     </div>
   );
 };

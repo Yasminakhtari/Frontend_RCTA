@@ -267,20 +267,20 @@ const PayTable = () => {
          {/* Pagination Controls */}
          <div className="flex justify-center mt-4">
          <button
-           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-           disabled={currentPage === 1}
-           className="px-3 py-1 mx-1 border rounded bg-gray-200 disabled:opacity-50"
-         >
-           Previous
-         </button>
-         <span className="px-3 py-1 mx-1">Page {currentPage} of {totalPages}</span>
-         <button
-           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-           disabled={currentPage === totalPages}
-           className="px-3 py-1 mx-1 border rounded bg-gray-200 disabled:opacity-50"
-         >
-           Next
-         </button>
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-3 py-1 mx-1 border rounded bg-gray-200"
+              >
+                Previous
+              </button>
+              <span className="px-3 py-1 mx-1">Page {currentPage} of {totalPages}</span>
+              <button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 mx-1 border rounded bg-gray-200"
+              >
+                Next
+              </button>
        </div>
        </> 
         )}
