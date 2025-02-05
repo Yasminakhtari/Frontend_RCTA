@@ -1,8 +1,11 @@
 import { Divider } from '@mantine/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Profile from '../Components/Profile/Profile';
 import ProfileRightSection from '../Components/Profile/ProfileRightSection';
 import PlayersDetails from '../Components/Profile/PlayersDetails';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { getSessionByIddd } from '../Services/SessionService';
 
 interface Player {
   id: string;
@@ -15,7 +18,30 @@ interface Player {
 }
 
 const UserProfilePage: React.FC = () => {
+  const user = useSelector((state: any) => state.user);
+  
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+   //sessions for respective players choosen
+      // const [userSessions, setSessionsOfuser] = useState([])
+      // useEffect(() => {
+  
+      //     const getSessionsOfUser = async () => {
+      //         try {
+      //             // const playerId =
+      //             const userSessionsData =  await getSessionByIddd(selectedPlayer?.id || ' ');
+      //             console.log(userSessionsData);
+      //             setSessionsOfuser(userSessionsData)
+      //         } catch (error) {
+  
+      //         }
+  
+      //     }
+      //     if (selectedPlayer) {
+      //         getSessionsOfUser()
+      //     }
+  
+  
+      // }, [selectedPlayer?.id])
 
   return (
     <div className="min-h-[90vh] bg-gradient-to-r bg-slate-200 font-['poppins'] text-white">
@@ -30,7 +56,7 @@ const UserProfilePage: React.FC = () => {
         </div>
 
         <div className="w-full md:w-2/5 bg-white bg-opacity-20 p-5 mb-16 rounded-lg shadow-lg">
-          <ProfileRightSection />
+          <ProfileRightSection sessions={selectedPlayer} />
         </div>
       </div>
     </div>

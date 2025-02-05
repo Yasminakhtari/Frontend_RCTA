@@ -36,6 +36,7 @@ console.log("User State:", user);
 
   const [checked, setChecked] = useState(false);
   const [opened, setOpened] = useState(false);
+  const navigate = useNavigate();
 
 
 //   console.log(user.data.userDetails.firstName);
@@ -50,6 +51,7 @@ console.log("User State:", user);
     dispatch(removeUser());
     localStorage.removeItem("token")
     if (onClose) onClose(); // Close the sidebar when logging out
+    navigate("/")
   }
   ////
 

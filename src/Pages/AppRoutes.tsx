@@ -42,6 +42,7 @@ import NotFound from "../Components/notfound/NotFound";
 import PaymentModal from '../Components/productpage/PaymentModal';
 import PaymentPage from "../Components/productpage/PaymentPage";
 import LocationCardPage from '../Components/sessionpage/LocationCardPage';
+import PayTable from '../Components/productpage/PayTable';
 
 
 const AppRoutes = () => {
@@ -78,6 +79,7 @@ const PaymentModalWrapper: React.FC = () => {
           <Route path="alluser" element={<Table />} />
           <Route path="locationtable" element={<LocationTable />} />
           <Route path="players" element={<Table />} />
+          <Route path="paytable" element={<PayTable />} />
         </Route>
 
         {/* Public Routes */}
@@ -99,6 +101,7 @@ const PaymentModalWrapper: React.FC = () => {
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/details/:id" element={<ProductDetails />} />
+        
 
         {/* Classes */}
         <Route path="/classes" element={<Classes />} />

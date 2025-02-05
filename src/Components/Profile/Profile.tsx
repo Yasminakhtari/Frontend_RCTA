@@ -11,6 +11,7 @@ import { errorNotification, successNotification } from '../../Services/Notificat
 // import ImageUpload from '../../common/ImageUpload';
 import ProfileImageUpload from './ProfileImageUpload';
 import { updateUserProfile } from '../../Slices/UserSlice';
+import axios from 'axios';
 
 
 interface Player {
@@ -65,6 +66,11 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
     const checkIfMobile = () => {
         setIsMobile(window.innerWidth <= 768);
     };
+   
+
+
+
+
     // Use effect to check for screen size on window resize
     useEffect(() => {
         // fetchUserDataById();
