@@ -10,7 +10,7 @@ const saveSession=async (data:any)=>{
 
 const getAllSession=async (userId:number)=>{
     return axios.get(`${base_url}/session`,{
-        params: { userId }
+        params: { userId}
     })
     .then(res=>res.data)
     .catch(error=>{throw error;});

@@ -1,5 +1,7 @@
 import { Badge, Tabs, Card, Text, Button, Group } from '@mantine/core';
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { getAllSession } from '../../Services/SessionService';
 
 const staticSessionsData = [
   { id: 1, title: 'Tennis Training 101', coach: ' Alex', status: 'completed' },
@@ -10,10 +12,36 @@ const staticSessionsData = [
   { id: 6, title: 'Match Play', coach: 'David', status: 'upcoming' },
 ];
 
+interface Session {
+  id: number; // Assuming the ID is a number based on backend 'Long'
+  courseId: number; // Changed to 'number' to match backend
+  coachId: number; // Changed to 'number' to match backend
+  locationId: number; // Changed to 'number' to match backend
+  fromDate: string; // String formatted date ("YYYY-MM-DD")
+  toDate: string; // String formatted date ("YYYY-MM-DD")
+  days: string[]; // Array of days (e.g., ["Monday", "Wednesday", "Friday"])
+  startTime: string; // Time string (e.g., "10:00 AM")
+  endTime: string; // Time string (e.g., "12:00 PM")
+  maxCapacity: number; // Maximum capacity of the session
+  maxWaitingCapacity: number; // Waiting capacity
+  price: number; // Price of the session
+  userId: number; // User ID as a number
+  playersId: number[]; // Array of player IDs (numbers)
+  status: "Active" | "Inactive"; // Status of the session
+  coachName?: string | null; // Coach name, optional and can be null
+  category?: string | null; // Category name, optional and can be null
+  subCategory?: string | null; // Subcategory name, optional and can be null
+  locationName?: string | null; // Location name, optional and can be null
+}
+
+
 const ProfileRightSection = () => {
   const [activeTab, setActiveTab] = useState<string>('all');
   const [isMobile, setIsMobile] = useState(false); // State for mobile screen detection
   const [currentPage, setCurrentPage] = useState(1); // Track the current page of cards
+
+  const user = useSelector((state: any) => state.user);
+
 
   // Detect if the screen is mobile
   const checkIfMobile = () => {
@@ -29,6 +57,7 @@ const ProfileRightSection = () => {
 
   const filterSessionsByStatus = (status: string) => {
     if (status === 'all') return staticSessionsData;
+
     return staticSessionsData.filter((session) => session.status === status);
   };
 
@@ -38,6 +67,30 @@ const ProfileRightSection = () => {
     const startIndex = (currentPage - 1) * 5;
     return sessions.slice(startIndex, startIndex + 5);
   };
+  /////////////////////////
+  /////////////////////////
+  useEffect(()=>{
+    const fetchAllSession = async() => {
+      try{
+        const userId = user?.data?.userDetails?.id;
+        const response = await getAllSession(userId);
+        const sessionData = response?.data;
+        console.log(sessionData);
+        // if(sessionData){
+        //   setSessions(sessionData);
+        // }else{
+        //   console.error("Expected an array, but received:", sessionData);
+        //   setSessions([]);
+        // }
+      }catch(error){
+        console.log(error);
+        console.error("Failed to fetch Session", error);
+      }
+    }
+    fetchAllSession();
+  },[user?.data?.userDetails?.id])
+
+
 
   const renderSessions = (sessions: typeof staticSessionsData) => (
     <div className={`grid ${isMobile ? 'grid-cols-1' : 'sm:grid-cols-2 lg:grid-cols-3'} gap-4`}>
