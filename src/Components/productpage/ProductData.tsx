@@ -1,4 +1,5 @@
 export interface Product {
+    players: any;
     id: number;
     name: string;
     price: number;
