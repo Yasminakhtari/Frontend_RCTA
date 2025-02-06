@@ -1,5 +1,5 @@
 import { Badge, Tabs, Card, Text, Button, Group, Pagination } from '@mantine/core';
-import { IconCalendar, IconUser, IconMapPin, IconClock,IconBallTennis } from '@tabler/icons-react';
+import { IconCalendar, IconUser, IconMapPin, IconClock, IconBallTennis } from '@tabler/icons-react';
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { getAllSession } from '../../Services/SessionService';
@@ -57,60 +57,72 @@ const ProfileRightSection = ({ sessions }: any) => {
       radius="lg"
       className="relative h-full transition-all duration-300 hover:shadow-xl border border-blueRibbon-100 hover:border-blue-100"
     >
-      <div className="absolute top-4 right-4">
-        <Badge 
-          variant="filled"
-          color={
-            session.status === 'completed' ? 'green' : 
-            session.status === 'inprogress' ? 'yellow' : 'blue'
-          }
-          className="shadow-md"
-        >
-          {session.status.toUpperCase()}
-        </Badge>
+      <div className=' flex justify-between'>
+        <IconBallTennis size={24} className="text-blue-900" />
+        <div className="absolute top-4 right-4">
+          <Badge
+            variant="filled"
+            color={
+              session.status === 'completed' ? 'green' :
+                session.status === 'inprogress' ? 'yellow' : 'blue'
+            }
+            className="shadow-md"
+          >
+            {session.status.toUpperCase()}
+          </Badge>
+        </div>
       </div>
 
-      <Group justify="apart" align="start" className="mb-4">
-        <IconBallTennis size={24} className="text-blue-900" />
-        <Text className="text-xl font-bold text-blueRibbon-800">{session.category}</Text>
-      </Group>
+      <div className='mt-3'>
+        <Group justify="apart" align="start" className="mb-4">
+
+          <Text className="!text-lg !font-bold !text-blueRibbon-800">{session.category}</Text>
+        </Group>
+      </div>
 
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <IconUser size={18} className="text-blueRibbon-500" />
+          <IconUser size={18} className="text-blueRibbon-600" />
           <Text size="sm" className="text-blueRibbon-900 font-medium">
             Coach: <span className="text-blue-900">{session.coachName}</span>
           </Text>
         </div>
 
         <div className="flex items-center gap-2">
-          <IconMapPin size={18} className="text-blueRibbon-500" />
+          {/* <IconMapPin size={18} className="text-blueRibbon-600" /> */}
+          <div>
+            🏟️
+          </div>
           <Text size="sm" className="text-blueRibbon-900">
             {session.locationName}
           </Text>
         </div>
 
-        <div className="flex flex-wrap gap-4">
-          <div className="flex items-center gap-2">
-            <IconCalendar size={18} className="text-blueRibbon-500" />
-            <Text size="sm" className="text-blueRibbon-900">
-              {session.fromDate} - {session.toDate}
+        <div className="flex flex-wrap justify-between items-center bg-blueRibbon-200 p-4 rounded-lg shadow-sm">
+          <div className="flex items-center gap-2 text-blue-900">
+            <IconCalendar size={20} className="text-blue-600" />
+            <Text size="sm" className="font-semibold">
+              <span className="text-blue-700">Start:</span> {session.fromDate}
+              <span className="mx-2 text-gray-500">|</span>
+              <span className="text-blue-700">End:</span> {session.toDate}
             </Text>
           </div>
 
-          <div className="flex items-center gap-2">
-            <IconClock size={18} className="text-blueRibbon-500" />
-            <Text size="sm" className="text-blueRibbon-900">
-              {session.startTime} - {session.endTime}
+          <div className="flex items-center gap-2 text-blue-900">
+            <IconClock size={20} className="text-blue-600" />
+            <Text size="sm" className="font-semibold">
+              <span className="text-lg">⏳</span> {session.startTime}
+              <span className="mx-1 text-gray-500">-</span>
+              <span className="text-lg">⌛</span> {session.endTime}
             </Text>
           </div>
         </div>
       </div>
 
       <Group justify="right" className="mt-6 border-t pt-4">
-        <Button 
-          variant="outline" 
-          color="blue" 
+        <Button
+          variant="outline"
+          color="blue"
           radius="xl"
           className="hover:bg-blue-50 font-medium"
         >
@@ -121,36 +133,37 @@ const ProfileRightSection = ({ sessions }: any) => {
   );
 
   const renderSessions = (sessions: any[]) => (
-    <div className={`grid ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2 xl:grid-cols-3'} gap-6`}>
+    <div className={`grid ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2'} gap-6`}>
       {getPaginatedSessions(sessions).map((session) => (
         <SessionCard key={session.id} session={session} />
       ))}
     </div>
   );
 
+
   return (
 
     <div className="w-full p-4 md:p-6 lg:p-8 bg-blueRibbon-50 rounded-2xl">
-      
-        <div className="flex items-center gap-4">
-        <div className="text-blueRibbon-500 font-extrabold text-2xl mt-2 mb-3">RC TENNIS ACADEMY</div>
-          <Badge 
-            size="xl" 
-            variant="gradient" 
-            gradient={{ from: 'blue', to: 'cyan' }}
-            className="shadow-md"
-          >
-            <IconBallTennis size={20} />
-          </Badge>
-        </div>
-       
 
-      <Tabs 
-        variant="outline" 
-        radius="lg" 
+      <div className="flex items-center gap-4">
+        <div className="text-blueRibbon-600 font-extrabold text-2xl mt-2 mb-3">RC TENNIS ACADEMY</div>
+        <Badge
+          size="xl"
+          variant="gradient"
+          gradient={{ from: 'blue', to: 'cyan' }}
+          className="shadow-md"
+        >
+          <IconBallTennis size={20} />
+        </Badge>
+      </div>
+
+
+      <Tabs
+        variant="outline"
+        radius="lg"
         defaultValue="all"
         classNames={{
-          tab: 'font-semibold text-blueRibbon-900 hover:bg-blue-50 [&[data-active]]:border-blue-500 [&[data-active]]:text-blue-900',
+          tab: 'font-semibold text-blueRibbon-900 hover:bg-blue-50 [&[data-active]]:border-blue-600 [&[data-active]]:text-blue-900',
         }}
       >
         <Tabs.List className="md:text-lg text-sm text-blueRibbon-700 font-semibold mb-5 [&_button[data-active='true']]:text-blueRibbon-950">
