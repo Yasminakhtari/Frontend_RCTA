@@ -561,7 +561,7 @@ const ShoppingCart: React.FC = () => {
                           >
                             <span>{player}</span>
                             <button
-                              className="text-red-500 hover:text-red-700 ml-2"
+                              className="text-red-600 hover:text-red-700 ml-2"
                               onClick={() => handleRemovePlayer(product.id, player)}
                             >
                               ✕
