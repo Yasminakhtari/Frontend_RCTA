@@ -557,7 +557,7 @@ const ShoppingCart: React.FC = () => {
                         {product.players.map((player, index) => (
                           <div
                             key={index}
-                            className="flex items-center bg-gray-200 px-3 py-1 rounded-full border border-gray-300"
+                            className="flex items-center bg-blue-500 px-3 py-1 rounded-full border border-gray-300"
                           >
                             <span>{player}</span>
                             <button
