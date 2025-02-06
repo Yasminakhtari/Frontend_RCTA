@@ -552,7 +552,7 @@ useEffect(() => {
                     <td className="border border-gray-300 px-4 py-2">{session.startTime} – {session.endTime}</td>
                     <td className="border border-gray-300 px-4 py-2">${session.price.toFixed(2)}</td>
                     <td className="border border-gray-300 px-4 py-2">
-                      <div className="relative inline-block text-left" ref={(el) => (dropdownRefs.current[session.id] = el)}>
+                      <div className="relative inline-block text-left w-full" ref={(el) => (dropdownRefs.current[session.id] = el)}>
                         <button
                           onClick={() => toggleDropdown(session.id)}
                           className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-300 transition duration-200"
@@ -574,7 +574,7 @@ useEffect(() => {
                         </button>
 
                         {dropdownOpen[session.id] && (
-                        <div className="absolute left-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
+                        <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-auto bg-white border border-gray-300 rounded-lg shadow-lg z-50">
                           {players.length > 0 ? (
                             players.map((player) => (
                               <button
