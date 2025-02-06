@@ -176,6 +176,7 @@
 // export default ShoppingCart;
 
 
+
 // import React, { useState, useEffect } from "react";
 // import { useCart } from "./CartContext";
 // import { useLocation, useNavigate } from "react-router-dom";
@@ -206,6 +207,7 @@
 //   useEffect(() => {
 //     if (successStatus) {
 //       clearCart(); // Clear cart if order is successful
+//       window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the page
 //     }
 //   }, [successStatus]);
 
@@ -526,12 +528,15 @@ const ShoppingCart: React.FC = () => {
                     </div>
                   )}
 
-                  {product.category === "Sports" && product.players?.length > 0 && (
+                  {/* {product.category === "Sports" && product.players?.length > 0 && (
                     <div className="mt-2">
                       <h3 className="text-gray-700">Selected Players:</h3>
-                      <ul className="list-disc pl-5">
+                      <div className="flex flex-wrap gap-2">
                         {product.players.map((player, index) => (
-                          <li key={index} className="flex items-center justify-between">
+                          <div
+                            key={index}
+                            className="flex items-center justify-between bg-gray-200 p-2 rounded border border-gray-300"
+                          >
                             <span>{player}</span>
                             <button
                               className="text-red-500 hover:text-red-700 ml-2"
@@ -539,11 +544,34 @@ const ShoppingCart: React.FC = () => {
                             >
                               ✕
                             </button>
-                          </li>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
+                    </div>
+                  )} */}
+
+                  {product.players?.length > 0 && (
+                    <div className="mt-2">
+                      <h3 className="text-gray-700">Selected Players:</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {product.players.map((player, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center bg-gray-200 px-3 py-1 rounded-full border border-gray-300"
+                          >
+                            <span>{player}</span>
+                            <button
+                              className="text-red-500 hover:text-red-700 ml-2"
+                              onClick={() => handleRemovePlayer(product.id, player)}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
+
                 </div>
                 <button
                   className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"
