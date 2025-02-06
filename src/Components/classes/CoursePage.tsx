@@ -524,7 +524,7 @@ useEffect(() => {
 
         <div className="overflow-x-auto">
           {/* <table className="w-full table-auto border-collapse border border-gray-300 text-left text-sm"> */}
-          <table className="w-full table-auto border-collapse border border-gray-300 text-left text-base">
+          <table className="w-full table-fixed border-collapse border border-gray-300 text-left text-base">
             <thead>
               <tr  className="bg-gray-100">
                 <th className="border border-gray-300 px-4 py-2">Coach</th>
