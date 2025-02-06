@@ -519,7 +519,7 @@ useEffect(() => {
   />
 </div>
 
-      <div ref={sessionRef} className="bg-gray-100 p-10 shadow-lg rounded-xl w-full max-w-7xl mx-auto">
+      <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Session Details:</h2>
 
         <div className="overflow-x-auto">
