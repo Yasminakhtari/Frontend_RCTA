@@ -334,6 +334,8 @@ const CoursePage: React.FC = () => {
   const [selectedPlayers, setSelectedPlayers] = useState<{ [key: number]: string[] }>({});
   const [dropdownOpen, setDropdownOpen] = useState<{ [key: number]: boolean }>({});
   const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
