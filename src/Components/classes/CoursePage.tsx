@@ -574,7 +574,8 @@ useEffect(() => {
                         </button>
 
                         {dropdownOpen[session.id] && (
-                        <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-visible bg-white border border-gray-300 rounded-lg shadow-lg z-[100]">
+                        // <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-visible bg-white border border-gray-300 rounded-lg shadow-lg z-[100]">
+                        <div className="fixed left-0 mt-2 w-full max-h-[200px] overflow-visible bg-white border border-gray-300 rounded-lg shadow-lg z-[9999]">
 
                           {players.length > 0 ? (
                             players.map((player) => (
