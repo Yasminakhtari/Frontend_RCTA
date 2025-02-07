@@ -580,16 +580,36 @@ useEffect(() => {
                           </svg>
                         </button>
 
-                        {dropdownOpen[session.id] && (
-                          
-                         <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-visible bg-white border border-gray-300 rounded-lg shadow-lg z-[100]">
-                        {/* <div className="fixed left-0 mt-2 w-full max-h-[200px] overflow-visible bg-white border border-gray-300 rounded-lg shadow-lg z-[9999]">
-                         <div className="fixed left-0 top-full min-w-[150px] w-auto max-h-[300px] bg-white border border-gray-300 rounded-lg shadow-lg z-[9999]">  */}
-
+                        {/* {dropdownOpen[session.id] && (
+                        <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-visible bg-white border border-gray-300 rounded-lg shadow-lg z-[100]">
+                        
                           {players.length > 0 ? (
                             players.map((player) => (
                               <button
                                 key={player.id} // Ensure a unique key
+                                onClick={() => handlePlayerSelect(session.id, player.name)}
+                                className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={selectedPlayers[session.id]?.includes(player.name)}
+                                  readOnly
+                                  className="mr-2"
+                                />
+                                {player.name}
+                              </button>
+                            ))
+                          ) : (
+                            <p className="px-4 py-2 text-gray-500">No players found</p>
+                          )}
+                        </div>
+                      )} */}
+                      {dropdownOpen[session.id] && (
+                        <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-y-auto bg-white border border-gray-300 rounded-lg shadow-lg z-[100]">
+                          {players.length > 0 ? (
+                            players.map((player) => (
+                              <button
+                                key={player.id}
                                 onClick={() => handlePlayerSelect(session.id, player.name)}
                                 className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
                               >
