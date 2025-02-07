@@ -684,7 +684,10 @@ useEffect(() => {
                   </button>
 
                   {dropdownOpen[session.id] && (
-                    <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-y-auto bg-white border border-gray-300 rounded-lg shadow-lg z-[100]">
+                    <div
+                      className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-[100]"
+                      style={{ maxHeight: `${players.length * 40}px` }} // Adjust height dynamically
+                    >
                       {players.length > 0 ? (
                         players.map((player) => (
                           <button
