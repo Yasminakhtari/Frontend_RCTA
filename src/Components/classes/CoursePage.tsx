@@ -523,8 +523,8 @@ useEffect(() => {
         <h2 className="text-2xl font-bold mb-4">Session Details:</h2>
 
         <div className="overflow-x-auto">
-          {/* <table className="w-full table-auto border-collapse border border-gray-300 text-left text-sm"> */}
-          <table className="w-full table-fixed border-collapse border border-gray-300 text-left text-base">
+          <table className="w-full table-auto border-collapse border border-gray-300 text-left text-sm">
+          {/* <table className="w-full table-fixed border-collapse border border-gray-300 text-left text-base"> */}
             <thead>
               <tr  className="bg-gray-100">
                 <th className="border border-gray-300 px-4 py-2">Coach</th>
@@ -574,7 +574,8 @@ useEffect(() => {
                         </button>
 
                         {dropdownOpen[session.id] && (
-                        <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-auto bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+                        <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-visible bg-white border border-gray-300 rounded-lg shadow-lg z-[100]">
+
                           {players.length > 0 ? (
                             players.map((player) => (
                               <button
