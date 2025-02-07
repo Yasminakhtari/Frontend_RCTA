@@ -526,12 +526,11 @@ useEffect(() => {
   />
 </div>
 
-      <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
+      {/* <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Session Details:</h2>
 
         <div className="overflow-x-auto">
           <table className="w-full table-auto border-collapse border border-gray-300 text-left text-sm">
-          {/* <table className="w-full table-fixed border-collapse border border-gray-300 text-left text-base"> */}
             <thead>
               <tr  className="bg-gray-100">
                 <th className="border border-gray-300 px-4 py-2">Coach</th>
@@ -580,30 +579,6 @@ useEffect(() => {
                           </svg>
                         </button>
 
-                        {/* {dropdownOpen[session.id] && (
-                        <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-visible bg-white border border-gray-300 rounded-lg shadow-lg z-[100]">
-                        
-                          {players.length > 0 ? (
-                            players.map((player) => (
-                              <button
-                                key={player.id} // Ensure a unique key
-                                onClick={() => handlePlayerSelect(session.id, player.name)}
-                                className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={selectedPlayers[session.id]?.includes(player.name)}
-                                  readOnly
-                                  className="mr-2"
-                                />
-                                {player.name}
-                              </button>
-                            ))
-                          ) : (
-                            <p className="px-4 py-2 text-gray-500">No players found</p>
-                          )}
-                        </div>
-                      )} */}
                       {dropdownOpen[session.id] && (
                         <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-y-auto bg-white border border-gray-300 rounded-lg shadow-lg z-[100]">
                           {players.length > 0 ? (
@@ -656,7 +631,111 @@ useEffect(() => {
             </tbody>
           </table>
         </div>
-      </div>
+      </div> */}
+      <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
+  <h2 className="text-2xl font-bold mb-4">Session Details:</h2>
+
+  <div className="overflow-x-auto">
+    <table className="w-full table-auto border-collapse border border-gray-300 text-left text-sm">
+      <thead>
+        <tr className="bg-gray-100">
+          <th className="border border-gray-300 px-4 py-2">Coach</th>
+          <th className="border border-gray-300 px-4 py-2">Location</th>
+          <th className="border border-gray-300 px-4 py-2">Start Date</th>
+          <th className="border border-gray-300 px-4 py-2">End Date</th>
+          <th className="border border-gray-300 px-4 py-2">Days</th>
+          <th className="border border-gray-300 px-4 py-2">Time</th>
+          <th className="border border-gray-300 px-4 py-2">Price</th>
+          <th className="border border-gray-300 px-4 py-2">Select Players</th>
+          <th className="border border-gray-300 px-4 py-2">Register</th>
+        </tr>
+      </thead>
+      <tbody>
+        {sessions.length > 0 ? (
+          sessions.map((session) => (
+            <tr key={session.id} className="hover:bg-gray-50">
+              <td className="border border-gray-300 px-4 py-2">{session.coachName || "TBD"}</td>
+              <td className="border border-gray-300 px-4 py-2">{session.locationName || "N/A"}</td>
+              <td className="border border-gray-300 px-4 py-2">{session.fromDate}</td>
+              <td className="border border-gray-300 px-4 py-2">{session.toDate}</td>
+              <td className="border border-gray-300 px-4 py-2">{session.days?.join(", ") || "N/A"}</td>
+              <td className="border border-gray-300 px-4 py-2">{session.startTime} – {session.endTime}</td>
+              <td className="border border-gray-300 px-4 py-2">${session.price.toFixed(2)}</td>
+              <td className="border border-gray-300 px-4 py-2">
+                <div className="relative inline-block text-left w-full" ref={(el) => (dropdownRefs.current[session.id] = el)}>
+                  <button
+                    onClick={() => toggleDropdown(session.id)}
+                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-300 transition duration-200"
+                  >
+                    <span>
+                      {selectedPlayers[session.id]?.length > 0
+                        ? selectedPlayers[session.id].join(", ")
+                        : "Select Players"}
+                    </span>
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+
+                  {dropdownOpen[session.id] && (
+                    <div className="absolute left-0 -top-2 w-full max-h-[200px] overflow-y-auto bg-white border border-gray-300 rounded-lg shadow-lg z-[100] transform -translate-y-full">
+                      {players.length > 0 ? (
+                        players.map((player) => (
+                          <button
+                            key={player.id}
+                            onClick={() => handlePlayerSelect(session.id, player.name)}
+                            className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedPlayers[session.id]?.includes(player.name)}
+                              readOnly
+                              className="mr-2"
+                            />
+                            {player.name}
+                          </button>
+                        ))
+                      ) : (
+                        <p className="px-4 py-2 text-gray-500">No players found</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                <button
+                  className={`px-4 py-2 rounded-md text-white ${
+                    isBooked(session.id)
+                      ? "bg-gray-500 cursor-not-allowed"
+                      : isAnyBooked && !isBooked(session.id)
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-500 hover:bg-blue-600"
+                  }`}
+                  disabled={isBooked(session.id) || (isAnyBooked && !isBooked(session.id))}
+                  onClick={() => handleRegister(session.id!, courses.id!)}
+                >
+                  {isBooked(session.id) ? "Booked" : "Register"}
+                </button>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={9} className="text-center py-4 text-gray-500">
+              No sessions found.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
     </div>
   );
 };
