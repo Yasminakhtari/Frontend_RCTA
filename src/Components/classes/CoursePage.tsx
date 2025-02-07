@@ -632,7 +632,7 @@ useEffect(() => {
           </table>
         </div>
       </div> */}
-     <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
+    <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
   <h2 className="text-2xl font-bold mb-4">Session Details:</h2>
 
   <div className="overflow-x-auto">
@@ -685,8 +685,11 @@ useEffect(() => {
 
                   {dropdownOpen[session.id] && (
                     <div
-                      className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-[100]"
-                      style={{ maxHeight: `${players.length * 40}px` }} // Adjust height dynamically
+                      className="absolute left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-[100]"
+                      style={{
+                        top: players.length > 5 ? `-${players.length * 40}px` : "100%", // Position above if too many players
+                        maxHeight: "none", // Remove max height restriction
+                      }}
                     >
                       {players.length > 0 ? (
                         players.map((player) => (
