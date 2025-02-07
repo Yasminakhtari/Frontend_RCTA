@@ -664,7 +664,14 @@ useEffect(() => {
               <td className="border border-gray-300 px-4 py-2">
                 <div className="relative inline-block text-left w-full" ref={(el) => (dropdownRefs.current[session.id] = el)}>
                   <button
-                    onClick={() => toggleDropdown(session.id)}
+                    onClick={(e) => {
+                      const buttonRect = e.currentTarget.getBoundingClientRect();
+                      setDropdownPosition({
+                        top: buttonRect.top + window.scrollY,
+                        left: buttonRect.left + window.scrollX,
+                      });
+                      toggleDropdown(session.id);
+                    }}
                     className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-300 transition duration-200"
                   >
                     <span>
@@ -685,9 +692,10 @@ useEffect(() => {
 
                   {dropdownOpen[session.id] && (
                     <div
-                      className="absolute left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-[100]"
+                      className="fixed bg-white border border-gray-300 rounded-lg shadow-lg z-[1000]" // High z-index and fixed positioning
                       style={{
-                        top: players.length > 5 ? `-${players.length * 40}px` : "100%", // Position above if too many players
+                        top: dropdownPosition.top - players.length * 40, // Position above the button
+                        left: dropdownPosition.left,
                         maxHeight: "none", // Remove max height restriction
                       }}
                     >
