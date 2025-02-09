@@ -229,6 +229,8 @@
 import React, { useState, useEffect } from "react";
 import { useCart } from "./CartContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import { deleteSinglePlayer } from "../../Services/SessionService";
+import { errorNotification, successNotification } from "../../Services/NotificationService";
 
 interface Player {
   id: string;
@@ -261,7 +263,7 @@ const ShoppingCart: React.FC = () => {
   const { cart, removeFromCart, clearCart, setCart } = useCart();
   const navigate = useNavigate();
   const [selectedPlayers, setSelectedPlayers] = useState<Record<number, Player[]>>({});
-
+  console.log(cart)
   useEffect(() => {
     if (successStatus) {
       clearCart(); // Clear cart if order is successful
@@ -287,7 +289,27 @@ const ShoppingCart: React.FC = () => {
     );
   };
 
-  const handleRemovePlayer = (id: number, playerId: string) => {
+  const handleRemovePlayer = async (product:any,id: number, playerId: string) => {
+    if(playerId){
+      console.log(product)
+      console.log(playerId)
+      console.log(id)
+      console.log(product.courseId)
+      try {
+        // 🔹 Call API to remove player
+        const response = await deleteSinglePlayer(id, product.courseId, Number(playerId));
+        console.log("Player removed successfully:", response);
+
+        // 🔹 Update UI after successful removal (if needed)
+        successNotification("",`Player ${playerId} removed successfully.`);
+        
+    } catch (error) {
+        console.error("Error removing player:", error);
+        errorNotification("","Failed to remove player. Please try again.");
+    }
+
+    return;   
+  }
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.id === id
@@ -321,7 +343,8 @@ const ShoppingCart: React.FC = () => {
       ) : (
         <div>
           {cart.map((product) => {
-            const productTotal = product.price * product.quantity;
+            const playerCount = product.players ? product.players.length : 1;
+            const productTotal = product.price * playerCount;
             return (
               <div key={product.id} className="mb-4 p-4 bg-white shadow-md rounded-lg flex justify-between items-center">
                 <div>
@@ -375,7 +398,7 @@ const ShoppingCart: React.FC = () => {
                             <span>{player.name}</span>
                             <button
                               className="text-red-500 hover:text-red-700"
-                              onClick={() => handleRemovePlayer(product.id, player.id)}
+                              onClick={() => handleRemovePlayer(product,product.id, player.id)}
                             >
                               ✕
                             </button>
@@ -397,7 +420,7 @@ const ShoppingCart: React.FC = () => {
                             <span>{player.name}</span>
                             <button
                               className="text-red-600 hover:text-red-700 ml-2"
-                              onClick={() => handleRemovePlayer(product.id, player.id)}
+                              onClick={() => handleRemovePlayer(product,product.id, player.id)}
                             >
                               ✕
                             </button>

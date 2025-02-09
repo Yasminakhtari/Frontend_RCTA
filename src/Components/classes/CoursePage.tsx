@@ -765,6 +765,8 @@ import { useCart } from "../productpage/CartContext";
 import { getTennisSessionDetails } from "../../Services/TennisService";
 import { getAllPlayers } from "../../Services/PlayerService";
 import { useSelector } from "react-redux";
+import { errorNotification, successNotification } from "../../Services/NotificationService";
+import { saveTSession } from "../../Services/SessionService";
 
 interface Course {
   id?: number;
@@ -799,6 +801,7 @@ const CoursePage: React.FC = () => {
         const data = await getTennisSessionDetails(id);
         setCourse(data.tennisData || {});
         setSessions(data.sessions || []);
+        console.log(data.sessions)
       } catch (error) {
         console.error("Error fetching course details:", error);
       } finally {
@@ -863,14 +866,14 @@ const CoursePage: React.FC = () => {
     setDropdownOpen((prev) => ({ ...prev, [sessionId]: !prev[sessionId] }));
   };
 
-  const handleRegister = (sessionId: number, courseId: number) => {
-    if (isBookedCart(sessionId)) {
-      alert("This session is already booked!");
-      return;
-    }
-
+  const handleRegister = async (sessionId: number, courseId: number) => {
+    // if (isBookedCart(sessionId)) {
+    //   alert("This session is already booked!");
+    //   return;
+    // }
+    alert(courseId)
     const selectedSession = sessions.find((session) => session.id === sessionId);
-    console.log(selectedSession);
+    console.log(selectedSession.price);
 
     if (selectedSession) {
       const selectedPlayersList = selectedPlayers[sessionId] || [{ id: "default", name: "Default Player" }];
@@ -878,25 +881,80 @@ const CoursePage: React.FC = () => {
       const selectedPlayerObjects = selectedPlayersList.map((player) => ({ id: player.id, name: player.name }));
       const selectedPlayersCount = selectedPlayersList.length;
       const totalPrice = selectedSession.price * selectedPlayersCount;
+      const selectedPlayersIds = selectedPlayersList.map((player) => Number(player.id)); // Ensure IDs are numbers
+      const userId = user?.data?.userDetails?.id;
+      const sessionData = {
+        sessionId: selectedSession.id,
+        userId: userId,
+        playersId: selectedPlayersIds,
+        courseId:selectedSession.courseId
+    };
+  
+      // const cartItem = {
+      //   id: selectedSession.id,
+      //   courseId: courseId,
+      //   name: `${courses.subcategory} (${courses.category})` || "General",
+      //   price: totalPrice,
+      //   description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
+      //   category: "Sports",
+      //   image: "/path/to/image",
+      //   players: selectedPlayerObjects,
+      //   groups: `${courses.groups}`,
+      // };
+      // console.log(cartItem);
 
-      const cartItem = {
-        id: selectedSession.id,
-        courseId: courseId,
-        name: `${courses.subcategory} (${courses.category})` || "General",
-        price: totalPrice,
-        description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
-        category: "Sports",
-        image: "/path/to/image",
-        players: selectedPlayerObjects,
-        groups: `${courses.groups}`,
-      };
-      console.log(cartItem);
-
-      addToCart(cartItem);
-      setIsAnyBooked(true);
-      alert(`Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
-      navigate("/cart");
+      // addToCart(cartItem);
+      // setIsAnyBooked(true);
+      // alert(`Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
+      // navigate("/cart");
+      try {
+    
+        // Call API to save session
+        const response = await saveTSession(sessionData);
+        if (response.httpStatus === "CONFLICT") {
+          // throw new Error(response.message || "Session conflict detected.");
+          errorNotification("Error", response.message);
+          return;
+      }
+        console.log("Session saved successfully:", response);
+    
+        // Prepare cart item for UI
+        const selectedPlayersCount = selectedPlayersList.length;
+        const totalPrice = selectedSession.price * selectedPlayersCount;
+        const selectedPlayerObjects = selectedPlayersList.map((player) => ({ id: player.id, name: player.name }));
+    
+        const cartItem = {
+            id: selectedSession.id,
+            courseId: courseId,
+            name: `${courses.subcategory} (${courses.category})` || "General",
+            // price: totalPrice,
+            price:selectedSession.price,
+            description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
+            category: "Sports",
+            image: "/path/to/image",
+            players: selectedPlayerObjects,
+            groups: `${courses.groups}`
+        };
+    
+        console.log("Cart Item:", cartItem);
+        addToCart(cartItem);
+        successNotification("", "Session Register Successfully!");
+    
+            // ✅ Redirect to cart page after success
+            setTimeout(() => {
+                navigate("/cart");
+            }, 1500); // Delay to allow users to see the notification
+    
+        // setIsAnyBooked(true);
+        // alert(`Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
+        // navigate("/cart");
+    } catch (error) {
+        console.error("Failed to save session:", error);
+        // alert("Failed to register for session. Please try again.");
+        errorNotification("Error", "Failed to register for session. Please try again.");
     }
+    
+  }
   };
 
   if (!courses) {
@@ -1150,17 +1208,19 @@ const CoursePage: React.FC = () => {
               </td>
               <td className="border border-gray-300 px-4 py-2">
                 <button
-                  className={`px-4 py-2 rounded-md text-white ${
-                    isBookedCart(session.id)
-                      ? "bg-gray-500 cursor-not-allowed"
-                      : isAnyBooked && !isBookedCart(session.id)
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-blue-500 hover:bg-blue-600"
-                  }`}
-                  disabled={isBookedCart(session.id) || (isAnyBooked && !isBookedCart(session.id))}
+                className="px-4 py-2 rounded-md text-white bg-blue-500 hover:bg-blue-600"
+                  // className={`px-4 py-2 rounded-md text-white ${
+                  //   isBookedCart(session.id)
+                  //     ? "bg-gray-500 cursor-not-allowed"
+                  //     : isAnyBooked && !isBookedCart(session.id)
+                  //     ? "bg-gray-400 cursor-not-allowed"
+                  //     : "bg-blue-500 hover:bg-blue-600"
+                  // }`}
+                  // disabled={isBookedCart(session.id) || (isAnyBooked && !isBookedCart(session.id))}
                   onClick={() => handleRegister(session.id!, courses.id!)}
                 >
-                  {isBookedCart(session.id) ? "Booked" : "Register"}
+                  Register
+                  {/* {isBookedCart(session.id) ? "Booked" : "Register"} */}
                 </button>
               </td>
             </tr>
