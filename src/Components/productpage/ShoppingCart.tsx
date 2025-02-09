@@ -308,7 +308,7 @@ const ShoppingCart: React.FC = () => {
         errorNotification("","Failed to remove player. Please try again.");
     }
 
-    return;   
+    // return;   
   }
     setCart((prevCart) =>
       prevCart.map((item) =>
