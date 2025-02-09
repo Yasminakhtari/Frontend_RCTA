@@ -290,26 +290,26 @@ const ShoppingCart: React.FC = () => {
   };
 
   const handleRemovePlayer = async (product:any,id: number, playerId: string) => {
-    if(playerId){
-      console.log(product)
-      console.log(playerId)
-      console.log(id)
-      console.log(product.courseId)
-      try {
-        // 🔹 Call API to remove player
-        const response = await deleteSinglePlayer(id, product.courseId, Number(playerId));
-        console.log("Player removed successfully:", response);
+  //   if(playerId){
+  //     console.log(product)
+  //     console.log(playerId)
+  //     console.log(id)
+  //     console.log(product.courseId)
+  //     try {
+  //       // 🔹 Call API to remove player
+  //       const response = await deleteSinglePlayer(id, product.courseId, Number(playerId));
+  //       console.log("Player removed successfully:", response);
 
-        // 🔹 Update UI after successful removal (if needed)
-        successNotification("",`Player ${playerId} removed successfully.`);
+  //       // 🔹 Update UI after successful removal (if needed)
+  //       successNotification("",`Player ${playerId} removed successfully.`);
         
-    } catch (error) {
-        console.error("Error removing player:", error);
-        errorNotification("","Failed to remove player. Please try again.");
-    }
+  //   } catch (error) {
+  //       console.error("Error removing player:", error);
+  //       errorNotification("","Failed to remove player. Please try again.");
+  //   }
 
-    // return;   
-  }
+  //   // return;   
+  // }
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.id === id
