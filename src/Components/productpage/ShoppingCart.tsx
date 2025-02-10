@@ -289,35 +289,39 @@ const ShoppingCart: React.FC = () => {
     );
   };
 
-  const handleRemovePlayer = async (product:any,id: number, playerId: string) => {
-  //   if(playerId){
-  //     console.log(product)
-  //     console.log(playerId)
-  //     console.log(id)
-  //     console.log(product.courseId)
-  //     try {
-  //       // 🔹 Call API to remove player
-  //       const response = await deleteSinglePlayer(id, product.courseId, Number(playerId));
-  //       console.log("Player removed successfully:", response);
+  const handleRemovePlayer = async (productTotal: any, id: number, playerId: string) => {
+    if (productTotal) {
+      alert(productTotal)
+      // return;
+    }
+    //   if(playerId){
+    //     console.log(product)
+    //     console.log(playerId)
+    //     console.log(id)
+    //     console.log(product.courseId)
+    //     try {
+    //       // 🔹 Call API to remove player
+    //       const response = await deleteSinglePlayer(id, product.courseId, Number(playerId));
+    //       console.log("Player removed successfully:", response);
 
-  //       // 🔹 Update UI after successful removal (if needed)
-  //       successNotification("",`Player ${playerId} removed successfully.`);
-        
-  //   } catch (error) {
-  //       console.error("Error removing player:", error);
-  //       errorNotification("","Failed to remove player. Please try again.");
-  //   }
+    //       // 🔹 Update UI after successful removal (if needed)
+    //       successNotification("",`Player ${playerId} removed successfully.`);
 
-  //   // return;   
-  // }
+    //   } catch (error) {
+    //       console.error("Error removing player:", error);
+    //       errorNotification("","Failed to remove player. Please try again.");
+    //   }
+
+    //   // return;   
+    // }
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.id === id
           ? {
-              ...item,
-              players: item.players.filter((p: { id: string; }) => p.id !== playerId), // Remove player by ID
-              price: item.price - 100, // Decrease the price by $100 when a player is removed
-            }
+            ...item,
+            players: item.players.filter((p: { id: string; }) => p.id !== playerId), // Remove player by ID
+            price: item.price, // Decrease the price by $100 when a player is removed
+          }
           : item
       )
     );
@@ -327,9 +331,20 @@ const ShoppingCart: React.FC = () => {
     console.log("Updated Selected Players:", selectedPlayers);
   }, [selectedPlayers]);
 
-  const total = cart.reduce((sum, product) => sum + product.price * product.quantity, 0);
+  // const total = cart.reduce((sum, product) => sum + product.price * product.quantity, 0);
   const classItems = cart.filter((product) => product.category === "Class");
-  const classTotal = classItems.reduce((sum, product) => sum + product.price * product.quantity, 0);
+  // const classTotal = classItems.reduce((sum, product) => sum + product.price * product.quantity, 0);
+  //  Calculate the total by summing all productTotal values
+  const total = cart.reduce((sum, product) => {
+    let productTotal = product.price * product.quantity; // Default calculation
+
+    if (product.groups === "Classes") {
+      const playerCount = product.players ? product.players.length : 1;
+      productTotal = product.price * playerCount;
+    }
+
+    return sum + productTotal;
+  }, 0);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 p-4 sm:p-8 mt-14">
@@ -343,8 +358,13 @@ const ShoppingCart: React.FC = () => {
       ) : (
         <div>
           {cart.map((product) => {
-            const playerCount = product.players ? product.players.length : 1;
-            const productTotal = product.price * playerCount;
+            let productTotal = product.price * product.quantity;
+            if (product.groups == "Classes") {
+              const playerCount = product.players ? product.players.length : 1;
+              productTotal = product.price * playerCount;
+            }
+
+
             return (
               <div key={product.id} className="mb-4 p-4 bg-white shadow-md rounded-lg flex justify-between items-center">
                 <div>
@@ -398,7 +418,7 @@ const ShoppingCart: React.FC = () => {
                             <span>{player.name}</span>
                             <button
                               className="text-red-500 hover:text-red-700"
-                              onClick={() => handleRemovePlayer(product,product.id, player.id)}
+                              onClick={() => handleRemovePlayer(productTotal, product.id, player.id)}
                             >
                               ✕
                             </button>
@@ -420,7 +440,7 @@ const ShoppingCart: React.FC = () => {
                             <span>{player.name}</span>
                             <button
                               className="text-red-600 hover:text-red-700 ml-2"
-                              onClick={() => handleRemovePlayer(product,product.id, player.id)}
+                              onClick={() => handleRemovePlayer(productTotal, product.id, player.id)}
                             >
                               ✕
                             </button>

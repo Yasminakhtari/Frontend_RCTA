@@ -765,6 +765,7 @@ import { useCart } from "../productpage/CartContext";
 import { getTennisSessionDetails } from "../../Services/TennisService";
 import { getAllPlayers } from "../../Services/PlayerService";
 import { useSelector } from "react-redux";
+import { successNotification } from "../../Services/NotificationService";
 
 interface Course {
   id?: number;
@@ -864,10 +865,10 @@ const CoursePage: React.FC = () => {
   };
 
   const handleRegister = (sessionId: number, courseId: number) => {
-    if (isBookedCart(sessionId)) {
-      alert("This session is already booked!");
-      return;
-    }
+    // if (isBookedCart(sessionId)) {
+    //   alert("This session is already booked!");
+    //   return;
+    // }
 
     const selectedSession = sessions.find((session) => session.id === sessionId);
     console.log(selectedSession);
@@ -884,7 +885,7 @@ const CoursePage: React.FC = () => {
         id: selectedSession.id,
         courseId: courseId,
         name: `${courses.subcategory} (${courses.category})` || "General",
-        price: totalPrice,
+        price: selectedSession.price,
         description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
         category: "Sports",
         image: "/path/to/image",
@@ -894,8 +895,8 @@ const CoursePage: React.FC = () => {
       console.log(cartItem);
 
       addToCart(cartItem);
-      setIsAnyBooked(true);
-      alert(`Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
+      // setIsAnyBooked(true);
+      successNotification("",`Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
       navigate("/cart");
     }
   };
@@ -1151,17 +1152,19 @@ const CoursePage: React.FC = () => {
               </td>
               <td className="border border-gray-300 px-4 py-2">
                 <button
-                  className={`px-4 py-2 rounded-md text-white ${
-                    isBookedCart(session.id)
-                      ? "bg-gray-500 cursor-not-allowed"
-                      : isAnyBooked && !isBookedCart(session.id)
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-blue-500 hover:bg-blue-600"
-                  }`}
-                  disabled={isBookedCart(session.id) || (isAnyBooked && !isBookedCart(session.id))}
+                className="px-4 py-2 rounded-md text-white bg-blue-500 hover:bg-blue-600"
+                  // className={`px-4 py-2 rounded-md text-white ${
+                  //   isBookedCart(session.id)
+                  //     ? "bg-gray-500 cursor-not-allowed"
+                  //     : isAnyBooked && !isBookedCart(session.id)
+                  //     ? "bg-gray-400 cursor-not-allowed"
+                  //     : "bg-blue-500 hover:bg-blue-600"
+                  // }`}
+                  // disabled={isBookedCart(session.id) || (isAnyBooked && !isBookedCart(session.id))}
                   onClick={() => handleRegister(session.id!, courses.id!)}
                 >
-                  {isBookedCart(session.id) ? "Booked" : "Register"}
+                  {/* {isBookedCart(session.id) ? "Booked" : "Register"} */}
+                  Register
                 </button>
               </td>
             </tr>
