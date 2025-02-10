@@ -1459,6 +1459,3 @@ function parseItemsJson(itemsString: string) {
       return []; // Return an empty array if parsing fails
   }
 }
-
-
-
