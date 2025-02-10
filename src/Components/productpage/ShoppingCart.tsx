@@ -290,10 +290,6 @@ const ShoppingCart: React.FC = () => {
   };
 
   const handleRemovePlayer = async (productTotal: any, id: number, playerId: string) => {
-    if (productTotal) {
-      alert(productTotal)
-      // return;
-    }
     //   if(playerId){
     //     console.log(product)
     //     console.log(playerId)
