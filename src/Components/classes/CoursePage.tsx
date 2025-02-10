@@ -897,7 +897,8 @@ import { useCart } from "../productpage/CartContext";
 import { getTennisSessionDetails } from "../../Services/TennisService";
 import { getAllPlayers } from "../../Services/PlayerService";
 import { useSelector } from "react-redux";
-import { successNotification } from "../../Services/NotificationService";
+import { errorNotification, successNotification } from "../../Services/NotificationService";
+import { getAllOrder } from "../../Services/OrderService";
 
 interface Course {
   id?: number;
@@ -906,6 +907,17 @@ interface Course {
   description: string;
   price: number;
   groups: string;
+}
+
+interface Order {
+  userId: any;
+  paymentMethod: any;
+  id: number;
+  userName: string;
+  mobileNo: string;
+  items: any;
+  total: string;
+  paymentStatus: string;
 }
 
 const CoursePage: React.FC = () => {
@@ -1022,43 +1034,122 @@ const CoursePage: React.FC = () => {
   const handleDropdownToggle = (sessionId: number) => {
     setDropdownOpen((prev) => ({ ...prev, [sessionId]: !prev[sessionId] }));
   };
+  const handleRegister = async (sessionId: number, courseId: number) => {
+    // setLoading(true);
 
-  const handleRegister = (sessionId: number, courseId: number) => {
-    // if (isBookedCart(sessionId)) {
-    //   alert("This session is already booked!");
-    //   return;
-    // }
+    try {
+        // Fetch all orders with "Success" payment status
+        const data = await getAllOrder();
+        const filteredOrders = Array.isArray(data?.data)
+            ? data.data.filter((item: { paymentStatus: string }) => item.paymentStatus === "Success")
+            : [];
 
-    const selectedSession = sessions.find((session) => session.id === sessionId);
-    console.log(selectedSession);
+        console.log("Fetched Orders:", filteredOrders);
 
-    if (selectedSession) {
-      const selectedPlayersList = selectedPlayers[sessionId] || [{ id: "default", name: "Default Player" }];
-      const selectedPlayerNames = selectedPlayersList.map((player) => player.name);
-      const selectedPlayerObjects = selectedPlayersList.map((player) => ({ id: player.id, name: player.name }));
-      const selectedPlayersCount = selectedPlayersList.length;
-      const totalPrice = selectedSession.price * selectedPlayersCount;
+        //  Extract players from orders where `groups === "Classes"`
+        let existingPlayersSet = new Set();
+
+        filteredOrders.forEach((order: { items: string; userId: any }) => {
+            let items = parseItemsJson(order.items); //  Use the parsing function
+
+            items.forEach((item: { groups: string, name: string, players: any[] }) => {
+                if (item.groups === "Classes") {
+                    item.players.forEach(player => {
+                        existingPlayersSet.add(`${order.userId}_${player.id}`);
+                    });
+                }
+            });
+        });
+
+        console.log("Existing Players Set:", existingPlayersSet);
+
+        //  Get Selected Session & Players
+        const selectedSession = sessions.find(session => session.id === sessionId);
+        if (!selectedSession) return;
+
+        const selectedPlayersList = selectedPlayers[sessionId] || [{ id: "default", name: "Default Player" }];
+        const selectedPlayersCount = selectedPlayersList.length;
+        const selectedPlayerObjects = selectedPlayersList.map(player => ({ id: player.id, name: player.name }));
+
+        //  Check If Player Already Exists for the Same `userId`
+        const currentUserId = user.data.userDetails.id; //  Use dynamic userId
+
+        let duplicatePlayers: string[] = []; //  Collect duplicate player names
+
+        for (let player of selectedPlayerObjects) {
+            if (existingPlayersSet.has(`${currentUserId}_${player.id}`)) {
+                duplicatePlayers.push(player.name); //  Store duplicate player names
+            }
+        }
+
+        if (duplicatePlayers.length > 0) {
+            //  Show a single alert with all duplicate names
+            errorNotification("", `Players ${duplicatePlayers.join(", ")} are already registered for a class.`);
+            return; // Stop further processing if there are duplicates
+        }
+
+        //  Proceed with Registration (If No Duplicates)
+        const totalPrice = selectedSession.price * selectedPlayersCount;
+        const cartItem = {
+            id: selectedSession.id,
+            courseId: courseId,
+            name: `${courses.subcategory} (${courses.category})` || "General",
+            price: selectedSession.price,
+            description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
+            category: "Sports",
+            image: "/path/to/image",
+            players: selectedPlayerObjects,
+            groups: `${courses.groups}`,
+        };
+
+        console.log("Cart Item:", cartItem);
+        addToCart(cartItem);
+
+        successNotification("", `Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
+        navigate("/cart");
+    } catch (error) {
+        console.error('Failed to fetch orders:', error);
+    } finally {
+        setLoading(false);
+    }
+};
+
+  // const handleRegister = (sessionId: number, courseId: number) => {
+  //   // if (isBookedCart(sessionId)) {
+  //   //   alert("This session is already booked!");
+  //   //   return;
+  //   // }
+
+  //   const selectedSession = sessions.find((session) => session.id === sessionId);
+  //   console.log(selectedSession);
+
+  //   if (selectedSession) {
+  //     const selectedPlayersList = selectedPlayers[sessionId] || [{ id: "default", name: "Default Player" }];
+  //     const selectedPlayerNames = selectedPlayersList.map((player) => player.name);
+  //     const selectedPlayerObjects = selectedPlayersList.map((player) => ({ id: player.id, name: player.name }));
+  //     const selectedPlayersCount = selectedPlayersList.length;
+  //     const totalPrice = selectedSession.price * selectedPlayersCount;
       
 
-      const cartItem = {
-        id: selectedSession.id,
-        courseId: courseId,
-        name: `${courses.subcategory} (${courses.category})` || "General",
-        price: selectedSession.price,
-        description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
-        category: "Sports",
-        image: "/path/to/image",
-        players: selectedPlayerObjects,
-        groups: `${courses.groups}`,
-      };
-      console.log(cartItem);
+  //     const cartItem = {
+  //       id: selectedSession.id,
+  //       courseId: courseId,
+  //       name: `${courses.subcategory} (${courses.category})` || "General",
+  //       price: selectedSession.price,
+  //       description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
+  //       category: "Sports",
+  //       image: "/path/to/image",
+  //       players: selectedPlayerObjects,
+  //       groups: `${courses.groups}`,
+  //     };
+  //     console.log(cartItem);
 
-      addToCart(cartItem);
-      // setIsAnyBooked(true);
-      successNotification("",`Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
-      navigate("/cart");
-    }
-  };
+  //     addToCart(cartItem);
+  //     // setIsAnyBooked(true);
+  //     successNotification("",`Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
+  //     navigate("/cart");
+  //   }
+  // };
 
   if (!courses) {
     return (
@@ -1351,6 +1442,22 @@ export default CoursePage;
 
 function setDropdownOpen(arg0: (prev: any) => any) {
   throw new Error("Function not implemented.");
+}
+
+function parseItemsJson(itemsString: string) {
+  try {
+      //  Fix incorrect key-value formatting (Convert `=` to `:`)
+      let formattedItems = itemsString
+          .replace(/=/g, ':')  // Replace `=` with `:`
+          .replace(/([{,])(\s*)(\w+):/g, '$1"$3":')  // Ensure property names have double quotes
+          .replace(/:\s*([\w\s()]+)/g, ': "$1"'); // Ensure values have double quotes if needed
+
+      //  Parse the corrected JSON string
+      return JSON.parse(formattedItems);
+  } catch (error) {
+      console.error("Error parsing items JSON:", error);
+      return []; // Return an empty array if parsing fails
+  }
 }
 
 
