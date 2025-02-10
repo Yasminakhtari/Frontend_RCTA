@@ -80,6 +80,8 @@ const PaymentModalWrapper: React.FC = () => {
           <Route path="locationtable" element={<LocationTable />} />
           <Route path="players" element={<Table />} />
           <Route path="paytable" element={<PayTable />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+
         </Route>
 
         {/* Public Routes */}
@@ -122,7 +124,7 @@ const PaymentModalWrapper: React.FC = () => {
 
         {/* Notifications */}
         {/* <Route path="/notification" element={<Notifications userId={userId} />} /> */}
-        <Route path="/notifications" element={<NotificationsPage />} />
+        {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
 
         {/* Payment */}
         <Route path="/payment" element={<PaymentPage />} />
