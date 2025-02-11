@@ -133,7 +133,7 @@
 
 // export default AdminSidebar;
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   AccountCircleOutlined,
   Dashboard,
@@ -163,10 +163,29 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
     return savedState ? JSON.parse(savedState) : true;
   });
 
+  const sidebarRef = useRef<HTMLDivElement>(null); // Ref for the sidebar container
+
   // Save the sidebar state to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('sidebarOpen', JSON.stringify(sidebarOpen));
   }, [sidebarOpen]);
+
+  // Handle clicks outside the sidebar
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        onClose(); // Close the sidebar if the click is outside
+      }
+    };
+
+    // Attach the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Cleanup the event listener on unmount
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
 
   // Array of menu sections and their links
   const menuItems = [
@@ -217,9 +236,10 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="flex h-screen" onClick={onClose}>
+    <div className="flex h-screen">
       {/* Sidebar Container */}
       <div
+        ref={sidebarRef} // Attach the ref to the sidebar container
         className={`bg-gray-900 text-gray-200 flex flex-col transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'w-64' : 'w-16'
         }`}
