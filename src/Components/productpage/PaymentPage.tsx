@@ -238,7 +238,8 @@ const PaymentPage: React.FC = () => {
           groups: item.groups,
           name: item.name,
           quantity: item.quantity,
-          price: item.price
+          price: item.price,
+          players:item.players
         })),
       };
   
@@ -254,7 +255,7 @@ const PaymentPage: React.FC = () => {
       }
   
       // If successful, show success notification
-      successNotification("Success", "Card Payment Details");
+      successNotification("", "Card Payment Details");
       console.log(savedCart.data)
       if(savedCart.data?.paymentMethod === 'card'){
         navigate("/checkout",{ state: { isClassOnly,

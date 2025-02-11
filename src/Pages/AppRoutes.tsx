@@ -37,12 +37,12 @@ import LocationCreate from "../Components/sessionpage/LocationCreate";
 import LocationTable from "../Components/sessionpage/LocationTable";
 import StudentDetails from "../Components/sessionpage/StudentDetails";
 
-import Notifications from "../Components/notification/Notifications";
 import NotFound from "../Components/notfound/NotFound";
 import PaymentModal from '../Components/productpage/PaymentModal';
 import PaymentPage from "../Components/productpage/PaymentPage";
 import LocationCardPage from '../Components/sessionpage/LocationCardPage';
 import PayTable from '../Components/productpage/PayTable';
+import NotificationsPage from '../Components/notification/NotificationsPage';
 
 
 const AppRoutes = () => {
@@ -80,6 +80,8 @@ const PaymentModalWrapper: React.FC = () => {
           <Route path="locationtable" element={<LocationTable />} />
           <Route path="players" element={<Table />} />
           <Route path="paytable" element={<PayTable />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+
         </Route>
 
         {/* Public Routes */}
@@ -121,7 +123,8 @@ const PaymentModalWrapper: React.FC = () => {
         
 
         {/* Notifications */}
-        <Route path="/notification" element={<Notifications userId={userId} />} />
+        {/* <Route path="/notification" element={<Notifications userId={userId} />} /> */}
+        {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
 
         {/* Payment */}
         <Route path="/payment" element={<PaymentPage />} />
