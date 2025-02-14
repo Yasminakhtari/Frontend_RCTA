@@ -396,24 +396,35 @@ const SessionManagePage: React.FC = () => {
                 <td className="border border-gray-400 p-2">{session.location}</td>
                 <td className="border border-gray-400 p-2">
                   <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
-                    <button
-                      onClick={() => handleEdit(session.sessionNo)}
-                      className="bg-yellow-400 px-3 py-1 rounded-md text-sm"
-                    >
-                      ✏️ Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(session.sessionNo)}
-                      className="bg-red-600 text-white px-3 py-1 rounded-md text-sm"
-                    >
-                      🗑️ Delete
-                    </button>
-                    <button
-                      onClick={() => handleManageParticipants(session.sessionNo)}
-                      className="bg-gray-300 px-3 py-1 rounded-md text-sm"
-                    >
-                      👥 Manage
-                    </button>
+                    {filterOption === 'past' ? (
+                      <button
+                        onClick={() => alert(`Notification for session: ${session.sessionNo}`)}
+                        className="bg-gray-300 px-3 py-1 rounded-md text-sm"
+                      >
+                        🔔 Notify
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => handleEdit(session.sessionNo)}
+                          className="bg-yellow-400 px-3 py-1 rounded-md text-sm"
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(session.sessionNo)}
+                          className="bg-red-600 text-white px-3 py-1 rounded-md text-sm"
+                        >
+                          🗑️ Delete
+                        </button>
+                        <button
+                          onClick={() => handleManageParticipants(session.sessionNo)}
+                          className="bg-gray-300 px-3 py-1 rounded-md text-sm"
+                        >
+                          👥 Manage
+                        </button>
+                      </>
+                    )}
                   </div>
                 </td>
               </tr>
