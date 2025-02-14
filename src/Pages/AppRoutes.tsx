@@ -44,6 +44,7 @@ import LocationCardPage from '../Components/sessionpage/LocationCardPage';
 import PayTable from '../Components/productpage/PayTable';
 import NotificationsPage from '../Components/notification/NotificationsPage';
 import OrderConfirmationPage from '../Components/productpage/OrderConfirmationPage';
+import NotificationTable from '../Components/notification/NotificationTable';
 
 
 const AppRoutes = () => {
@@ -82,7 +83,7 @@ const PaymentModalWrapper: React.FC = () => {
           <Route path="players" element={<Table />} />
           <Route path="paytable" element={<PayTable />} />
           <Route path="notifications" element={<NotificationsPage />} />
-
+          <Route path="notificationtable" element={<NotificationTable notifications={[]} />} />
         </Route>
 
         {/* Public Routes */}
