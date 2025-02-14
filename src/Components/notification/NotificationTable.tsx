@@ -1,55 +1,109 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-// Define the type for the notification data
-type Notification = {
-  class_name: string;
-  session_name: string;
-  start_date: string;
-  end_date: string;
-};
+const NotificationTable: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-// Define the props for the NotificationTable component
-type NotificationTableProps = {
-  notifications: Notification[];
-};
+  const notifications = [
+    {
+      class_name: 'Mathematics 101',
+      session_name: 'Fall 2023',
+      start_date: '2023-09-01',
+      end_date: '2023-12-15',
+    },
+    {
+      class_name: 'Physics 201',
+      session_name: 'Spring 2024',
+      start_date: '2024-01-10',
+      end_date: '2024-05-20',
+    },
+    {
+      class_name: 'Chemistry 101',
+      session_name: 'Summer 2023',
+      start_date: '2023-06-15',
+      end_date: '2023-08-25',
+    },
+    {
+      class_name: 'Biology 102',
+      session_name: 'Winter 2024',
+      start_date: '2024-02-01',
+      end_date: '2024-06-01',
+    },
+  ];
 
-const NotificationTable: React.FC<NotificationTableProps> = ({ notifications }) => {
-  // Handle the "Send" button click
-  const handleSend = (notification: Notification) => {
-    alert(`Send button clicked for: ${notification.class_name} - ${notification.session_name}`);
+  const handleSendClick = (className: string) => {
+    alert(`Notification sent successfully for ${className}`);
   };
 
+  const filteredNotifications = notifications.filter(notification =>
+    notification.class_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredNotifications.length / itemsPerPage);
+  const paginatedNotifications = filteredNotifications.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="py-3 px-4 border-b text-left">Class Name</th>
-            <th className="py-3 px-4 border-b text-left">Session Name</th>
-            <th className="py-3 px-4 border-b text-left">Start Date</th>
-            <th className="py-3 px-4 border-b text-left">End Date</th>
-            <th className="py-3 px-4 border-b text-left">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {notifications.map((notification, index) => (
-            <tr key={index} className="hover:bg-gray-50">
-              <td className="py-3 px-4 border-b">{notification.class_name}</td>
-              <td className="py-3 px-4 border-b">{notification.session_name}</td>
-              <td className="py-3 px-4 border-b">{notification.start_date}</td>
-              <td className="py-3 px-4 border-b">{notification.end_date}</td>
-              <td className="py-3 px-4 border-b">
-                <button
-                  onClick={() => handleSend(notification)}
-                  className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition duration-200"
-                >
-                  Send
-                </button>
-              </td>
+    <div className="p-6 min-h-screen">
+      <h1 className="text-2xl font-bold mb-4">Notification Table</h1>
+      <input
+        type="text"
+        placeholder="Search by Class Name..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="mb-4 p-2 border rounded w-full sm:w-1/2 lg:w-1/3"
+      />
+      <div className="overflow-x-auto">
+        <table className="min-w-full border border-gray-300 bg-white shadow-md rounded-lg">
+          <thead className="bg-blue-500 text-white">
+            <tr>
+              <th className="px-4 py-2">Class Name</th>
+              <th className="px-4 py-2">Session Name</th>
+              <th className="px-4 py-2">Start Date</th>
+              <th className="px-4 py-2">End Date</th>
+              <th className="px-4 py-2">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedNotifications.map((notification, index) => (
+              <tr key={index} className="border-b hover:bg-gray-100">
+                <td className="px-4 py-2 text-center">{notification.class_name}</td>
+                <td className="px-4 py-2 text-center">{notification.session_name}</td>
+                <td className="px-4 py-2 text-center">{notification.start_date}</td>
+                <td className="px-4 py-2 text-center">{notification.end_date}</td>
+                <td className="px-4 py-2 text-center">
+                  <button 
+                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+                    onClick={() => handleSendClick(notification.class_name)}
+                  >
+                    Send
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-center items-center mt-4">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span className="px-4">Page {currentPage} of {totalPages}</span>
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 mx-1 bg-gray-300 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

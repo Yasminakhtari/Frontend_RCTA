@@ -82,7 +82,7 @@ const PaymentModalWrapper: React.FC = () => {
           <Route path="players" element={<Table />} />
           <Route path="paytable" element={<PayTable />} />
           <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="notificationtable" element={<NotificationTable notifications={[]} />} />
+          <Route path="notificationtable" element={<NotificationTable />} />
         </Route>
 
         {/* Public Routes */}
