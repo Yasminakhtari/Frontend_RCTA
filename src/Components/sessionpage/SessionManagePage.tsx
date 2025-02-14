@@ -438,7 +438,7 @@ const SessionManagePage: React.FC = () => {
           disabled={currentPage === 1} 
           className="px-3 py-1 mx-1 bg-gray-300 rounded-md disabled:opacity-50"
         >
-          ◀ Previous
+          ◀ Prev
         </button>
         <span className="px-3 py-1">Page {currentPage} of {totalPages}</span>
         <button 
