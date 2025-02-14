@@ -43,6 +43,7 @@ import PaymentPage from "../Components/productpage/PaymentPage";
 import LocationCardPage from '../Components/sessionpage/LocationCardPage';
 import PayTable from '../Components/productpage/PayTable';
 import NotificationsPage from '../Components/notification/NotificationsPage';
+import OrderConfirmationPage from '../Components/productpage/OrderConfirmationPage';
 
 
 const AppRoutes = () => {
@@ -103,6 +104,7 @@ const PaymentModalWrapper: React.FC = () => {
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/details/:id" element={<ProductDetails />} />
+        <Route path="/order-confirmation" element={<OrderConfirmationPage/>} />
         
 
         {/* Classes */}
