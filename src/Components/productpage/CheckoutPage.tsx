@@ -134,18 +134,33 @@
 
 // export default CheckoutPage;
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { saveOrder } from "../../Services/OrderService";
+import { saveOrder, saveShippingAddress } from "../../Services/OrderService";
 import { errorNotification, successNotification } from "../../Services/NotificationService";
 
 const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [shippingAddress, setShippingAddress] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    state: '',
+    zipCode: ''
+  });
+
   const isClassOnly = location.state?.isClassOnly || false;
   const orderId = location.state?.orderId || 0;
-  const cartData = location.state?.cartData || {}
-  console.log(cartData)
+  const cartData = location.state?.cartData || {};
+
+  console.log(cartData);
+  console.log(JSON.stringify(cartData));
+
   let formattedItems = cartData.items;
 
   if (typeof formattedItems === "string") {
@@ -184,6 +199,9 @@ const CheckoutPage: React.FC = () => {
   console.log("Has Products:", hasProducts); // Log the result of the condition
 
   console.log("Has Products:", hasProducts);
+  //////////////////////////////////////////
+  //////////////////////////////////////////
+
   const handleProceedToPayment = async () => {
     try {
       // Ensure items are properly formatted as an array
@@ -196,17 +214,18 @@ const CheckoutPage: React.FC = () => {
           .replace(/:\s*([\w\s&()-]+)/g, ': "$1"') // Wrap string values in quotes
           .replace(/"\s*([\d.]+)"/g, "$1"); // Remove quotes around numbers
 
-        // Parse the formatted string into an actual array
+        // Parsed the formatted string into an actual array
         formattedItems = JSON.parse(formattedItems);
       }
       // Prepare JSON payload
+      console.log(cartData);
       console.log((cartData?.items))
       const payload = {
         orderId, // Include orderId when present
         userId: cartData.userId,
         total: cartData.total,
         paymentMethod: cartData.paymentMethod,
-        items: formattedItems, // Ensure it's sent as JSON
+        items: formattedItems, //i ensured that   it's sent as JSON
       };
 
       console.log("Sending Payload:", JSON.stringify(payload));
@@ -214,22 +233,51 @@ const CheckoutPage: React.FC = () => {
       // Call the saveOrder function with JSON payload
       const savedOrder = await saveOrder(JSON.stringify(payload));
       console.log("Saved Order Response:", savedOrder);
-
+      if (hasProducts && savedOrder.data?.id) {
+        const shippingPayload = {
+          ...shippingAddress,
+          userId: cartData.userId,
+          orderId: savedOrder.data.id // Use the created order ID
+        };
+        console.log(shippingPayload)
+        await saveShippingAddress(shippingPayload);
+      }
       successNotification("Success", "Payment Successfull");
 
       // Navigate to checkout page with the updated order ID
+      // if (savedOrder.data?.paymentStatus === "Success") {
+      //   navigate("/cart", { state: { saveOrder: savedOrder.data?.paymentStatus } });
+      // }
+      console.log(savedOrder.data);
       if (savedOrder.data?.paymentStatus === "Success") {
-        navigate("/cart", { state: { saveOrder: savedOrder.data?.paymentStatus } });
+        navigate("/order-confirmation", { 
+          state: { 
+            orderDetails: savedOrder.data,
+            shippingAddress: hasProducts ? shippingAddress : null
+          }
+        });
       }
     } catch (error) {
       console.error("Error saving order:", error);
       errorNotification("Error", "Failed to save the order");
     }
   }
+
   useEffect(() => {
     console.log("Cart Items:", cartData?.items);
     console.log("Has Products:", hasProducts);
   }, [cartData]); // Runs whenever cartData changes
+
+  ///////////////////////////
+  ///////////////////////////
+  // Single handler for all fields
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setShippingAddress(prev => ({
+      ...prev,
+      [e.target.id]: e.target.value
+    }));
+  };
+  ///////////////////////////////
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center mt-16">
       <div className="w-full max-w-xl bg-white shadow-lg rounded-lg p-6">
@@ -252,6 +300,8 @@ const CheckoutPage: React.FC = () => {
               id="name"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="John Doe"
+              onChange={handleAddressChange}
+              value={shippingAddress.name}
             />
           </div>
           <div>
@@ -263,6 +313,8 @@ const CheckoutPage: React.FC = () => {
               id="email"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="john.doe@example.com"
+              onChange={handleAddressChange}
+              value={shippingAddress.email}
             />
           </div>
           <div className="mt-4">
@@ -274,6 +326,8 @@ const CheckoutPage: React.FC = () => {
               id="phone"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="123-456-7890"
+              onChange={handleAddressChange}
+              value={shippingAddress.phone}
             />
           </div>
         </div>
@@ -294,6 +348,8 @@ const CheckoutPage: React.FC = () => {
                   id="addressLine1"
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="123 Main St"
+                  onChange={handleAddressChange}
+                  value={shippingAddress.addressLine1}
                 />
               </div>
               <div>
@@ -305,6 +361,8 @@ const CheckoutPage: React.FC = () => {
                   id="addressLine2"
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Apartment, suite, etc. (optional)"
+                  onChange={handleAddressChange}
+                  value={shippingAddress.addressLine2}
                 />
               </div>
               <div>
@@ -316,6 +374,8 @@ const CheckoutPage: React.FC = () => {
                   id="city"
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="City"
+                  onChange={handleAddressChange}
+                  value={shippingAddress.city}
                 />
               </div>
               <div>
@@ -327,6 +387,8 @@ const CheckoutPage: React.FC = () => {
                   id="state"
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="State"
+                  onChange={handleAddressChange}
+                  value={shippingAddress.state}
                 />
               </div>
               <div>
@@ -338,6 +400,8 @@ const CheckoutPage: React.FC = () => {
                   id="zipCode"
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Zip Code"
+                  onChange={handleAddressChange}
+                  value={shippingAddress.zipCode}
                 />
               </div>
             </div>
@@ -350,7 +414,7 @@ const CheckoutPage: React.FC = () => {
             className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={handleProceedToPayment}
           >
-            Pay Now
+            Pay Now ${cartData.total?.toFixed(2)}
           </button>
         </div>
       </div>
