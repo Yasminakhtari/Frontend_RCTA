@@ -1100,6 +1100,12 @@ const CoursePage: React.FC = () => {
             image: "/path/to/image",
             players: selectedPlayerObjects,
             groups: `${courses.groups}`,
+            coachName: `${selectedSession.coachName}`,
+            location: `${selectedSession.location}`,
+            fromDate: `${selectedSession.fromDate}`,
+            toDate : `${selectedSession.toDate}`,
+            startTime:`${selectedSession.startTime}`,
+            endTime:`${selectedSession.endTime}`,
         };
 
         console.log("Cart Item:", cartItem);

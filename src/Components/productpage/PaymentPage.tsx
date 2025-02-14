@@ -239,14 +239,25 @@ const PaymentPage: React.FC = () => {
           name: item.name,
           quantity: item.quantity,
           price: item.price,
-          players:item.players
+          players:item.players,
+          coachName:item.coachName,
+          location: item.location,
+          fromDate: item.fromDate,
+          toDate : item.toDate,
+          startTime:item.startTime,
+          endTime:item.endTime,
         })),
       };
   
-      console.log("Sending Payload:", JSON.stringify(payload));
+      // console.log("Sending Payload:", JSON.stringify(payload));
   
-      // Call the saveOrder function
-      const savedCart = await saveOrder(JSON.stringify(payload));
+      // // Call the saveOrder function
+      // const savedCart = await saveOrder(JSON.stringify(payload,null,2));
+      // console.log(savedCart);
+      const jsonPayload = JSON.stringify(payload, null, 2);
+      console.log("Sending Payload:", jsonPayload);
+
+      const savedCart = await saveOrder(payload);
       console.log(savedCart);
       
       if (savedCart.overallStatus === "ERROR") {
