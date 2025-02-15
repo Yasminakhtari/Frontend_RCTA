@@ -45,6 +45,7 @@ import PayTable from '../Components/productpage/PayTable';
 import NotificationsPage from '../Components/notification/NotificationsPage';
 import OrderConfirmationPage from '../Components/productpage/OrderConfirmationPage';
 import NotificationTable from '../Components/notification/NotificationTable';
+import FeedbackPage from '../Components/sessionpage/FeedbackPage';
 
 
 const AppRoutes = () => {
@@ -123,7 +124,7 @@ const PaymentModalWrapper: React.FC = () => {
         <Route path="/create/:id" element={<SessionCreatePage />} />
         <Route path="/location" element={<LocationCreate onSubmit={handleLocationSubmit} />} />
         <Route path="/studentdetails/:id" element={<StudentDetails />} />
-        
+        <Route path='/feedback' element={<FeedbackPage />} />
 
         {/* Notifications */}
         {/* <Route path="/notification" element={<Notifications userId={userId} />} /> */}
