@@ -297,9 +297,13 @@ const SessionManagePage: React.FC = () => {
     return matchesSearchTerm;
   });
 
+  console.log("Filtered Sessions:", filteredSessions); // Debugging: Log filtered sessions
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentSessions = filteredSessions.slice(indexOfFirstItem, indexOfLastItem);
+  console.log("Current Sessions:", currentSessions); // Debugging: Log current sessions
+
   const totalPages = Math.ceil(filteredSessions.length / itemsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -308,6 +312,7 @@ const SessionManagePage: React.FC = () => {
     try {
       setLoading(true);
       const response = await getAllSession(userId);
+      console.log("API Response:", response); // Debugging: Log the API response
       if (response.data) {
         const transformedSessions = response.data.map((item: any) => ({
           sessionNo: item.id,
@@ -385,50 +390,58 @@ const SessionManagePage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {currentSessions.map((session, index) => (
-              <tr key={index} className="odd:bg-white even:bg-gray-100">
-                <td className="border border-gray-400 p-2">{index + 1}</td>
-                <td className="border border-gray-400 p-2">{session.class}</td>
-                <td className="border border-gray-400 p-2">{session.timeline}</td>
-                <td className="border border-gray-400 p-2">{session.timing}</td>
-                <td className="border border-gray-400 p-2">{session.days}</td>
-                <td className="border border-gray-400 p-2">{session.coaches}</td>
-                <td className="border border-gray-400 p-2">{session.location}</td>
-                <td className="border border-gray-400 p-2">
-                  <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
-                    {filterOption === 'past' ? (
-                      <button
-                        onClick={() => alert(`Notification for session: ${session.sessionNo}`)}
-                        className="bg-gray-300 px-3 py-1 rounded-md text-sm"
-                      >
-                        🔔 Notify
-                      </button>
-                    ) : (
-                      <>
+            {currentSessions.length > 0 ? (
+              currentSessions.map((session, index) => (
+                <tr key={index} className="odd:bg-white even:bg-gray-100">
+                  <td className="border border-gray-400 p-2">{index + 1}</td>
+                  <td className="border border-gray-400 p-2">{session.class}</td>
+                  <td className="border border-gray-400 p-2">{session.timeline}</td>
+                  <td className="border border-gray-400 p-2">{session.timing}</td>
+                  <td className="border border-gray-400 p-2">{session.days}</td>
+                  <td className="border border-gray-400 p-2">{session.coaches}</td>
+                  <td className="border border-gray-400 p-2">{session.location}</td>
+                  <td className="border border-gray-400 p-2">
+                    <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
+                      {filterOption === 'past' ? (
                         <button
-                          onClick={() => handleEdit(session.sessionNo)}
-                          className="bg-yellow-400 px-3 py-1 rounded-md text-sm"
-                        >
-                          ✏️ Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(session.sessionNo)}
-                          className="bg-red-600 text-white px-3 py-1 rounded-md text-sm"
-                        >
-                          🗑️ Delete
-                        </button>
-                        <button
-                          onClick={() => handleManageParticipants(session.sessionNo)}
+                          onClick={() => alert(`Notification for session: ${session.sessionNo}`)}
                           className="bg-gray-300 px-3 py-1 rounded-md text-sm"
                         >
-                          👥 Manage
+                          🔔 Notify
                         </button>
-                      </>
-                    )}
-                  </div>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleEdit(session.sessionNo)}
+                            className="bg-yellow-400 px-3 py-1 rounded-md text-sm"
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(session.sessionNo)}
+                            className="bg-red-600 text-white px-3 py-1 rounded-md text-sm"
+                          >
+                            🗑️ Delete
+                          </button>
+                          <button
+                            onClick={() => handleManageParticipants(session.sessionNo)}
+                            className="bg-gray-300 px-3 py-1 rounded-md text-sm"
+                          >
+                            👥 Manage
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={8} className="text-center py-4">
+                  No sessions found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
