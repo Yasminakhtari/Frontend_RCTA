@@ -13,15 +13,16 @@ const FeedbackPage: React.FC = () => {
     setRating(selectedRating);
   };
 
-  const fetchFeedback = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
     try {
+      e.preventDefault();
       setLoading(true);
 
       // Pass feedback details as required by saveFeedback
       const feedbackData = { name, description, rating };
       const data = await saveFeedback(feedbackData);
 
-      console.log(data.data);
+      console.log(data.data,"djn");
     //  setFeedback(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
       console.error('Failed to fetch Feedback:', error);
@@ -30,21 +31,21 @@ const FeedbackPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchFeedback();
-  }, []);
+  // useEffect(() => {
+  //   fetchFeedback();
+  // }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    alert(name+" "+description+" "+rating )
-    e.preventDefault();
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   alert(name+" "+description+" "+rating )
+  //   e.preventDefault();
     
-    console.log('Feedback Submitted:', { name, description, rating });
+  //   console.log('Feedback Submitted:', { name, description, rating });
 
-    // Show alert message
-    window.alert('Thank you for your feedback!');
+  //   // Show alert message
+  //   window.alert('Thank you for your feedback!');
 
-    setSubmitted(true);
-  };
+  //   setSubmitted(true);
+  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-blue-200 p-4">
