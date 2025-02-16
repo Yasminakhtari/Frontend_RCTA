@@ -18,7 +18,7 @@ const FeedbackPage: React.FC = () => {
       console.log(data.data);
       setFeedback(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
-      console.error('Failed to fetch locations:', error);
+      console.error('Failed to fetch Feedback:', error);
     } finally {
       setLoading(false);
     }
