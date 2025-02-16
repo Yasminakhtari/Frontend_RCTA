@@ -34,7 +34,7 @@ function App() {
    })
 
   return (
-    <div className='w-[100%] defaulttheme={dark} overflow-hidden'>
+    <div className='w-[100%] defaulttheme={dark}'>
     <Provider store={Store}>
     <UserProvider>
     <CartProvider>
