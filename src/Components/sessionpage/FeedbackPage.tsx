@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getAllFeedback } from '../../Services/FeedbackService';
 
 const FeedbackPage: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -10,6 +11,23 @@ const FeedbackPage: React.FC = () => {
   const handleStarClick = (selectedRating: number) => {
     setRating(selectedRating);
   };
+  const fetchFeedback = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllFeedback();
+      console.log(data.data);
+      setFeedback(Array.isArray(data.data) ? data.data : []);
+    } catch (error) {
+      console.error('Failed to fetch locations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+      fetchFeedback();
+    }, []);
+  
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -87,3 +105,11 @@ const FeedbackPage: React.FC = () => {
 };
 
 export default FeedbackPage;
+
+function setLoading(arg0: boolean) {
+  throw new Error('Function not implemented.');
+}
+function setFeedback(arg0: any) {
+  throw new Error('Function not implemented.');
+}
+
