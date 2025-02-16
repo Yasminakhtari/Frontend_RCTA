@@ -22,7 +22,7 @@ const FeedbackPage: React.FC = () => {
       const data = await saveFeedback(feedbackData);
 
       console.log(data.data);
-      setFeedback(Array.isArray(data.data) ? data.data : []);
+    //  setFeedback(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
       console.error('Failed to fetch Feedback:', error);
     } finally {
@@ -35,6 +35,7 @@ const FeedbackPage: React.FC = () => {
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
+    alert(name+" "+description+" "+rating )
     e.preventDefault();
     
     console.log('Feedback Submitted:', { name, description, rating });
