@@ -346,8 +346,7 @@ const ServiceTable: React.FC = () => {
 
 
   return (
-    <div className="
-    ">
+    <div className="w-full">
       <h1 className="text-2xl font-bold">All Services</h1>
 
       {/* Add Service Button */}
@@ -464,7 +463,7 @@ const ServiceTable: React.FC = () => {
       </div>
 
       {/* Services Table */}
-      <table className="w-full border-collapse border border-gray-300">
+      <table className="w-full border-collapse border border-gray-300 overflow-x-scroll">
         <thead>
           <tr className="bg-gray-200">
             <th className="border border-gray-300 p-2">Action</th>
