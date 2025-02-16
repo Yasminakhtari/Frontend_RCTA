@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { getAllFeedback } from '../../Services/FeedbackService';
+import { getAllFeedback, saveFeedback } from '../../Services/FeedbackService';
 
 const FeedbackPage: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [rating, setRating] = useState<number>(0);
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [feedback, setFeedback] = useState<any[]>([]);
 
-  // Handle star click
   const handleStarClick = (selectedRating: number) => {
     setRating(selectedRating);
   };
+
   const fetchFeedback = async () => {
     try {
       setLoading(true);
-      const data = await getAllFeedback();
+
+      // Pass feedback details as required by saveFeedback
+      const feedbackData = { name, description, rating };
+      const data = await saveFeedback(feedbackData);
+
       console.log(data.data);
       setFeedback(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
@@ -25,14 +31,17 @@ const FeedbackPage: React.FC = () => {
   };
 
   useEffect(() => {
-      fetchFeedback();
-    }, []);
-  
+    fetchFeedback();
+  }, []);
 
-  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
     console.log('Feedback Submitted:', { name, description, rating });
+
+    // Show alert message
+    window.alert('Thank you for your feedback!');
+
     setSubmitted(true);
   };
 
@@ -80,9 +89,7 @@ const FeedbackPage: React.FC = () => {
                     key={star}
                     type="button"
                     onClick={() => handleStarClick(star)}
-                    className={`text-2xl ${
-                      star <= rating ? 'text-yellow-400' : 'text-gray-300'
-                    } focus:outline-none`}
+                    className={`text-2xl ${star <= rating ? 'text-yellow-400' : 'text-gray-300'} focus:outline-none`}
                   >
                     ★
                   </button>
@@ -105,11 +112,3 @@ const FeedbackPage: React.FC = () => {
 };
 
 export default FeedbackPage;
-
-function setLoading(arg0: boolean) {
-  throw new Error('Function not implemented.');
-}
-function setFeedback(arg0: any) {
-  throw new Error('Function not implemented.');
-}
-
