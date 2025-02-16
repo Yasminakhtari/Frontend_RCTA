@@ -120,6 +120,7 @@ const PaymentModalWrapper: React.FC = () => {
         <Route path="/add-service/:id" element={<AddService />} />
 
         {/* Sessions */}
+        <Route path="/manage" element={<SessionManagePage />} />
         <Route path="/create" element={<SessionCreatePage />} />
         <Route path="/create/:id" element={<SessionCreatePage />} />
         <Route path="/location" element={<LocationCreate onSubmit={handleLocationSubmit} />} />
