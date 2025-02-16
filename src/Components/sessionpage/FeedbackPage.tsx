@@ -23,6 +23,8 @@ const FeedbackPage: React.FC = () => {
       const data = await saveFeedback(feedbackData);
 
       alert(data.message);
+      console.log(data);
+      
     //  setFeedback(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
       console.error('Failed to fetch Feedback:', error);
