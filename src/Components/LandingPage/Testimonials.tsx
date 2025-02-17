@@ -20,8 +20,15 @@ const Testimonials = () => {
   };
 
   useEffect(()=>{
-    const res = getAllFeedback();
-    console.log(res);
+    async function getData(){
+      try {
+        const res = await getAllFeedback();
+        console.log(res)
+      } catch (error) {
+        console.log(error);
+      }
+    
+    }
   })
   return (
     <div className="mt-20 pb-5">
