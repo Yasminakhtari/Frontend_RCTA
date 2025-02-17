@@ -28,7 +28,7 @@ const Testimonials = () => {
         console.log(error);
       }
     
-    }
+    }getData();
   })
   return (
     <div className="mt-20 pb-5">
