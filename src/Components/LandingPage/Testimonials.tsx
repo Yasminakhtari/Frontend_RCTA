@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Avatar, Button, Rating } from "@mantine/core";
 import { testimonials } from "../../Data/Data";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from 'react-router-dom';
+import { getAllFeedback } from '../../Services/FeedbackService';
 
 const Testimonials = () => {
   const settings = {
@@ -18,6 +19,10 @@ const Testimonials = () => {
     arrows: true,
   };
 
+  useEffect(()=>{
+    const res = getAllFeedback();
+    console.log(res);
+  })
   return (
     <div className="mt-20 pb-5">
       <div className="text-4xl text-center font-semibold text-mine-shaft-100 mb-3">
