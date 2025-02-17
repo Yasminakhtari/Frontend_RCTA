@@ -482,7 +482,7 @@ interface Session {
   location: string;
   updatedOn: string;
 }
-const userId: number = 1;
+const userId: number = 0;
 const itemsPerPage = 5; // Number of sessions per page
 const initialSessions: Session[] = [];
 
