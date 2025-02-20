@@ -375,7 +375,7 @@ const NotificationsPage = () => {
               </tbody>
             </Table>
 
-            {players.length > 0 && (
+            {/* {players.length > 0 && (
               <>
                 <h3 className="text-lg font-semibold mt-4 mb-2">Players in Session</h3>
                 <Table className="custom-table">
@@ -397,7 +397,7 @@ const NotificationsPage = () => {
                   </tbody>
                 </Table>
               </>
-            )}
+            )} */}
 
             <div className="flex justify-end mt-4">
               <Button color="blue" onClick={() => setIsTableModalOpen(false)}>
