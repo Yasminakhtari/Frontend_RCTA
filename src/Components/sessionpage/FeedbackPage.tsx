@@ -1,13 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { getAllFeedback, saveFeedback } from '../../Services/FeedbackService';
+import { useSelector } from 'react-redux';
+import { Avatar, Text } from '@mantine/core';
+import { motion, AnimatePresence } from 'framer-motion';
+import Confetti from 'react-confetti';
 
 const FeedbackPage: React.FC = () => {
-  const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [rating, setRating] = useState<number>(0);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [feedback, setFeedback] = useState<any[]>([]);
+  const [reaction, setReaction] = useState<string>('');
+  const [showConfetti, setShowConfetti] = useState<boolean>(false);
+  const user = useSelector((state: any) => state.user);
+
+  const reactions = [
+    '😭', // 1 star
+    '😞', // 2 stars
+    '😐', // 3 stars
+    '😊', // 4 stars
+    '😍'  // 5 stars
+  ];
+
+  useEffect(() => {
+    setReaction(reactions[rating - 1] || '');
+  }, [rating]);
 
   const handleStarClick = (selectedRating: number) => {
     setRating(selectedRating);
@@ -17,100 +34,124 @@ const FeedbackPage: React.FC = () => {
     try {
       e.preventDefault();
       setLoading(true);
-
-      // Pass feedback details as required by saveFeedback
-      const feedbackData = { name, message:description, rating };
-      const data = await saveFeedback(feedbackData);
-
-      alert(data.message);
-      console.log(data);
-      
-    //  setFeedback(Array.isArray(data.data) ? data.data : []);
+      const feedbackData = { name: user?.data?.userDetails?.firstName, message: description, rating };
+      await saveFeedback(feedbackData);
+      setSubmitted(true);
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000); // Confetti lasts for 5 seconds
     } catch (error) {
-      console.error('Failed to fetch Feedback:', error);
+      console.error('Failed to submit feedback:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  // useEffect(() => {
-  //   fetchFeedback();
-  // }, []);
-
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   alert(name+" "+description+" "+rating )
-  //   e.preventDefault();
-    
-  //   console.log('Feedback Submitted:', { name, description, rating });
-
-  //   // Show alert message
-  //   window.alert('Thank you for your feedback!');
-
-  //   setSubmitted(true);
-  // };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-blue-200 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Feedback Form</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-blue-100 p-4 relative overflow-hidden">
+      {showConfetti && (
+        <Confetti
+          recycle={false}
+          numberOfPieces={400}
+          onConfettiComplete={() => setShowConfetti(false)}
+          className="w-full h-full"
+        />
+      )}
+
+      <motion.div 
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border-8 border-transparent 
+          hover:border-gradient-to-r from-blue-200 to-purple-200 transition-all duration-300"
+      >
         {submitted ? (
-          <div className="text-center">
-            <p className="text-green-600 font-semibold">Thank you for your feedback!</p>
+          <div className="text-center space-y-6">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="text-6xl"
+            >
+              🎉
+            </motion.div>
+            <Text className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Thank You! 🎾
+            </Text>
+            <p className="text-gray-600 mt-2">
+              Your feedback helps us improve!
+            </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                required
+            <div className="mb-8 text-center">
+              <Avatar 
+                src={user?.data?.userDetails?.profile} 
+                size="xl" 
+                className="mx-auto mb-4 border-4 border-blue-200"
               />
+              <Text className="text-2xl font-bold text-gray-800 mb-2">
+                👋 Hey {user?.data?.userDetails?.firstName}!
+              </Text>
+              <Text className="text-gray-600">
+                How was your experience with us?
+              </Text>
             </div>
-            <div className="mb-4">
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                rows={4}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Rating</label>
-              <div className="flex space-x-2 mt-1">
+
+            <div className="mb-8">
+              <AnimatePresence mode='wait'>
+                <motion.div
+                  key={reaction}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="text-center text-6xl mb-4"
+                >
+                  {reaction}
+                </motion.div>
+              </AnimatePresence>
+              
+              <div className="flex justify-center space-x-2">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button
+                  <motion.button
                     key={star}
                     type="button"
                     onClick={() => handleStarClick(star)}
-                    className={`text-2xl ${star <= rating ? 'text-yellow-400' : 'text-gray-300'} focus:outline-none`}
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                    className={`text-4xl ${star <= rating ? 'text-yellow-400' : 'text-gray-200'}`}
+
                   >
-                    ★
-                  </button>
+                    ⭐
+                  </motion.button>
                 ))}
               </div>
             </div>
-            <div className="text-center">
-              <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Submit Feedback
-              </button>
+
+            <div className="mb-8">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Tell us more (optional)
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-blue-500 
+                  focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                rows={4}
+                placeholder="What did you love? What can we improve?"
+              />
             </div>
+
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              disabled={loading || rating === 0}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg
+                font-semibold text-lg hover:shadow-lg transition-all disabled:opacity-50"
+            >
+              {loading ? 'Sending...' : 'Submit Feedback ✨'}
+            </motion.button>
           </form>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };
