@@ -163,19 +163,19 @@ const Header = () => {
         {isMenuOpen ? <IconX className='h-7 w-7' /> : <IconMenu2 className='h-7 w-7' />}
       </div>
 
-      {/* Cart Icon */}
-      <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer' onClick={() => navigate('/cart')}>
-        <Indicator
-          color='blueRibbon.6'
-          offset={5}
-          size={12}
-          withBorder
-          label={cartItemCount > 0 ? cartItemCount : undefined}
-        >
-          <IconShoppingCart stroke={1.5} className="h-5 w-5 sm:h-6 sm:w-6" />
-        </Indicator>
+        {/* Cart Icon */}
+        <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer' onClick={() => navigate('/cart')}>
+          <Indicator
+            color='blueRibbon.6'
+            offset={5}
+            size={12}
+            withBorder
+            label={cartItemCount > 0 ? cartItemCount : undefined}
+          >
+            <IconShoppingCart stroke={1.5} className="h-5 w-5 sm:h-6 sm:w-6" />
+          </Indicator>
+        </div>
       </div>
-    </div>
 
     {/* Mobile Menu */}
     {isMenuOpen && (
