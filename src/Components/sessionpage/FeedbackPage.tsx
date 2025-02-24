@@ -119,7 +119,7 @@ const FeedbackPage: React.FC = () => {
                     className={`text-4xl ${star <= rating ? 'text-yellow-400' : 'text-gray-200'}`}
 
                   >
-                    ⭐
+                    ★
                   </motion.button>
                 ))}
               </div>
