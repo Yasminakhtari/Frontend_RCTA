@@ -191,6 +191,7 @@
 
 // export default Header;
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { IconAdCircle, IconBell, IconMenu2, IconX, IconShoppingCart } from '@tabler/icons-react';
 import { Avatar, Button, Indicator, Text } from '@mantine/core';
@@ -214,6 +215,7 @@ const Header = () => {
   const userId = user?.data?.userDetails?.id;
 
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (userId) fetchNotification();
@@ -221,8 +223,14 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Close mobile menu if clicked outside
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
+      }
+
+      // Close notification dropdown if clicked outside
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotification(false);
       }
     };
 
@@ -237,7 +245,6 @@ const Header = () => {
       const response = await getNotificationsForUser(userId);
       console.log(response);
       setNotification(response ?? null); // ⭐ Changed to use response directly
-      // setNotification(response?.message)
     } catch (error) {
       console.error('Error fetching notification:', error);
       setNotification(null);
@@ -282,7 +289,7 @@ const Header = () => {
         )}
 
         {/* Notification Bell - Visible on all screens */}
-        <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer relative'>
+        <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer relative' ref={notificationRef}>
           <Indicator
             color="red"
             size={16}
