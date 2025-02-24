@@ -164,7 +164,7 @@ const Header = () => {
       </div>
 
       {/* Cart Icon */}
-      <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer'>
+      <div className='bg-mine-shaft-900 p-1.5 rounded-full cursor-pointer' onClick={() => navigate('/cart')}>
         <Indicator
           color='blueRibbon.6'
           offset={5}
