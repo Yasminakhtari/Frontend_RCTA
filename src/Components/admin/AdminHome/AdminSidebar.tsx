@@ -291,6 +291,7 @@
 // };
 
 // export default AdminSidebar;
+
 import React, { useState, useEffect, useRef } from 'react';
 import {
   AccountCircleOutlined,
@@ -315,27 +316,35 @@ interface AdminSidebarProps {
 }
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false); // Default to closed on page refresh
-  const sidebarRef = useRef<HTMLDivElement>(null); // Ref for the sidebar container
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    const savedState = localStorage.getItem('sidebarOpen');
+    return savedState ? JSON.parse(savedState) : true;
+  });
 
-  // Handle clicks outside the sidebar
+  const sidebarRef = useRef<HTMLDivElement>(null); // Ref for sidebar
+
+  // Save the sidebar state to localStorage when toggled
+  const toggleSidebar = () => {
+    const newState = !sidebarOpen;
+    setSidebarOpen(newState);
+    localStorage.setItem('sidebarOpen', JSON.stringify(newState)); // Save state to localStorage
+  };
+
+  // Handle clicks outside the sidebar without stopping other events
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        onClose(); // Close the sidebar if the click is outside
+        setSidebarOpen(false); // Close sidebar temporarily
       }
     };
 
-    // Attach the event listener
     document.addEventListener('mousedown', handleClickOutside);
-
-    // Cleanup the event listener on unmount
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [onClose]);
+  }, []);
 
-  // Array of menu sections and their links
+  // Menu items
   const menuItems = [
     {
       section: 'Main',
@@ -380,14 +389,14 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
   ];
 
   const handleContainerClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent clicks inside the sidebar from closing it
+    e.stopPropagation(); // Prevent sidebar closing on its own internal click
   };
 
   return (
     <div className="flex h-screen">
       {/* Sidebar Container */}
       <div
-        ref={sidebarRef} // Attach the ref to the sidebar container
+        ref={sidebarRef}
         className={`bg-gray-900 text-gray-200 flex flex-col transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'w-64' : 'w-16'
         }`}
@@ -396,16 +405,16 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-4">
           <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={toggleSidebar}
             className="text-red-700 text-3xl focus:outline-none md:hidden"
             aria-label="Toggle Sidebar"
           >
             {sidebarOpen ? '×' : '☰'}
           </button>
-          
-          {/* Added close button for the parent component */}
+
+          {/* Close Button for Mobile View */}
           <button
-            onClick={onClose} // Close sidebar when this button is clicked
+            onClick={onClose}
             className="text-white md:hidden"
           >
             ×
@@ -422,7 +431,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
                   key={linkIndex}
                   to={link.to}
                   className="block p-2 hover:bg-blue-500 rounded-md"
-                  onClick={onClose} // Close sidebar when a link is clicked
+                  onClick={onClose} // Close sidebar on link click
                 >
                   <div className="flex items-center">
                     <link.icon className="mr-2 text-xl" />
