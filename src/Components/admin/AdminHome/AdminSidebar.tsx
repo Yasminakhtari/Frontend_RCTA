@@ -330,11 +330,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
     localStorage.setItem('sidebarOpen', JSON.stringify(newState)); // Save state to localStorage
   };
 
-  // Handle clicks outside the sidebar without stopping other events
+  // Handle clicks outside the sidebar without stopping button actions
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
         setSidebarOpen(false); // Close sidebar temporarily
+        onClose(); // Close action from props
       }
     };
 
@@ -342,7 +343,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [onClose]);
 
   // Menu items
   const menuItems = [
@@ -388,8 +389,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
     },
   ];
 
+  // Prevent sidebar from closing when clicking inside
   const handleContainerClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent sidebar closing on its own internal click
+    e.stopPropagation();
   };
 
   return (
