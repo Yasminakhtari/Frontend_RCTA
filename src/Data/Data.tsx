@@ -43,7 +43,7 @@ const footerLinks = [
     },
     {
         title: "Support",
-        links: [{val:"Contact Us", url:'contact-us'}, {val:"FAQs", url:''},{ val:"Health & Safety", url:''}, {val:"Terms & Conditions", url:''}]
+        links: [{val:"Contact Us", url:'contact-us'}, {val:"FAQs", url:'/faqpage'},{ val:"Health & Safety", url:''}, {val:"Terms & Conditions", url:''}]
     }
 ];
 

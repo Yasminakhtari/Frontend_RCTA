@@ -46,6 +46,7 @@ import NotificationsPage from '../Components/notification/NotificationsPage';
 import OrderConfirmationPage from '../Components/productpage/OrderConfirmationPage';
 import NotificationTable from '../Components/notification/NotificationTable';
 import FeedbackPage from '../Components/sessionpage/FeedbackPage';
+import FAQsPage from '../Components/Faqpage/FAQsPage';
 
 
 const AppRoutes = () => {
@@ -95,6 +96,7 @@ const PaymentModalWrapper: React.FC = () => {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/testimonial" element={<AllTestiPage />} />
         <Route path="/locationcard" element ={<LocationCardPage />} />
+        <Route path='/faqpage' element ={<FAQsPage />} />
 
         {/* User and Authentication */}
         <Route path="/signup" element={user ? <Navigate to="/" /> : <SignUpPage />} />
