@@ -645,7 +645,7 @@ const SessionManagePage: React.FC = () => {
               onChange={(e) => setMessage(e.target.value)}
             />
             <div className="mb-4">
-              <label className="bg-blue-600 block text-sm font-medium mb-1">Attach File</label>
+              <label className="block text-sm font-medium mb-1">Attach File</label>
               <input
                 type="file"
                 onChange={handleFileChange}
