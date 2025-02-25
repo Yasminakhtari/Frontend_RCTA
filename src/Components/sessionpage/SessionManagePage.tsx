@@ -341,6 +341,7 @@ const SessionManagePage: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
   const [message, setMessage] = useState<string>('');
+  const [file, setFile] = useState<File | null>(null); // State for file attachment
   const navigate = useNavigate();
 
   const handleEdit = (sessionNo: number) => {
@@ -401,9 +402,12 @@ const SessionManagePage: React.FC = () => {
     return matchesSearchTerm;
   });
 
+  console.log("Filtered Sessions:", filteredSessions); // Debugging: Log filtered sessions
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentSessions = filteredSessions.slice(indexOfFirstItem, indexOfLastItem);
+  console.log("Current Sessions:", currentSessions); // Debugging: Log current sessions
 
   const totalPages = Math.ceil(filteredSessions.length / itemsPerPage);
 
@@ -440,10 +444,18 @@ const SessionManagePage: React.FC = () => {
     fetchSession();
   }, []);
 
-  const handleNotify = async (sessionId: number, fromDate: string, toDate: string) => {
+  const handleNotify = async (sessionId: number, fromDate: string, toDate: string, file: File | null) => {
     setNotifyLoading(true); // Start loading
     try {
-      const response = await saveNotification(sessionId, fromDate, toDate);
+      const formData = new FormData();
+      formData.append('sessionId', sessionId.toString());
+      formData.append('fromDate', fromDate);
+      formData.append('toDate', toDate);
+      if (file) {
+        formData.append('file', file); // Append the file to the form data
+      }
+
+      const response = await saveNotification(sessionId, fromDate, toDate); 
       console.log(response);
       if (response.status === 'SUCCESS') {
         alert('Notifications sent successfully!');
@@ -465,13 +477,25 @@ const SessionManagePage: React.FC = () => {
     setIsPopupOpen(false);
     setSelectedSession(null);
     setMessage('');
+    setFile(null); // Clear the file when closing the popup
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]); // Store the selected file
+    }
   };
 
   const handleSend = async () => {
     if (selectedSession !== null && message.trim()) {
       try {
         // Perform the notification sending logic here
-        await handleNotify(selectedSession, sessions.find(s => s.sessionNo === selectedSession)?.fromDate || '', sessions.find(s => s.sessionNo === selectedSession)?.toDate || '');
+        await handleNotify(
+          selectedSession,
+          sessions.find(s => s.sessionNo === selectedSession)?.fromDate || '',
+          sessions.find(s => s.sessionNo === selectedSession)?.toDate || '',
+          file // Pass the file to the notification handler
+        );
         alert(`Message sent for session ${selectedSession}: ${message}`);
         closePopup();
       } catch (error) {
@@ -553,7 +577,7 @@ const SessionManagePage: React.FC = () => {
                           onClick={() => openPopup(session.sessionNo)}
                           className="bg-gray-300 px-3 py-1 rounded-md text-sm"
                         >
-                          <span className="text-green-500">🔔</span> Send for review
+                          <span className="text-green-700">🔔</span> Send Message
                         </button>
                       ) : (
                         <>
@@ -613,13 +637,21 @@ const SessionManagePage: React.FC = () => {
       {isPopupOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md">
-            <h2 className="text-lg font-semibold mb-4">Send for Review</h2>
+            <h2 className="text-lg font-semibold mb-4">Send Message</h2>
             <textarea
               className="w-full p-2 border rounded mb-4"
               placeholder="Enter your message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Attach File</label>
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="w-full p-2 border rounded"
+              />
+            </div>
             <div className="flex justify-end gap-3">
               <button
                 onClick={closePopup}
