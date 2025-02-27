@@ -2,7 +2,12 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { base_url } from "../../../apiConfig";
+import "react-responsive-modal/styles.css";
+//import { FaEdit, FaEye, FaEyeSlash, FaTrash,FaDownload } from "react-icons/fa";
 
+// import { FaEdit } from "react-icons/fa";
+// import { FaEye, FaEyeSlash } from "react-icons/fa";
+// import { FaTrash } from "react-icons/fa";
 
 interface Service {
   id: number;
@@ -14,15 +19,7 @@ interface Service {
   price: number;
   status: string;
   visible: boolean;
-
 }
-
-const initialServices: Service[] = [
-  { id: 1, group: "About-Us", category: "", subCategory: "", name: "About Us Section", duration: 10, price: 0, status: "Active", visible: true },
-  { id: 2, group: "Contact-Us", category: "", subCategory: "", name: "Contact Page", duration: 15, price: 0, status: "Inactive", visible: true },
-  { id: 3, group: "Gallery", category: "", subCategory: "", name: "Image Gallery", duration: 30, price: 0, status: "Inactive", visible: false },
-  { id: 4, group: "Products", category: "", subCategory: "", name: "Product Detail Page", duration: 45, price: 150, status: "Active", visible: true },
-];
 
 interface TennisData {
   id: number;
@@ -36,18 +33,17 @@ interface TennisData {
   price: number | null;
   status: string | null;
   discount: number;
-  disbegindate: string | null; // Using string to represent ISO date format
-  disenddate: string | null;   // Using string to represent ISO date format
+  disbegindate: string | null;
+  disenddate: string | null;
   disquantity: number | null;
   phoneNumber: string | null;
 }
-
 
 const ITEMS_PER_PAGE = 10;
 
 const ServiceTable: React.FC = () => {
   const navigate = useNavigate();
-  const [services, setServices] = useState<Service[]>(initialServices);
+  const [services, setServices] = useState<Service[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [groupFilter, setGroupFilter] = useState<string>("All");
   const [categoryFilter, setCategoryFilter] = useState<string>("All");
@@ -57,16 +53,18 @@ const ServiceTable: React.FC = () => {
   const [groups, setGroups] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [subCategories, setSubCategories] = useState<string[]>([]);
-  const [responseData, setResponseData] = useState<[string, string[]][]>([]); // Holds the full API response
-
-  const [data, setData] = useState([]);
-  const [group, setGroup] = useState('');
-  const [category, setCategory] = useState('');
-  const [subcategory, setSubcategory] = useState('');
+  const [responseData, setResponseData] = useState<[string, string[]][]>([]);
   const [tableData, setTableData] = useState<TennisData[]>([]);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<TennisData | null>(null);
+
+
+
+  let tokenString = localStorage.getItem("token");
+  let token = tokenString ? JSON.parse(tokenString) : null;
+
   const filteredServices = tableData.filter((service) => {
     const searchTextLower = searchText.toLowerCase();
-
     const matchesSearch =
       (service.name && service.name.toLowerCase().includes(searchTextLower)) ||
       (service.groups && service.groups.toLowerCase().includes(searchTextLower)) ||
@@ -81,28 +79,10 @@ const ServiceTable: React.FC = () => {
     return matchesSearch && matchesGroup && matchesCategory && matchesSubCategory && matchesStatus;
   });
 
-
-
-  // const categories = groupFilter !== "All" ? groupCategoryMap[groupFilter]?.categories || [] : [];
-  // const subCategories = categoryFilter !== "All" ? groupCategoryMap[groupFilter]?.subCategories[categoryFilter] || [] : [];
-
-  // const totalPages = Math.ceil(filteredServices.length / ITEMS_PER_PAGE);
-  // const paginatedServices = filteredServices.slice(
-  //   (currentPage - 1) * ITEMS_PER_PAGE,
-  //   currentPage * ITEMS_PER_PAGE
-  // );
-  let tokenString = localStorage.getItem("token");
-  let token = tokenString ? JSON.parse(tokenString) : null;
-  console.log("token===>", token);
-
-
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedTableData = filteredServices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredServices.length / ITEMS_PER_PAGE);
 
-  const totalPages = Math.ceil(tableData.length / ITEMS_PER_PAGE);
-
-  ////////////////////////////////////////
-  //For Filter Data//
   useEffect(() => {
     const fetchFilteredData = async () => {
       try {
@@ -117,193 +97,120 @@ const ServiceTable: React.FC = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-
         });
-        console.log(response.data)
-        setTableData(response.data);//set The table data
-      }
-      catch (error) {
+        setTableData(response.data);
+      } catch (error) {
         console.error("Error Fetching Filtered Tennis Data:", error);
       }
-
     };
     fetchFilteredData();
-  }, [groupFilter, categoryFilter, subCategoryFilter, statusFilter])// Re-fetch when filters change
+  }, [groupFilter, categoryFilter, subCategoryFilter, statusFilter]);
 
   useEffect(() => {
-    setCurrentPage(1); // Reset to first page when search text or any filter changes
+    setCurrentPage(1);
   }, [searchText, groupFilter, categoryFilter, subCategoryFilter, statusFilter]);
 
-
-  //////////////////////////////////////
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await
-          axios.get(`${base_url}/v1/getAllTennis`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-        console.log(res)
-
+        const res = await axios.get(`${base_url}/v1/getAllTennis`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         if (res.data) {
-          setTableData(res.data); // Update the state with fetched data
-          // Extract unique groups from the data
-          const uniqueGroups = Array.from(
-            new Set(
-              res.data.map((item: { groups: string }) => item.groups?.toLowerCase())
-                .filter((group: any) => group)
-            )
-          ).map((group) =>
-            res.data.find((item: { groups: string }) => item.groups?.toLowerCase() === group)?.groups
-          );
-          setGroups(uniqueGroups); // Update the groups state
-          console.log(uniqueGroups)
+          setTableData(res.data);
+
+          const uniqueGroups = Array.from(new Set(res.data
+            .map((item: { groups: string }) => item.groups?.toLowerCase())
+            .filter((group: any) => group)
+          )).map((group) => res.data.find((item: { groups: string }) => item.groups?.toLowerCase() === group)?.groups);
+          setGroups(uniqueGroups);
         }
       } catch (error) {
         console.error("Error fetching tennis data:", error);
       }
     };
-
     if (token) {
-      fetchData(); // Call the async function
+      fetchData();
     }
   }, [token]);
 
-  // console.log(tableData)
-  ////////////////////////////////////
   useEffect(() => {
     const fetchFilteredStatusData = async () => {
       if (statusFilter !== "All") {
         try {
-          const res = await axios.get(
-            `${base_url}/v1/getAllByStatus`, {
+          const res = await axios.get(`${base_url}/v1/getAllByStatus`, {
             params: { status: statusFilter },
-            headers: { Authorization: `Bearer ${token}` }
-          }
-            // {
-            //   headers: {
-            //     Authorization: `Bearer ${token}`,
-            //     "Content-Type": "application/json",
-            //   },
-            // }
-          );
-
-          // if (res.data) {
-          //   setTableData(res.data); // Update the table data based on the API response
-          // }
-          setTableData(res.data)
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setTableData(res.data);
         } catch (error) {
           console.error("Error fetching status-based data:", error);
         }
-      }
-
-      else {
+      } else {
         setTableData(tableData);
       }
     };
-
     fetchFilteredStatusData();
   }, [statusFilter, token]);
 
-
-
-  // Function to toggle the status of the service
   const toggleStatus = async (id: number, status: string) => {
     try {
-      // If the status is 'Active', send 'Inactive' and vice versa
       const updatedStatus = status === 'Active' ? 'Inactive' : 'Active';
-
-      // Call the API to toggle the status
-      const response = await axios.post(
-        `${base_url}/v1/toggleStatus/${id}?status=${updatedStatus}`, // Assuming the backend API path
-        // { status: validStatus }, 
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // Handle success
-      console.log('Status updated:', response.data);
-      alert("Service status updated to" + " " + response.data.data.status)
-      // Optionally, update the status in the state to reflect the change immediately
-      // Update the status in the table data to reflect the change immediately
+      const response = await axios.post(`${base_url}/v1/toggleStatus/${id}?status=${updatedStatus}`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      alert("Service status updated to " + response.data.data.status);
       setTableData(prevData =>
         prevData.map(service =>
           service.id === id ? { ...service, status: response.data.data.status } : service
         )
       );
-
     } catch (error) {
-      // Handle error
       console.error('Error updating service status:', error);
     }
   };
-  // Get All Categories and sub categories data
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const token = JSON.parse(localStorage.getItem("token") || "null"); // Retrieve token
         const response = await axios.get(`${base_url}/v1/getAllCategoriesAndSubCategories`, {
-
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
-
-        console.log("okkkkkkkkkk getAllcs" + response.data);
-
         const data: [string, string[]][] = response.data;
-        setResponseData(data); // Save full response
-
-        // Extract categories from the response
+        setResponseData(data);
         const extractedCategories = data.map((item) => item[0]);
-        setCategories(["All", ...extractedCategories]); // Include "All" as default
+        setCategories(["All", ...extractedCategories]);
       } catch (error) {
         console.error("Error fetching categories and subcategories:", error);
       }
     };
-
     fetchData();
   }, [token]);
 
-  // Update Category when group change
-
   useEffect(() => {
     if (groupFilter === "All") {
-      // For "All" group filter, get all unique categories, excluding null
       setCategories([
         "All",
-        ...Array.from(
-          new Set(
-            tableData
-              .filter(item => item.category != null) // Exclude null categories
-              .map(item => item.category as string) // Assert category as string
-          )
-        )
+        ...Array.from(new Set(tableData.filter(item => item.category != null).map(item => item.category as string))),
       ]);
     } else {
-      // Filter categories based on selected group and exclude null categories
       const filteredCategories = tableData
         .filter((item) => item.groups === groupFilter)
-        .filter(item => item.category != null) // Exclude null categories
-        .map((item) => item.category as string); // Assert category as string
-
+        .filter(item => item.category != null)
+        .map((item) => item.category as string);
       setCategories(["All", ...Array.from(new Set(filteredCategories))]);
     }
-  }, [groupFilter, tableData]); // Re-run effect when groupFilter or tableData changes
+  }, [groupFilter, tableData]);
 
-
-
-
-  // Update subcategories when category changes
   useEffect(() => {
     if (categoryFilter !== "All") {
       const selectedCategory = responseData.find((item) => item[0] === categoryFilter);
@@ -313,10 +220,6 @@ const ServiceTable: React.FC = () => {
     }
   }, [categoryFilter, responseData]);
 
-
-  //////////////////////
-
-  //Delete Services
   const deleteServiceData = async (serviceId: number) => {
     try {
       const response = await axios.delete(`${base_url}/v1/deleteTennis/${serviceId}`, {
@@ -325,56 +228,61 @@ const ServiceTable: React.FC = () => {
           "Content-Type": "application/json",
         },
       });
-
       if (response.status === 200) {
-        // Remove the deleted service from the table data
-        setTableData((prevData) =>
-          prevData.filter((service) => service.id !== serviceId)
-        );
-
-        // Show a success notification
+        setTableData((prevData) => prevData.filter((service) => service.id !== serviceId));
         alert("Service deleted successfully!");
       }
     } catch (error) {
-      // Handle any errors during the delete request
       console.error("Error deleting service:", error);
       alert("Failed to delete the service. Please try again.");
     }
   };
 
+  const openDeleteModal = (service: TennisData) => {
+    setSelectedService(service);
+    setDeleteModalOpen(true);
+  };
 
+  const closeDeleteModal = () => {
+    setSelectedService(null);
+    setDeleteModalOpen(false);
+  };
 
+  const confirmDelete = async () => {
+    if (selectedService) {
+      await deleteServiceData(selectedService.id);
+      closeDeleteModal();
+    }
+  };
 
   return (
-    <div className="">
-      <h1 className="text-2xl font-bold">All Services</h1>
+    <div className="p-4 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">All Services</h1>
 
-      {/* Add Service Button */}
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-6">
         <button
           onClick={() => navigate("/addservice")}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md transition-all duration-300 flex items-center"
         >
-          Add Service
+          <span className="mr-2">+</span> Add Service
         </button>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center justify-between mb-4 ">
-        <div className="flex gap-4 items-center">
+      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Search:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Search:</label>
             <input
               type="text"
-              placeholder="Search in records..."
+              placeholder="Search..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              className="border border-gray-300 p-2 rounded w-60"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Group:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Group:</label>
             <select
               value={groupFilter}
               onChange={(e) => {
@@ -382,14 +290,9 @@ const ServiceTable: React.FC = () => {
                 setCategoryFilter("All");
                 setSubCategoryFilter("All");
               }}
-              className="border border-gray-300 p-2 rounded w-40"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="All">All</option>
-              {/* {Object.keys(groupCategoryMap).map((group) => (
-                  <option key={group} value={group}>
-                    {group}
-                  </option>
-                ))} */}
               {groups.map((group, index) => (
                 <option key={index} value={group}>
                   {group}
@@ -399,22 +302,17 @@ const ServiceTable: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Category:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Category:</label>
             <select
               value={categoryFilter}
               onChange={(e) => {
                 setCategoryFilter(e.target.value);
                 setSubCategoryFilter("All");
               }}
-              className="border border-gray-300 p-2 rounded w-40"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={categories.length === 0}
             >
               <option value="All">All</option>
-              {/* {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))} */}
               {categories.map((category, index) => (
                 <option key={index} value={category}>
                   {category}
@@ -424,19 +322,14 @@ const ServiceTable: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Sub-Category:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Sub-Category:</label>
             <select
               value={subCategoryFilter}
               onChange={(e) => setSubCategoryFilter(e.target.value)}
-              className="border border-gray-300 p-2 rounded w-40"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={subCategories.length === 0}
             >
               <option value="All">All</option>
-              {/* {subCategories.map((subCat) => (
-                  <option key={subCat} value={subCat}>
-                    {subCat}
-                  </option>
-                ))} */}
               {subCategories.map((subCategory, index) => (
                 <option key={index} value={subCategory}>
                   {subCategory}
@@ -444,148 +337,171 @@ const ServiceTable: React.FC = () => {
               ))}
             </select>
           </div>
-        </div>
 
-        {/* Check Status */}
-
-        <div className=" items-end">
-          <label className="block text-sm font-medium text-gray-700">Status:</label>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="border border-gray-300 p-2 rounded w-40"
-          >
-            <option disabled value="All">All</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option disabled value="All">All</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Services Table */}
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border border-gray-300 p-2">Action</th>
-            <th className="border border-gray-300 p-2">Sl No.</th>
-            <th className="border border-gray-300 p-2">Image</th>
-            <th className="border border-gray-300 p-2">Group</th>
-            <th className="border border-gray-300 p-2">Category</th>
-            <th className="border border-gray-300 p-2">Sub-Category</th>
-            <th className="border border-gray-300 p-2">Text</th>
-            <th className="border border-gray-300 p-2">Duration</th>
-            <th className="border border-gray-300 p-2">Price</th>
-            <th className="border border-gray-300 p-2">Status</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {paginatedTableData.map((service, index) => (
-            <tr key={service.id} className="hover:bg-gray-100">
-              <td className="border border-gray-300 p-2">
-
-                <button
-                  className="text-blue-500 mr-2"
-                  onClick={() => navigate(`/add-service/${service.id}`)}
-                >
-                  Edit
-                </button>
-
-                <button
-                  key={service.status}
-                  className="text-blue-500"
-                  onClick={() => toggleStatus(service.id, service.status ?? 'inactive')} // Pass serviceId and status
-                >
-                  {service.status === 'Active' ? '👁️' : '👁️‍🗨️'}
-                </button>
-
-                <button
-                  // className="mr-4"
-                  title="delete"
-                  style={{ color: 'red', fontSize: '1rem' }}
-                  onClick={() => deleteServiceData(service.id)}
-                >
-                  🗑️
-                </button>
-              </td>
-              <td className="border border-gray-300 p-2">
-                {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
-                {/* {service?.id} */}
-              </td>
-              <td className="border border-gray-300 p-2">
-                {service.imgUrl ? (
-                  <img
-                    src={service.imgUrl}
-                    alt="service"
-                    style={{ width: '50px', height: '50px', borderRadius: '0%' }}
-                  />
-                ) : null}
-              </td>
-              <td className="border border-gray-300 p-2">{service?.groups}</td>
-              <td className="border border-gray-300 p-2">{service.category}</td>
-              <td className="border border-gray-300 p-2">{service.subcategory}</td>
-              <td className="border border-gray-300 p-2">{service.name}</td>
-              <td className="border border-gray-300 p-2">{service.duration}</td>
-              <td className="border border-gray-300 p-2">${service.price}</td>
-              <td className="border border-gray-300 p-2">{service.status}</td>
+      <div className="overflow-x-auto bg-white rounded-xl shadow-lg">
+        <table className="w-full min-w-[1000px] bg-white">
+          <thead className="bg-gradient-to-r from-blue-500 to-blue-600">
+            <tr>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Action</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Sl No.</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Image</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Group</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Category</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Sub-Category</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Text</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Duration</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Price</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {paginatedTableData.map((service, index) => (
+              <tr key={service.id} className="hover:bg-blue-50 transition-colors">
+                <td className="px-6 py-4 space-x-3 text-gray-700">
+                  <button
+                    className="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-100"
+                    onClick={() => navigate(`/add-service/${service.id}`)}
+                  >
+                    {/* <FaEdit size={20} /> */}
+                    ✏️
+                  </button>
+                  <button
+                    className="text-green-600 hover:text-green-800 p-2 rounded-lg hover:bg-green-100"
+                    onClick={() => toggleStatus(service.id, service.status ?? 'inactive')}
+                  >
+                    {service.status === 'Active' ? "👁️" : "🙈"}
+                  </button>
+                  {/* <button
+                    className="text-red-500 hover:text-red-700 ml-2"
+                    onClick={() => deleteServiceData(service.id)}
+                  >
+                    🗑
+                  </button> */}
+                  <button
+                    onClick={() => openDeleteModal(service)}
+                    className="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-100"
+                  >
+                    {/* <FaTrash size={20} /> */}
+                    🗑️
+                  </button>
 
-      {/* Pagination */}
-      {/* <div className="flex justify-between items-center mt-4">
+                </td>
+                <td className="px-6 py-4 text-gray-700 font-medium">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
+                <td className="px-6 py-4">
+                  {service.imgUrl && (
+                    <img
+                      src={service.imgUrl}
+                      alt="Service"
+                      className="w-16 h-16 rounded-lg object-cover border-2 border-gray-200"
+                    />
+                  )}
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-700">{service?.groups}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{service.category}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{service.subcategory}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{service.name}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{service.duration}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">${service.price}</td>
+                {/* <td className="px-4 py-3 text-sm text-gray-700">{service.status}</td> */}
+                <td className="px-6 py-4">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${service.status === 'Active'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                    }`}>
+                    {service.status}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
+      {/* <div className="flex justify-center items-center mt-6 space-x-2">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className={`p-2 ${currentPage === 1 ? "text-gray-500" : "text-blue-500"}`}
+          className={`px-4 py-2 rounded-lg ${currentPage === 1 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"
+            }`}
         >
           Previous
         </button>
-
-        <span className="text-gray-600">
-          Page {currentPage} of {totalPages}
-        </span>
-
-        <button
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
-          className={`p-0 ${currentPage === totalPages ? "text-gray-500" : "text-blue-500"}`}
-        >
-          Next
-        </button>
-      </div> */}
-      <div className="flex justify-center items-center mt-4 space-x-2">
-        {/* Previous Button */}
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className={`px-3 py-1 rounded ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-blue-500 text-white"}`}
-        >
-          Prev
-        </button>
-
-        {/* Page Numbers */}
         {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
           <button
             key={page}
             onClick={() => setCurrentPage(page)}
-            className={`px-3 py-1 rounded ${currentPage === page ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+            className={`px-4 py-2 rounded-lg ${currentPage === page ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
           >
             {page}
           </button>
         ))}
-
-        {/* Next Button */}
         <button
           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
-          className={`px-3 py-1 rounded ${currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-blue-500 text-white"}`}
+          className={`px-4 py-2 rounded-lg ${currentPage === totalPages ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"
+            }`}
         >
           Next
         </button>
+      </div> */}
+      {/* Pagination */}
+      <div className="mt-6 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+        <div className="text-gray-600 text-sm">
+          Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, filteredServices.length)}
+          of {filteredServices.length} entries
+        </div>
+        <div className="flex space-x-1">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`px-3 py-1.5 rounded-md text-sm font-medium ${currentPage === 1
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+              }`}
+          >
+            Previous
+          </button>
+
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3.5 py-1.5 rounded-md text-sm font-medium ${currentPage === page
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "bg-blue-50 text-blue-600 hover:bg-blue-100"
+                }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1.5 rounded-md text-sm font-medium ${currentPage === totalPages
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+              }`}
+          >
+            Next
+          </button>
+        </div>
       </div>
 
     </div>

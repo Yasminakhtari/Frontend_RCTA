@@ -46,7 +46,7 @@ const StudentDetails: React.FC = () => {
           className="w-1/3 px-1 py-1 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
         />
         <button className="ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center">
-          <FaDownload className="mr-2" /> Download CSV
+        ⬇️ Download CSV
         </button>
       </div>
 
