@@ -239,8 +239,11 @@ const OrderConfirmationPage = () => {
   const [orderStatus, setOrderStatus] = useState('Verifying payment...');
   const navigate = useNavigate();
   const location = useLocation();
+
   const searchParams = new URLSearchParams(location.search);
   const sessionId = searchParams.get('session_id');
+  console.log("Session ID:", sessionId);
+  
   const stateOrder = location.state?.orderDetails;
 
   useEffect(() => {

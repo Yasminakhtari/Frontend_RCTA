@@ -1,12 +1,50 @@
-import React from 'react';
-import { testimonials } from '../../Data/Data'; 
+import React, { useEffect, useState } from 'react';
+// import { testimonials } from '../../Data/Data'; 
 import { Button, Rating } from '@mantine/core';
 import image from './tp13.png';
 import { useNavigate } from 'react-router-dom';
 import { IconPhone } from '@tabler/icons-react';
+import { getAllFeedback } from '../../Services/FeedbackService';
+
+
+  interface Feedback {
+    createdOn: string; 
+    createdBy: string; 
+    updatedOn: string | null;
+    updatedBy: string | null; 
+    id: number; 
+    name: string; 
+    message: string; 
+    rating: number; 
+    bitDeletedFlag: number; 
+}
+
 
 const AllTesti = () => {
   const navigate = useNavigate();
+  const [testimonials,setTestimonials] = useState<Feedback[]>([]);
+
+
+  useEffect(()=>{
+      const fetchData = async () => {
+        try{
+          const response = await getAllFeedback();
+          console.log(response.data);
+          setTestimonials(response.data);
+        }catch(error){
+          console.log(error);
+        }
+      }
+
+      fetchData();
+  },[])
+
+ // Split testimonials into three columns
+ const column1 = testimonials.filter((_, i) => i % 3 === 0);
+ const column2 = testimonials.filter((_, i) => i % 3 === 1);
+ const column3 = testimonials.filter((_, i) => i % 3 === 2);
+
+
   return (
     <>
       <div className="relative">
@@ -34,10 +72,10 @@ const AllTesti = () => {
                     <img src={image} alt={item.name} className="w-12 h-12 rounded-full object-cover" />
                     <div>
                       <div className="font-semibold text-gray-800">{item.name}</div>
-                      <div className="text-sm text-gray-600">{item.role}</div>
+                      <div className="text-sm text-gray-600">Player</div>
                     </div>
                   </div>
-                  <p className="text-gray-800">{item.testimonial}</p>
+                  <p className="text-gray-800">{item.message}</p>
                   <Rating value={item.rating} fractions={2} color="blueRibbon.10" readOnly />
                 </div>
               ))}
@@ -47,7 +85,7 @@ const AllTesti = () => {
           {/* COLUMN 2 */}
           <div className="w-full lg:w-1/3 h-full overflow-hidden relative lg:block md:block sm:hidden">
             <div className="flex flex-col gap-6 animate-scrollDown">
-              {testimonials.map((item, index) => (
+              {testimonials.slice(0, testimonials.length).map((item, index) => (
                 <div
                   key={index}
                   className="bg-white/90 backdrop-blur-lg p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300"
@@ -56,10 +94,10 @@ const AllTesti = () => {
                     <img src={image} alt={item.name} className="w-12 h-12 rounded-full object-cover" />
                     <div>
                       <div className="font-semibold text-gray-800">{item.name}</div>
-                      <div className="text-sm text-gray-600">{item.role}</div>
+                      <div className="text-sm text-gray-600">Player</div>
                     </div>
                   </div>
-                  <p className="text-gray-800">{item.testimonial}</p>
+                  <p className="text-gray-800">{item.message}</p>
                   <Rating value={item.rating} fractions={2} color="blueRibbon.10" readOnly />
                 </div>
               ))}
@@ -78,10 +116,10 @@ const AllTesti = () => {
                     <img src={image} alt={item.name} className="w-12 h-12 rounded-full object-cover" />
                     <div>
                       <div className="font-semibold text-gray-800">{item.name}</div>
-                      <div className="text-sm text-gray-600">{item.role}</div>
+                      <div className="text-sm text-gray-600">Player</div>
                     </div>
                   </div>
-                  <p className="text-gray-800">{item.testimonial}</p>
+                  <p className="text-gray-800">{item.message}</p>
                   <Rating value={item.rating} fractions={2} color="blueRibbon.10" readOnly />
                 </div>
               ))}

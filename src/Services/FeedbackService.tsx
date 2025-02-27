@@ -3,7 +3,12 @@ import { base_url } from "../apiConfig";
 
 
 const saveFeedback=async (data:any)=>{
-    return axios.post(`${base_url}/testimonial`,data)
+    const feedbackData = { 
+        ...data,  
+        bitDeletedFlag: 0 // Added to match backend structure (0 = active, 1 = deleted)
+    };
+
+    return axios.post(`${base_url}/testimonial`,feedbackData)
     .then(res=>res.data)
     .catch(error=>{throw error;});
 }
