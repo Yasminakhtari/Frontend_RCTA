@@ -34,7 +34,12 @@ const FeedbackPage: React.FC = () => {
     try {
       e.preventDefault();
       setLoading(true);
-      const feedbackData = { name: user?.data?.userDetails?.firstName, message: description, rating };
+      if (!rating) {
+        alert('Please select a star rating before submitting.');
+        setLoading(false);
+        return;
+      }
+      const feedbackData = { name: user?.data?.userDetails?.firstName, message: description.trim(), rating };
       await saveFeedback(feedbackData);
       setSubmitted(true);
       setShowConfetti(true);
@@ -57,7 +62,7 @@ const FeedbackPage: React.FC = () => {
         />
       )}
 
-      <motion.div 
+      <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border-8 border-transparent 
@@ -82,9 +87,9 @@ const FeedbackPage: React.FC = () => {
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="mb-8 text-center">
-              <Avatar 
-                src={user?.data?.userDetails?.profile} 
-                size="xl" 
+              <Avatar
+                src={user?.data?.userDetails?.profile}
+                size="xl"
                 className="mx-auto mb-4 border-4 border-blue-200"
               />
               <Text className="text-2xl font-bold text-gray-800 mb-2">
@@ -107,7 +112,7 @@ const FeedbackPage: React.FC = () => {
                   {reaction}
                 </motion.div>
               </AnimatePresence>
-              
+
               <div className="flex justify-center space-x-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <motion.button
@@ -117,7 +122,6 @@ const FeedbackPage: React.FC = () => {
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
                     className={`text-4xl ${star <= rating ? 'text-yellow-400' : 'text-gray-200'}`}
-
                   >
                     ★
                   </motion.button>
