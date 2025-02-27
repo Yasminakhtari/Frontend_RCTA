@@ -193,10 +193,17 @@ const handleProceedToPayment = async () => {
     }
 
     // 2. Create Stripe Checkout Session with the order ID
+    // const stripeRequest = {
+    //   orderId: orderId,
+    //   amount: Math.round(cartData.total * 100), 
+    //   quantity: cartData.quantity,
+    //   name: `Order #${orderId}`,
+    //   currency: "USD"
+    // };
     const stripeRequest = {
       orderId: orderId,
       amount: Math.round(cartData.total * 100), 
-      quantity: cartData.quantity,
+      quantity: 1,
       name: `Order #${orderId}`,
       currency: "USD"
     };
