@@ -18,7 +18,7 @@ const AdminHome = () => {
   };
 
   return (
-    <div className="mt-20 flex">
+    <div className="mt-20 flex overflow-x-scroll overflow-y-auto">
       {/* Sidebar */}
       {isSidebarVisible && (
         <div className="sticky top-0 bg-gray-800 p-5 w-64 transition-all duration-300 ease-in-out">

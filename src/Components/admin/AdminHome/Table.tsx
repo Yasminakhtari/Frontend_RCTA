@@ -214,7 +214,7 @@ const List: React.FC = () => {
 
       <TableContainer
         component={Paper}
-        className="p-6 shadow-md rounded-lg bg-white border border-blueRibbon-950 overflow-y-auto  mt-8 md:mt-16" // Added overflow-y-auto to make sure scrollbar is enabled
+        className="p-6 shadow-md rounded-lg bg-white border border-blueRibbon-950 overflow-y-auto overflow-x-scroll mt-8 md:mt-16" // Added overflow-y-auto to make sure scrollbar is enabled
       >
         <Table>
           <TableHead>

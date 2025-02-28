@@ -67,3 +67,14 @@ hide-scrollbar::-webkit-scrollbar
   top: 0;
   z-index: 50;
 }
+
+/* Add this to your CSS */
+table {
+  min-width: 768px; /* Adjust based on your table content */
+}
+
+@media (min-width: 768px) {
+  table {
+    min-width: auto;
+  }
+}
