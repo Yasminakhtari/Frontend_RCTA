@@ -64,86 +64,96 @@ const AppRoutes = () => {
 
 
 
-const PaymentModalWrapper: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true); 
+  const PaymentModalWrapper: React.FC = () => {
+    const [isOpen, setIsOpen] = useState(true);
 
-  return <PaymentModal isOpen={isOpen} onClose={() => setIsOpen(false)} />;
-};
+    return <PaymentModal isOpen={isOpen} onClose={() => setIsOpen(false)} />;
+  };
 
   return (
     <BrowserRouter>
       <Header />
-      <Routes>
-        {/* Admin Section */}
-        <Route path="/admin" element={<AdminHomePage />}>
-          <Route index element={<AdminHomeContainer />} />
-          <Route path="dashboard" element={<AdminHomeContainer />} />
-          <Route path="servicetable" element={<ServiceTable />} />
-          <Route path="manage" element={<SessionManagePage />} />
-          <Route path="alluser" element={<Table />} />
-          <Route path="locationtable" element={<LocationTable />} />
-          <Route path="players" element={<Table />} />
-          <Route path="paytable" element={<PayTable />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="notificationtable" element={<NotificationTable />} />
-        </Route>
-
-        {/* Public Routes */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about-us" element={<About />} />
-        <Route path="/gallery" element={<MediaGalleryPage />} />
-        <Route path="/products" element={<ProductsPage />} />
-        <Route path="/contact-us" element={<ContactUs />} />
-        <Route path="/testimonial" element={<AllTestiPage />} />
-        <Route path="/locationcard" element ={<LocationCardPage />} />
-        <Route path='/faqpage' element ={<FAQsPage />} />
-
-        {/* User and Authentication */}
-        <Route path="/signup" element={user ? <Navigate to="/" /> : <SignUpPage />} />
-        <Route path="/login" element={user ? <Navigate to="/" /> : <SignUpPage />} />
-        <Route path="/profile" element={<UserProfilePage />} />
-
-        {/* Products */}
-        <Route path="/product" element={<ProductCartPage />} />
-        <Route path="/cart" element={<ShoppingCart />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/details/:id" element={<ProductDetails />} />
-        <Route path="/order-confirmation" element={<OrderConfirmationPage/>} />
+      <div className='flex flex-col min-h-screen'>
         
+        <main className='flex-1'>
+          <Routes>
+            {/* Admin Section */}
+            <Route path="/admin" element={<AdminHomePage />}>
+              <Route index element={<AdminHomeContainer />} />
+              <Route path="dashboard" element={<AdminHomeContainer />} />
+              <Route path="servicetable" element={<ServiceTable />} />
+              <Route path="manage" element={<SessionManagePage />} />
+              <Route path="alluser" element={<Table />} />
+              <Route path="locationtable" element={<LocationTable />} />
+              <Route path="players" element={<Table />} />
+              <Route path="paytable" element={<PayTable />} />
+              <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="notificationtable" element={<NotificationTable />} />
+            </Route>
 
-        {/* Classes */}
-        <Route path="/classes" element={<Classes />} />
-        <Route path="/coursepage/:id" element={<CoursePage />} />
-        <Route path="/createclass" element={<CreateClassForm />} />
-        <Route path="/classmanagement" element={<ClassManagement />} />
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about-us" element={<About />} />
+            <Route path="/gallery" element={<MediaGalleryPage />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/testimonial" element={<AllTestiPage />} />
+            <Route path="/locationcard" element={<LocationCardPage />} />
+            <Route path='/faqpage' element={<FAQsPage />} />
 
-        {/* Services */}
-        <Route path="/addservice" element={<AddService />} />
-        <Route path="/add-service/:id" element={<AddService />} />
+            {/* User and Authentication */}
+            <Route path="/signup" element={user ? <Navigate to="/" /> : <SignUpPage />} />
+            <Route path="/login" element={user ? <Navigate to="/" /> : <SignUpPage />} />
+            <Route path="/profile" element={<UserProfilePage />} />
 
-        {/* Sessions */}
-        <Route path="/manage" element={<SessionManagePage />} />
-        <Route path="/create" element={<SessionCreatePage />} />
-        <Route path="/create/:id" element={<SessionCreatePage />} />
-        <Route path="/location" element={<LocationCreate onSubmit={handleLocationSubmit} />} />
-        <Route path="/studentdetails/:id" element={<StudentDetails />} />
-        <Route path='/feedback' element={<FeedbackPage />} />
+            {/* Products */}
+            <Route path="/product" element={<ProductCartPage />} />
+            <Route path="/cart" element={<ShoppingCart />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/details/:id" element={<ProductDetails />} />
+            <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
 
-        {/* Notifications */}
-        {/* <Route path="/notification" element={<Notifications userId={userId} />} /> */}
-        {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
 
-        {/* Payment */}
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/paymentmodal" element={<PaymentModalWrapper/>} />
+            {/* Classes */}
+            <Route path="/classes" element={<Classes />} />
+            <Route path="/coursepage/:id" element={<CoursePage />} />
+            <Route path="/createclass" element={<CreateClassForm />} />
+            <Route path="/classmanagement" element={<ClassManagement />} />
 
-        {/* <Route path="/locationcard" element ={<LocationCardPage />} /> */}
+            {/* Services */}
+            <Route path="/addservice" element={<AddService />} />
+            <Route path="/add-service/:id" element={<AddService />} />
 
-        <Route path="*" element={<NotFound />} />
+            {/* Sessions */}
+            <Route path="/manage" element={<SessionManagePage />} />
+            <Route path="/create" element={<SessionCreatePage />} />
+            <Route path="/create/:id" element={<SessionCreatePage />} />
+            <Route path="/location" element={<LocationCreate onSubmit={handleLocationSubmit} />} />
+            <Route path="/studentdetails/:id" element={<StudentDetails />} />
+            <Route path='/feedback' element={<FeedbackPage />} />
 
-      </Routes>
-      <ScrollUp />
-      <Footer />
+            {/* Notifications */}
+            {/* <Route path="/notification" element={<Notifications userId={userId} />} /> */}
+            {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
+
+            {/* Payment */}
+            <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/paymentmodal" element={<PaymentModalWrapper />} />
+
+            {/* <Route path="/locationcard" element ={<LocationCardPage />} /> */}
+
+            <Route path="*" element={<NotFound />} />
+
+          </Routes>
+          
+          {/* <ScrollUp /> */}
+          
+        </main>
+       
+           <Footer />
+        
+      </div>
+      
     </BrowserRouter>
   );
 };

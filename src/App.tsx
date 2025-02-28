@@ -35,6 +35,7 @@ function App() {
 
   return (
     <div className='w-[100%] defaulttheme={dark} overflow-hidden'>
+    {/* <div className='h-screen flex flex-col w-[100%] '> */}
     <Provider store={Store}>
     <UserProvider>
     <CartProvider>
