@@ -8,6 +8,7 @@ const saveLocation=async (data:any)=>{
     .catch(error=>{throw error;});
 }
 
+///////////////////////
 const getAllLocation=async ()=>{
     return axios.get(`${base_url}/location/getAllLocation`)
     .then(res=>res.data)
