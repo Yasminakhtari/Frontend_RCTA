@@ -58,7 +58,6 @@
     "tenis-frontend": "file:",
     "typescript": "^4.9.5",
     "uuid": "^11.0.5",
-    "web-push": "^3.6.7",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
