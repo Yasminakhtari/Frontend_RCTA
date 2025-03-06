@@ -14,6 +14,7 @@ import Store from './Store';
 import AppRoutes from './Pages/AppRoutes';
 import { CartProvider } from './Components/productpage/CartContext';
 import { UserProvider } from './Components/notification/UserContext';
+import NotificationSubscription from './Components/notifications/NotificationSubscription';
 
 function App() {
 
@@ -36,12 +37,14 @@ function App() {
   return (
     <div className='w-[100%] defaulttheme={dark} overflow-hidden'>
     {/* <div className='h-screen flex flex-col w-[100%] '> */}
+    
     <Provider store={Store}>
     <UserProvider>
     <CartProvider>
         <MantineProvider   theme={theme} >
+          <NotificationSubscription />
           <Notifications position="top-right" zIndex={1000} />
-            <AppRoutes/>
+          <AppRoutes/>
         </MantineProvider>
      </CartProvider> 
      </UserProvider> 

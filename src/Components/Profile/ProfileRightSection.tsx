@@ -2,7 +2,7 @@ import { Badge, Tabs, Card, Text, Button, Group, Pagination } from '@mantine/cor
 import { IconCalendar, IconUser, IconMapPin, IconClock, IconBallTennis } from '@tabler/icons-react';
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { getAllSession } from '../../Services/SessionService';
+import { getAllSession, getSessionById } from '../../Services/SessionService';
 
 const ProfileRightSection = ({ sessions }: any) => {
   const [activeTab, setActiveTab] = useState<string>('all');
@@ -20,13 +20,16 @@ const ProfileRightSection = ({ sessions }: any) => {
     window.addEventListener('resize', checkIfMobile);
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
-
+  ///////////////////////////////////////////////
   useEffect(() => {
     const fetchAllSession = async () => {
       try {
         const userId = user?.data?.userDetails?.id;
-        const response = await getAllSession(sessions?.id || userId);
+        console.log("sessions Data are" + JSON.stringify(sessions));
+        const response = await getAllSession(userId);
+        console.log(response);
         const sessionData = response?.data;
+        console.log(sessionData)
         if (Array.isArray(sessionData)) {
           setSessionData(sessionData);
         } else {
@@ -37,11 +40,27 @@ const ProfileRightSection = ({ sessions }: any) => {
       }
     };
     fetchAllSession();
-  }, [sessions?.id, user?.data?.userDetails?.id]);
+  }, [user?.data?.userDetails?.id]);
+  ////////////////////////////////////////////////
+  // Filter sessions based on selected player (if any)
+  const filteredSessions = React.useMemo(() => {
+    if (!sessions?.id) return sessionData; // Show all sessions when no player selected
+    return sessionData.filter(session =>
+      session.playersId?.includes(Number(sessions.id)) // Filter by player ID if selected
+    );
+  }, [sessionData, sessions?.id]);
+  ///////////////////////////////
 
+  // const filterSessionsByStatus = (status: string) => {
+  //   if (status === 'all') return sessionData;
+  //   return sessionData.filter((session) => session.status === status);
+  // };
   const filterSessionsByStatus = (status: string) => {
-    if (status === 'all') return sessionData;
-    return sessionData.filter((session) => session.status === status);
+    const sessionsToFilter = filteredSessions;
+    if (status === 'all') return sessionsToFilter;
+    return sessionsToFilter.filter((session) => 
+      session.status.toLowerCase() === status.toLowerCase()
+    );
   };
 
   const getPaginatedSessions = (sessions: any[]) => {

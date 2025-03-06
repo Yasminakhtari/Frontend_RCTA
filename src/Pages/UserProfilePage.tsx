@@ -5,7 +5,7 @@ import ProfileRightSection from '../Components/Profile/ProfileRightSection';
 import PlayersDetails from '../Components/Profile/PlayersDetails';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { getSessionByIddd } from '../Services/SessionService';
+// import { getSessionByIddd } from '../Services/SessionService';
 
 interface Player {
   id: string;
@@ -42,6 +42,7 @@ const UserProfilePage: React.FC = () => {
   
   
       // }, [selectedPlayer?.id])
+      console.log("Selected PLayer are0 " + JSON.stringify(selectedPlayer));
 
   return (
     <div className="min-h-[90vh] bg-gradient-to-r bg-slate-200 font-['poppins'] text-white">
