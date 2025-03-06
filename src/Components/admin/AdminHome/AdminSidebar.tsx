@@ -192,6 +192,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ onClose }) => {
       section: 'Main',
       links: [
         { to: 'dashboard', icon: Dashboard, label: 'Dashboard' },
+        {to: 'adminform', icon: Dashboard, label: 'Form for Test'},
         { to: 'servicetable', icon: TableBar, label: 'Service Table' },
         { to: 'manage', icon: TableBar, label: 'Session Table' },
         { to: 'alluser', icon: IconUser, label: 'Get All Users' },

@@ -16,17 +16,23 @@ const getAllSession = async (userId: number) => {
         .catch(error => { throw error; });
 }
 
-const getSessionById = async (id: number) => {
-    return axios.get(`${base_url}/session/${id}`)
-        .then(res => res.data)
-        .catch(error => { throw error; });
+const getSessionById = async (id: any) => {
+    try{
+        const response = await axios.get(`${base_url}/session/${id}`)
+        // .then(res => res.data)
+        // .catch(error => { throw error; });
+        return response.data;
+    }catch(error){
+        console.error("Failed to fetch session by id");
+        throw error;
+    }
 }
 
-const getSessionByIddd = async (id: string) => {
-    return axios.get(`${base_url}/session/${id}`)
-        .then(res => res.data)
-        .catch(error => { throw error; });
-}
+// const getSessionByIddd = async (id: string) => {
+//     return axios.get(`${base_url}/session/${id}`)
+//         .then(res => res.data)
+//         .catch(error => { throw error; });
+// }
 
 const updateSession = async (id: number, updatedSession: any) => {
     return axios.put(`${base_url}/session/${id}`, updatedSession)
@@ -65,7 +71,7 @@ export {
     getSessionById,
     updateSession,
     deleteSession,
-    getSessionByIddd,
+    // getSessionByIddd,
     saveTSession,
     deleteSinglePlayer
 };

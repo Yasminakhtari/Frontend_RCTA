@@ -47,6 +47,7 @@ import OrderConfirmationPage from '../Components/productpage/OrderConfirmationPa
 import NotificationTable from '../Components/notification/NotificationTable';
 import FeedbackPage from '../Components/sessionpage/FeedbackPage';
 import FAQsPage from '../Components/Faqpage/FAQsPage';
+import AdminPushForm from '../Components/admin/AdminHome/AdminPushForm';
 
 
 const AppRoutes = () => {
@@ -81,6 +82,7 @@ const AppRoutes = () => {
             <Route path="/admin" element={<AdminHomePage />}>
               <Route index element={<AdminHomeContainer />} />
               <Route path="dashboard" element={<AdminHomeContainer />} />
+              <Route path="adminform" element={<AdminPushForm/>}/>
               <Route path="servicetable" element={<ServiceTable />} />
               <Route path="manage" element={<SessionManagePage />} />
               <Route path="alluser" element={<Table />} />
