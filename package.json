@@ -85,6 +85,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/react-flatpickr": "^3.8.11",
     "@types/react-google-recaptcha": "^2.1.9",
     "@types/react-query": "^1.2.9",
