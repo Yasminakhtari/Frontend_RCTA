@@ -2,6 +2,9 @@
 /* eslint-disable no-restricted-globals */
 // const swSelf = self as unknown as ServiceWorkerGlobalScope;
 // declare let self: ServiceWorkerGlobalScope;
+import { precacheAndRoute } from 'workbox-precaching';
+
+precacheAndRoute(self.__WB_MANIFEST || []);
 
 /* global self */
 self.addEventListener('push', (event) => {
