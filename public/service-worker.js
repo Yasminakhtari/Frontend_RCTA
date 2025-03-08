@@ -1,10 +1,20 @@
 /// <reference lib="webworker" />
 /* eslint-disable no-restricted-globals */
+// declare function importScripts(...urls: string[]): void;
 
-import { precacheAndRoute } from 'workbox-precaching';
+// @ts-ignore
 
-// ✅ Ensure Workbox precaching is set up correctly
-precacheAndRoute(self.__WB_MANIFEST || []);
+self.importScripts("https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js");
+
+
+
+
+if (self.workbox) {
+    console.log("Workbox loaded 🎉");
+    self.workbox.precaching.precacheAndRoute(self.__WB_MANIFEST || []);
+} else {
+    console.log("Workbox failed to load 😢");
+}
 
 // ✅ Service Worker Installation
 self.addEventListener("install", (event) => {
@@ -15,7 +25,7 @@ self.addEventListener("install", (event) => {
 // ✅ Service Worker Activation
 self.addEventListener("activate", (event) => {
     console.log("Service Worker Activated");
-    event.waitUntil(self.clients.claim()); // Ensures control of all clients
+    event.waitUntil(self.clients.claim());
 });
 
 // ✅ Fetch Event Handling
@@ -30,7 +40,7 @@ self.addEventListener("push", (event) => {
     const data = event.data ? event.data.json() : { 
         title: "Notification", 
         body: "No content",
-        url: "/" // Provide a default URL if missing
+        url: "/" 
     };
 
     console.log("Notification Data:", data);
@@ -51,20 +61,18 @@ self.addEventListener("push", (event) => {
 // ✅ Notification Click Event
 self.addEventListener("notificationclick", (event) => {
     console.log("Notification Clicked:", event.notification);
-
     event.notification.close();
-    
+
+    const urlToOpen = event.notification.data?.url || "/";
+
     event.waitUntil(
         self.clients.matchAll({ type: "window", includeUncontrolled: true })
         .then((clientList) => {
-            // Open the URL in the existing tab if possible
-            for (const client of clientList) {
-                if (client.url === event.notification.data.url && "focus" in client) {
-                    return client.focus();
-                }
+            const matchingClient = clientList.find(client => client.url === urlToOpen);
+            if (matchingClient && "focus" in matchingClient) {
+                return matchingClient.focus();
             }
-            // Otherwise, open a new window/tab
-            return self.clients.openWindow(event.notification.data.url || "/");
+            return self.clients.openWindow(urlToOpen);
         })
     );
 });

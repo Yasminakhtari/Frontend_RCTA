@@ -24,7 +24,17 @@
   },
   "include": [
     "src",
-    "src/@types" 
-  ]
+    "src/@types",
+  ],
+  "exclude": ["public/service-worker.js"],
+  "overrides": [
+  {
+    "files": ["public/service-worker.js"],
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
+]
+
   
 }
