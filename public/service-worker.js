@@ -1,5 +1,6 @@
 /// <reference lib="webworker" />
-/* eslint-disable no-restricted-globals */
+/* eslint-disable no-restricted-globals, @typescript-eslint/ban-ts-comment */
+
 // declare function importScripts(...urls: string[]): void;
 
 // @ts-ignore
