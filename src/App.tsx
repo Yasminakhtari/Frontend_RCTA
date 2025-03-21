@@ -14,7 +14,7 @@ import Store from './Store';
 import AppRoutes from './Pages/AppRoutes';
 import { CartProvider } from './Components/productpage/CartContext';
 import { UserProvider } from './Components/notification/UserContext';
-import NotificationSubscription from './Components/notifications/NotificationSubscription';
+// import NotificationSubscription from './Components/notifications/NotificationSubscription';
 
 function App() {
 
@@ -42,7 +42,7 @@ function App() {
     <UserProvider>
     <CartProvider>
         <MantineProvider   theme={theme} >
-          <NotificationSubscription />
+          {/* <NotificationSubscription /> */}
           <Notifications position="top-right" zIndex={1000} />
           <AppRoutes/>
         </MantineProvider>

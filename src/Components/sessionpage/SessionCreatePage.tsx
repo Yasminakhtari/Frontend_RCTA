@@ -4,6 +4,7 @@ import { getFilteredProducts } from '../../Services/TennisService';
 import { getAllUsers } from '../../Services/UserService';
 import { getSessionById, saveSession, updateSession } from '../../Services/SessionService';
 import { getAllLocation } from '../../Services/LocationService';
+import { errorNotification, successNotification } from '../../Services/NotificationService';
 
 interface SessionFormData {
   courseId: string;
@@ -92,17 +93,17 @@ const SessionCreatePage: React.FC = () => {
         // If `id` exists, it's an update operation
         const updatedSession = { ...formData };
         const response = await updateSession(Number(id), updatedSession); // Call update API
-        alert('Session updated successfully!');
+       successNotification("Success",'Session updated successfully!');
         console.log('Session updated:', response);
       } else {
         // If `id` doesn't exist, it's a create operation
         const response = await saveSession(formData);
-        alert('Session created successfully!');
+        successNotification("Success",'Session created successfully!');
         console.log('Session created:', response);
       }
       navigate('/manage');
     } catch (error) {
-      alert("Failed to create session. Please try again.");
+      errorNotification("error","Failed to create session. Please try again.");
     }
   };
 
@@ -161,7 +162,7 @@ const SessionCreatePage: React.FC = () => {
       });
     } catch (error) {
       console.error('Error fetching session data:', error);
-      alert('Failed to fetch session data. Please try again.');
+      errorNotification("error",'Failed to fetch session data. Please try again.');
     }
   };
 

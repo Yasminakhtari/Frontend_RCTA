@@ -155,7 +155,7 @@ const Profile: React.FC<ProfileProps> = ({ onSelectPlayer }) => {
                 }
             } catch (error) {
                 console.error("Error saving player:", error);
-                alert("Failed to save player. Please try again.");
+                errorNotification("error","Failed to save player. Please try again.");
             }
         }
     };

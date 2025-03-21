@@ -6,8 +6,8 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { registerUser } from "../../Services/UserService";
 import { signupValidation } from "../../Services/FormValidation";
 import { notifications } from "@mantine/notifications";
-import { VAPID_PUBLIC_KEY } from "../../config";
-import PermissionModal from "../notifications/PermissionModal";
+// import { VAPID_PUBLIC_KEY } from "../../config";
+// import PermissionModal from "../notifications/PermissionModal";
 
 const form = {
   firstName: "",
@@ -19,21 +19,21 @@ const form = {
   // accountType:"USER"
 }
 
-const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding)
-    .replace(/-/g, '+')
-    .replace(/_/g, '/');
+// const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
+//   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+//   const base64 = (base64String + padding)
+//     .replace(/-/g, '+')
+//     .replace(/_/g, '/');
 
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
+//   const rawData = window.atob(base64);
+//   const outputArray = new Uint8Array(rawData.length);
 
-  for (let i = 0; i < rawData.length; i++) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
+//   for (let i = 0; i < rawData.length; i++) {
+//     outputArray[i] = rawData.charCodeAt(i);
+//   }
 
-  return outputArray;
-};
+//   return outputArray;
+// };
 
 
 
@@ -176,24 +176,24 @@ const SignUp = (props: any) => {
             className: "!border-green-500"
           });
           // ✅ Show the Permission Modal after successful registration
-          setShowPermissionModal(true);
+          //setShowPermissionModal(true);
           // ✅ Push Notification Subscription (AFTER successful registration)
-          if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.ready
-              .then((registration) => {
-                return registration.pushManager.subscribe({
-                  userVisibleOnly: true,
-                  applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-                });
-              })
-              .then((subscription) => {
-                console.log("Push Notification Subscription:", JSON.stringify(subscription));
-                // You should send this `subscription` object to your backend
-              })
-              .catch((error) => {
-                console.error("Push Notification Subscription Failed:", error);
-              });
-          }
+          // if ("serviceWorker" in navigator) {
+          //   navigator.serviceWorker.ready
+          //     .then((registration) => {
+          //       return registration.pushManager.subscribe({
+          //         userVisibleOnly: true,
+          //         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+          //       });
+          //     })
+          //     .then((subscription) => {
+          //       console.log("Push Notification Subscription:", JSON.stringify(subscription));
+          //       // You should send this `subscription` object to your backend
+          //     })
+          //     .catch((error) => {
+          //       console.error("Push Notification Subscription Failed:", error);
+          //     });
+          // }
           setTimeout(() => {
             setLoading(false);
             navigate("/login");
@@ -221,10 +221,10 @@ const SignUp = (props: any) => {
   const icon = <IconAt style={{ width: rem(16), height: rem(16) }} />;
   const iconn = <IconLock style={{ width: rem(16), height: rem(16) }} />;
   return (<>
-    <PermissionModal
+    {/* <PermissionModal
       opened={showPermissionModal}
       onClose={() => setShowPermissionModal(false)}
-    />
+    /> */}
     <LoadingOverlay
       visible={loading}
       // className="translate-x-1/2"
