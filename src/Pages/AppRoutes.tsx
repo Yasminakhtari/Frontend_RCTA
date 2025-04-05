@@ -47,7 +47,7 @@ import OrderConfirmationPage from '../Components/productpage/OrderConfirmationPa
 import NotificationTable from '../Components/notification/NotificationTable';
 import FeedbackPage from '../Components/sessionpage/FeedbackPage';
 import FAQsPage from '../Components/Faqpage/FAQsPage';
-import AdminPushForm from '../Components/admin/AdminHome/AdminPushForm';
+// import AdminPushForm from '../Components/admin/AdminHome/AdminPushForm';
 
 
 const AppRoutes = () => {
