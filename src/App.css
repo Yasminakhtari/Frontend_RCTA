@@ -78,3 +78,27 @@ table {
     min-width: auto;
   }
 }
+
+
+/* /////////For raphel/// */
+@keyframes rotateEntry {
+  from {
+    transform: rotateY(90deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+.image-container {
+  perspective: 1000px;
+  display: inline-block;
+}
+
+.animate-rotate {
+  animation: rotateEntry 1s ease-out;
+  transform-origin: center;
+  transform-style: preserve-3d;
+}

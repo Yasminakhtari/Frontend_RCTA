@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IconAdCircle, IconBell, IconMenu2, IconX, IconShoppingCart } from '@tabler/icons-react';
-import { Avatar, Button, Indicator, Text } from '@mantine/core';
+import { Avatar, Badge, Button, Indicator, Tabs, Text } from '@mantine/core';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useCart } from '../productpage/CartContext';
@@ -8,6 +8,9 @@ import NavLinks from './NavLinks';
 import ProfileMenu from './ProfileMenu';
 import { getNotificationsForUser, markNotificationAsRead } from '../../Services/NotificationService1';
 import { NotificationType } from '../../Services/types';
+const tennisIcon = "/tennis-icon.png";
+const normalIcon = "/tennisbell.png";
+
 
 const Header = () => {
   const location = useLocation();
@@ -16,6 +19,11 @@ const Header = () => {
   // const [notification, setNotification] = useState<any>(null);
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [showNotification, setShowNotification] = useState(false);
+
+  ////////////////////
+  const [selectedTab, setSelectedTab] = useState<'all' | 'unread'>('all');
+  const [sortedNotifications, setSortedNotifications] = useState<NotificationType[]>([]);
+  //////////////////////
   const { cart } = useCart();
   const cartItemCount = cart.reduce((count, item) => count + item.quantity, 0);
 
@@ -24,6 +32,31 @@ const Header = () => {
 
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
+
+  //////////////////
+  useEffect(() => {
+    const sorted = [...notifications].sort((a, b) => 
+      new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime()
+    );
+    setSortedNotifications(sorted);
+  }, [notifications]);
+
+  const filteredNotifications = sortedNotifications.filter(n => 
+    selectedTab === 'unread' ? n.users.some(u => u.status === 'unread') : true
+  );
+
+  const handleNotificationClick = async (notification: NotificationType) => {
+    console.log("Clicked Notification:", notification);
+    if (notification.sessionId) {
+      console.log("Session ID Found:", notification.sessionId);
+      navigate('/feedback');
+    }else{
+      console.log("No Session ID in Notification");
+    }
+    await markNotificationAsRead(notification.notificationId, userId);
+    fetchNotification();
+  };
+  ///////////////////////////
 
   useEffect(() => {
     if (userId) fetchNotification();
@@ -59,8 +92,10 @@ const Header = () => {
   //   }
   // };
   const fetchNotification = async () => {
+    
     try {
       const data = await getNotificationsForUser(userId);
+      console.log("Fetched Notifications:", data); 
       setNotifications(data || []);
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -126,6 +161,9 @@ const Header = () => {
               onClick={() => setShowNotification(!showNotification)}
             />
           </Indicator>
+
+           {/* Notification Dropdown */}
+           
 
           {/* Notification Dropdown */}
           {/* {showNotification && notification && (
@@ -196,7 +234,7 @@ const Header = () => {
               </div>
             </div>
           )} */}
-          {showNotification && (
+          {/* {showNotification && (
             <div className="absolute right-0 mt-3 w-80 bg-white rounded-lg shadow-xl z-50">
               <div className="p-4 border-b">
                 <h3 className="font-semibold text-lg">Notifications ({notifications.length})</h3>
@@ -240,7 +278,71 @@ const Header = () => {
                 </button>
               </div>
             </div>
-          )}
+          )} */}
+          {showNotification && (
+          <div className="absolute right-0 mt-3 w-64 md:w-96  !bg-blue-800 rounded-lg shadow-xl z-50">
+              <div className="p-4 border-b">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-semibold text-lg">Notifications</h3>
+                  <Tabs value={selectedTab} onChange={(value) => setSelectedTab(value as 'all' | 'unread')}>
+
+                  <Tabs.List className="md:text-lg text-sm text-blueRibbon-700 font-semibold mb-5 [&_button[data-active='true']]:text-blueRibbon-950">
+                      <Tabs.Tab value="all">All</Tabs.Tab>
+                      <Tabs.Tab value="unread">Unread ({unreadCount})</Tabs.Tab>
+                    </Tabs.List>
+                  </Tabs>
+                </div>
+              </div>
+
+              <div className=" h-64 md:h-96 overflow-y-auto md:text-lg text-sm !text-blueRibbon-700 font-semibold ">
+                {filteredNotifications.map(notification => (
+                  <div
+                    key={notification.notificationId}
+                    className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
+                      notification.users.some(u => u.status === 'unread') 
+                        ? '!bg-blue-50 border-l-4 !border-blue-400' : ''
+                    }`}
+                    onClick={() => handleNotificationClick(notification)}
+                  >
+                    <div className="flex items-start gap-3">
+                      <Avatar 
+                        src={notification.sessionId ? tennisIcon :normalIcon } 
+                        size="md"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <Text size="sm" fw={500} className="!text-gray-900">
+                            {notification.message}
+                          </Text>
+                          {notification.users.some(u => u.status === 'unread') && (
+                            <Badge className='!text-blueRibbon-100' size="xs">New</Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Text size="xs" className='!text-amber-700'>
+                            {new Date(notification.createdOn).toLocaleDateString()}
+                          </Text>
+                          {notification.sessionId && (
+                            <Badge className='!text-green-700' variant="outline">Session Feedback</Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-2 border-t">
+                <Button 
+                  fullWidth 
+                  variant="light"
+                  onClick={() => navigate('/notifications')}
+                >
+                  View All Notifications
+                </Button>
+              </div>
+        </div>
+      )}
         </div>
 
         {/* Mobile Menu Toggle */}

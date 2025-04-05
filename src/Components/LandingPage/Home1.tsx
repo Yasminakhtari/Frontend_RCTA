@@ -1,157 +1,101 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Avatar, TextInput } from "@mantine/core";
 import { IconArrowUp, IconSearch } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-// import raphel from "./raphael.png"
 import axios from "axios";
 import { base_url } from "../../apiConfig";
+import { getAllLocation } from '../../Services/LocationService';
 
-
-type Tournament = {
+interface Location {
   id: number;
-  groups: string;
-  category: string;
-  subcategory: "Location" | "select" | "message"; // Restrict to valid subcategories
-  imgUrl: string;
-  name: string;
-  description: string;
-  duration: number | null;
-  price: number | null;
+  locationName: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
   status: string;
-  discount: number;
-  disbegindate: string | null;
-  disenddate: string | null;
-  disquantity: number | null;
-  phoneNumber: string | null;
-};
-
-interface ImageData  {
-  id: number;
-  groups: string;
-  category: string | null;
-  subcategory: string | null;
-  imgUrl: string | " ";
-  name: string | null;
-  description: string | null;
-  duration: number | null;
-  price: number | null;
-  status: string | null;
-  discount: number;
-  disbegindate: string | null; // Using string to represent ISO date format
-  disenddate: string | null;   // Using string to represent ISO date format
-  disquantity: number | null;
-  phoneNumber: string | null;
 }
 
+interface ImageData {
+  id: number;
+  imgUrl: string;
+  category: string;
+  subcategory: string;
+}
 
 const Home1 = () => {
+  const navigate = useNavigate();
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [homePageData,setHomePageData] = useState<Tournament[]>([]);
-  /////////////For Image///////////////////////
-  const [mainImage,setMainImage] = useState<ImageData | null>(null);
-  //////////////////////////////////
-    useEffect(()=>{
-      const fetchImageData =  async()=>{
-        try{
-          const response =  await axios.get(`${base_url}/v1/getFilteredTennis`,{
-            params:{
-              groups:"Home"
-            },
-            headers:{
-              "Content-Type": "application/json",
-            }
-          })
-          console.log("okkkkk " , response.data);
-          const mainImage = response.data.find((item:any)=>
-            item.category === "Gallery" && item.subcategory === "Main Image"
-          )
-          console.log(mainImage);
-          setMainImage(mainImage || null);   
-        }
-        catch(error){
-          console.log(error);
-        }
+  const [mainImage, setMainImage] = useState<ImageData | null>(null);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<number | null>(null);
+  const [showLocationModal, setShowLocationModal] = useState(false);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await getAllLocation();
+        setLocations(response.data.filter((loc: Location) => loc.status === 'active'));
+      } catch (error) {
+        console.error("Error fetching locations:", error);
       }
-
-      fetchImageData();
-    },[]);
-
-    //////////////////////////////
-    useEffect(()=>{
-
-      const fetchData = async()=>{
-        try{
-          const response = await axios.get(`${base_url}/v1/getFilteredTennis`,{
-            params:{
-              group:"HomePage"
-            },
-            headers:{
-              // Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            }
-            
-          })
-
-          console.log(response);
-          // setHomePage(response);
-          setHomePageData(response.data);
-        }catch(error){
-          console.log(error);
-        }
-      }
-
-      fetchData()
-    },[]);
-  
-    ////////////////////////////////
-    useEffect(() => {
-      const handleScroll = () => {
-        if (window.scrollY > 200) {
-          setShowScrollButton(true);
-        } else {
-          setShowScrollButton(false);
-        }
-      };
-  
-      window.addEventListener("scroll", handleScroll);
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-      };
-    }, []);
-    ////////////////////////
-  
-    const scrollToTop = () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
     };
+    fetchLocations();
+  }, []);
+
+  useEffect(() => {
+    const fetchImageData = async () => {
+      try {
+        const response = await axios.get(`${base_url}/v1/getFilteredTennis`, {
+          params: { groups: "Home" }
+        });
+        const mainImage = response.data.find((item: any) =>
+          item.category === "Gallery" && item.subcategory === "Main Image"
+        );
+        setMainImage(mainImage || null);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchImageData();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 200);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row items-center min-h-[90vh] gap-10 lg:gap-5 pt-4  px-5 mt-14 md:mt-9">
+    <div className="flex flex-col lg:flex-row items-center min-h-[90vh] gap-10 lg:gap-5 pt-4 px-5 mt-14 md:mt-9">
       {/* Left Section */}
       <div className="flex flex-col lg:w-[45%]">
         <div className="text-5xl mt-8 lg:text-6xl font-bold text-mine-shaft-100 leading-tight [&>span]:text-blueRibbon-900">
           Join the <span>Ultimate Tennis</span> Experience
         </div>
-        <div className="md:text-lg text-mine-shaft-200 mt-3">
-          Discover a community of players, exciting tournaments, and exclusive training programs at our tennis club.
-        </div>
+
+        {/* Location Search Section */}
         <div className="flex flex-col lg:flex-row gap-3 mt-5">
-          <TextInput
-            className="bg-blueRibbon-900 rounded-lg p-1 px-2 text-mine-shaft-100 [&_input]:!text-mine-shaft-100"
-            placeholder="Search tournaments or training"
-            label="Explore"
-            variant="unstyled"
-          />
-          <TextInput
-            className="bg-blueRibbon-900 rounded-lg p-1 px-2 text-mine-shaft-100 [&_input]:!text-mine-shaft-100"
-            placeholder="Location (e.g., Texas)"
-            label="Location"
-            variant="unstyled"
-          />
-          <div className="flex items-center justify-center h-12 lg:h-full w-12 lg:w-20 bg-blueRibbon-600 text-mine-shaft-100 rounded-lg p-2 hover:bg-blueRibbon-500 cursor-pointer">
-            <IconSearch className="h-[70%] w-[70%]" />
-          </div>
+          <select
+            value={selectedLocation || ''}
+            onChange={(e) => setSelectedLocation(Number(e.target.value))}
+            className="bg-blueRibbon-900 rounded-lg p-2 text-mine-shaft-100"
+          >
+            <option value="">Select Location</option>
+            {locations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.locationName}, {location.city}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={() => selectedLocation && setShowLocationModal(true)}
+            className="flex items-center justify-center h-12 w-32 bg-blueRibbon-600 text-mine-shaft-100 rounded-lg p-2 hover:bg-blueRibbon-500"
+          >
+            Search
+          </button>
         </div>
       </div>
 
@@ -159,82 +103,75 @@ const Home1 = () => {
       <div className="lg:w-[55%] flex flex-col items-center">
         <div className="w-full lg:w-[30rem] relative">
           <img
-            className="rounded-lg object-cover w-full lg:w-auto"
-            // src="/tennis.png"
-            // src={mainImage?.imgUrl || "/tennis.png" }
-            src={mainImage?.imgUrl }
+            className="rounded-lg object-cover w-full"
+            src={mainImage?.imgUrl || "/tennis.png"}
             alt="Tennis club"
           />
-          
-          {/* Desktop version: Upcoming Tournament & Active Members */}
-          <div className="hidden lg:block absolute -right-10 top-[50%] w-fit border-blueRibbon-900 border rounded-lg p-2 backdrop-blur-md">
-            <div className="text-center mb-1 text-sm text-mine-shaft-100">
-              2K+ Active Members
-            </div>
-            <Avatar.Group spacing="sm">
-              <Avatar src="player1.jpg" radius="xl" />
-              <Avatar src="player2.jpg" radius="xl" />
-              <Avatar src="player3.jpg" radius="xl" />
-              <Avatar radius="xl">+2K</Avatar>
-            </Avatar.Group>
-          </div>
-
-          <div className="hidden lg:block absolute -left-10 top-[28%] w-fit border-blueRibbon-900 border rounded-lg p-2 backdrop-blur-md mb-3 flex flex-col gap-3">
-          {
-            homePageData && (
-              <>
-                <div className="flex gap-2 items-center">
-                <div className="w-10 h-10 p-1 bg-blueRibbon-900 rounded-lg">
-                  <img src="/tenis logo.png" alt="tennis logo" />
-                </div>
-                <div className="text-sm text-mine-shaft-100">
-                  <div>Upcoming Tournament</div>
-                  <div className="text-mine-shaft-200 text-xs">{homePageData.find(item => item.subcategory === "Location")?.name || "USA"}</div>
-                </div>
-              </div>
-
-              <div className="flex gap-2 text-mine-shaft-200 text-sm justify-between">
-                <span>Dec 25, 2024</span>
-                <span>{homePageData.find(item => item.subcategory === "message")?.name || "Open To All "}</span>
-              </div>
-              </>
-            )
-          }
-          </div>
-
-          {/* Mobile version: Active Members and Upcoming Tournament (below image) */}
-          <div className="lg:hidden mt-5 w-full flex flex-col items-center gap-4">
-            <div className="w-full bg-black bg-opacity-50 text-white rounded-lg p-4">
-              <div className="text-center text-sm text-mine-shaft-100 mb-2">2K+ Active Members</div>
-              <Avatar.Group spacing="sm" className="justify-center">
-                <Avatar src="player1.jpg" radius="xl" />
-                <Avatar src="player2.jpg" radius="xl" />
-                <Avatar src="player3.jpg" radius="xl" />
-                <Avatar radius="xl">+2K</Avatar>
-              </Avatar.Group>
-            </div>
-
-            <div className="w-full bg-black bg-opacity-50 text-white rounded-lg p-4">
-              <div className="text-center text-sm text-mine-shaft-100 mb-2">Upcoming Tournament</div>
-              <div className="text-sm text-mine-shaft-200">Dec 25, 2024 - Pleasant Hill, CA</div>
-              <div className="text-xs text-mine-shaft-200">Open to All Levels</div>
-            </div>
-          </div>
         </div>
       </div>
+
+      {/* Location Results Modal */}
+      {showLocationModal && selectedLocation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
+            <h2 className="text-2xl font-bold mb-4">
+              {locations.find(l => l.id === selectedLocation)?.locationName}
+            </h2>
+            
+            <div className="space-y-4">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h3 className="text-xl font-semibold mb-2">Sessions</h3>
+                <button 
+                  onClick={() => {
+                    navigate(`/manage?location=${selectedLocation}`);
+                    setShowLocationModal(false);
+                  }}
+                  className="text-blue-600 hover:underline"
+                >
+                  View All Sessions →
+                </button>
+              </div>
+
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h3 className="text-xl font-semibold mb-2">Classes</h3>
+                <button
+                  onClick={() => {
+                    navigate(`/classes?location=${selectedLocation}`);
+                    setShowLocationModal(false);
+                  }}
+                  className="text-blue-600 hover:underline"
+                >
+                  View All Classes →
+                </button>
+              </div>
+
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h3 className="text-xl font-semibold mb-2">Tournaments</h3>
+                <p className="text-gray-600">No tournaments available</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowLocationModal(false)}
+              className="mt-4 w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Scroll to Top Button */}
       {showScrollButton && (
         <button
-          onClick={scrollToTop}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="fixed bottom-5 right-5 bg-blueRibbon-600 text-mine-shaft-100 p-3 rounded-full shadow-lg hover:bg-blueRibbon-500"
         >
           <IconArrowUp size={24} />
         </button>
       )}
-
     </div>
   );
 };
 
 export default Home1;
-

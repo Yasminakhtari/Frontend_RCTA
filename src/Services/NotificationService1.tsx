@@ -38,11 +38,22 @@ export const saveNotification = async (
 // };
 
 // Get notifications for a specific user
-export const getNotificationsForUser = async (userId: number) => {
+// export const getNotificationsForUser = async (userId: number) => {
+//     const response = await axios.get(`${base_url}/notifications/user`, {
+//         params: { userId }
+//     });
+//     // return response.data;
+//     return response.data?.data as NotificationType[];
+// };
+export const getNotificationsForUser = async (userId: number, unreadOnly: boolean = false) => {
     const response = await axios.get(`${base_url}/notifications/user`, {
-        params: { userId }
+        params: { 
+            userId,
+            unreadOnly,
+            sortBy: 'createdOn',
+            sortDirection: 'desc'
+        }
     });
-    // return response.data;
     return response.data?.data as NotificationType[];
 };
 

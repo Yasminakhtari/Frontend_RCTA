@@ -3,6 +3,7 @@ export interface NotificationType {
     message: string;
     status: string;
     createdOn: string;
+    sessionId:number;
     users: NotificationUser[];
 }
 

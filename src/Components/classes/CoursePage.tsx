@@ -43,7 +43,7 @@ const CoursePage: React.FC = () => {
   //const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
   const [dropdownOpen, setDropdownOpen] = useState<Record<number, boolean>>({});
   const dropdownRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
-  
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -67,7 +67,7 @@ const CoursePage: React.FC = () => {
     };
   }, []);
 
- 
+
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -75,6 +75,9 @@ const CoursePage: React.FC = () => {
         setLoading(true);
         console.log("get Tennis Session Details id is " + id);
         const data = await getTennisSessionDetails(id);
+
+        console.log("Fetched Course Data:", data.tennisData); // Logs course details
+        console.log("Fetched Sessions Data:", data.sessions); // Logs all session details
         setCourse(data.tennisData || {});
         setSessions(data.sessions || []);
       } catch (error) {
@@ -126,8 +129,8 @@ const CoursePage: React.FC = () => {
     fetchPlayers();
   }, [user?.data?.userDetails?.id]);
 
-    const handlePlayerSelect = (sessionId: number, playerId: number, playerName: string) => {
-      // Your logic for handling player selection
+  const handlePlayerSelect = (sessionId: number, playerId: number, playerName: string) => {
+    // Your logic for handling player selection
     setSelectedPlayers((prevSelectedPlayers) => {
       const currentPlayers = prevSelectedPlayers[sessionId] || [];
       const isSelected = currentPlayers.some((p: { id: number; }) => p.id === playerId);
@@ -145,124 +148,88 @@ const CoursePage: React.FC = () => {
     // setLoading(true);
 
     try {
-        // Fetch all orders with "Success" payment status
-        const data = await getAllOrder();
-        const filteredOrders = Array.isArray(data?.data)
-            ? data.data.filter((item: { paymentStatus: string }) => item.paymentStatus === "Success")
-            : [];
+      // Fetch all orders with "Success" payment status
+      const data = await getAllOrder();
+      const filteredOrders = Array.isArray(data?.data)
+        ? data.data.filter((item: { paymentStatus: string }) => item.paymentStatus === "Success")
+        : [];
 
-        console.log("Fetched Orders:", filteredOrders);
+      console.log("Fetched Orders:", filteredOrders);
 
-        //  Extract players from orders where `groups === "Classes"`
-        let existingPlayersSet = new Set();
+      //  Extract players from orders where `groups === "Classes"`
+      let existingPlayersSet = new Set();
 
-        filteredOrders.forEach((order: { items: string; userId: any }) => {
-            let items = parseItemsJson(order.items); //  Use the parsing function
+      filteredOrders.forEach((order: { items: string; userId: any }) => {
+        let items = parseItemsJson(order.items); //  Use the parsing function
 
-            items.forEach((item: { groups: string, name: string, players: any[] }) => {
-                if (item.groups === "Classes") {
-                    item.players.forEach(player => {
-                        existingPlayersSet.add(`${order.userId}_${player.id}`);
-                    });
-                }
+        items.forEach((item: { groups: string, name: string, players: any[] }) => {
+          if (item.groups === "Classes") {
+            item.players.forEach(player => {
+              existingPlayersSet.add(`${order.userId}_${player.id}`);
             });
+          }
         });
+      });
 
-        console.log("Existing Players Set:", existingPlayersSet);
+      console.log("Existing Players Set:", existingPlayersSet);
 
-        //  Get Selected Session & Players
-        const selectedSession = sessions.find(session => session.id === sessionId);
-        if (!selectedSession) return;
+      //  Get Selected Session & Players
+      const selectedSession = sessions.find(session => session.id === sessionId);
+      console.log("selected Session is ⭐", selectedSession);
+      if (!selectedSession) return;
 
-        const selectedPlayersList = selectedPlayers[sessionId] || [{ id: "default", name: "Default Player" }];
-        const selectedPlayersCount = selectedPlayersList.length;
-        const selectedPlayerObjects = selectedPlayersList.map(player => ({ id: player.id, name: player.name }));
+      const selectedPlayersList = selectedPlayers[sessionId] || [{ id: "default", name: "Default Player" }];
+      const selectedPlayersCount = selectedPlayersList.length;
+      const selectedPlayerObjects = selectedPlayersList.map(player => ({ id: player.id, name: player.name }));
 
-        //  Check If Player Already Exists for the Same `userId`
-        const currentUserId = user.data.userDetails.id; //  Use dynamic userId
+      //  Check If Player Already Exists for the Same `userId`
+      const currentUserId = user.data.userDetails.id; //  Use dynamic userId
 
-        let duplicatePlayers: string[] = []; //  Collect duplicate player names
+      let duplicatePlayers: string[] = []; //  Collect duplicate player names
 
-        for (let player of selectedPlayerObjects) {
-            if (existingPlayersSet.has(`${currentUserId}_${player.id}`)) {
-                duplicatePlayers.push(player.name); //  Store duplicate player names
-            }
+      for (let player of selectedPlayerObjects) {
+        if (existingPlayersSet.has(`${currentUserId}_${player.id}`)) {
+          duplicatePlayers.push(player.name); //  Store duplicate player names
         }
+      }
 
-        if (duplicatePlayers.length > 0) {
-            //  Show a single alert with all duplicate names
-            errorNotification("", `Players ${duplicatePlayers.join(", ")} are already registered for a class.`);
-            return; // Stop further processing if there are duplicates
-        }
+      if (duplicatePlayers.length > 0) {
+        //  Show a single alert with all duplicate names
+        errorNotification("", `Players ${duplicatePlayers.join(", ")} are already registered for a class.`);
+        return; // Stop further processing if there are duplicates
+      }
 
-        //  Proceed with Registration (If No Duplicates)
-        const totalPrice = selectedSession.price * selectedPlayersCount;
-        const cartItem = {
-            id: selectedSession.id,
-            courseId: courseId,
-            name: `${courses.subcategory} (${courses.category})` || "General",
-            price: selectedSession.price,
-            description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
-            category: "Sports",
-            image: "/path/to/image",
-            players: selectedPlayerObjects,
-            groups: `${courses.groups}`,
-            coachName: `${selectedSession.coachName}`,
-            location: `${selectedSession.location}`,
-            fromDate: `${selectedSession.fromDate}`,
-            toDate : `${selectedSession.toDate}`,
-            startTime:`${selectedSession.startTime}`,
-            endTime:`${selectedSession.endTime}`,
-        };
+      //  Proceed with Registration (If No Duplicates)
+      const totalPrice = selectedSession.price * selectedPlayersCount;
+      const cartItem = {
+        id: selectedSession.id,
+        courseId: courseId,
+        name: `${courses.subcategory} (${courses.category})` || "General",
+        price: selectedSession.price,
+        description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
+        category: "Sports",
+        image: "/path/to/image",
+        players: selectedPlayerObjects,
+        groups: `${courses.groups}`,
+        coachName: `${selectedSession.coachName}`,
+        location: `${selectedSession.location}`,
+        fromDate: `${selectedSession.fromDate}`,
+        toDate: `${selectedSession.toDate}`,
+        startTime: `${selectedSession.startTime}`,
+        endTime: `${selectedSession.endTime}`,
+      };
 
-        console.log("Cart Item:", cartItem);
-        addToCart(cartItem);
+      console.log("Cart Item:", cartItem);
+      addToCart(cartItem);
 
-        successNotification("", `Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
-        navigate("/cart");
+      successNotification("", `Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
+      navigate("/cart");
     } catch (error) {
-        console.error('Failed to fetch orders:', error);
+      console.error('Failed to fetch orders:', error);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
-
-  // const handleRegister = (sessionId: number, courseId: number) => {
-  //   // if (isBookedCart(sessionId)) {
-  //   //   alert("This session is already booked!");
-  //   //   return;
-  //   // }
-
-  //   const selectedSession = sessions.find((session) => session.id === sessionId);
-  //   console.log(selectedSession);
-
-  //   if (selectedSession) {
-  //     const selectedPlayersList = selectedPlayers[sessionId] || [{ id: "default", name: "Default Player" }];
-  //     const selectedPlayerNames = selectedPlayersList.map((player) => player.name);
-  //     const selectedPlayerObjects = selectedPlayersList.map((player) => ({ id: player.id, name: player.name }));
-  //     const selectedPlayersCount = selectedPlayersList.length;
-  //     const totalPrice = selectedSession.price * selectedPlayersCount;
-      
-
-  //     const cartItem = {
-  //       id: selectedSession.id,
-  //       courseId: courseId,
-  //       name: `${courses.subcategory} (${courses.category})` || "General",
-  //       price: selectedSession.price,
-  //       description: `Session with ${selectedSession.coachName || "TBD"} for ${selectedPlayersCount} player(s)`,
-  //       category: "Sports",
-  //       image: "/path/to/image",
-  //       players: selectedPlayerObjects,
-  //       groups: `${courses.groups}`,
-  //     };
-  //     console.log(cartItem);
-
-  //     addToCart(cartItem);
-  //     // setIsAnyBooked(true);
-  //     successNotification("",`Item added to cart successfully! Total cost: $${totalPrice.toFixed(2)}`);
-  //     navigate("/cart");
-  //   }
-  // };
+  };
 
   if (!courses) {
     return (
@@ -281,21 +248,12 @@ const CoursePage: React.FC = () => {
     );
   }
 
-  // function setDropdownPosition(arg0: { top: number; left: number; }) {
-  //   throw new Error("Function not implemented.");
-  // }
-  // const toggleDropdown = (sessionId: string) => {
-  //   setDropdownOpen(prevState => ({
-  //     ...prevState,
-  //     [sessionId]: !prevState[sessionId], // Toggle specific session dropdown
-  //   }));
-  // };
   const toggleDropdown = (sessionId: number) => {
     setDropdownOpen((prev) => ({ ...prev, [sessionId]: !prev[sessionId] }));
   };
 
-  
-  
+
+
 
   return (
     <div className="bg-white-500 min-h-screen p-8">
@@ -329,7 +287,8 @@ const CoursePage: React.FC = () => {
         <p className="text-gray-700 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: courses.description }} />
       </div>
 
-      {/* <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
+
+      <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Session Details:</h2>
 
         <div className="overflow-x-auto">
@@ -359,23 +318,43 @@ const CoursePage: React.FC = () => {
                     <td className="border border-gray-300 px-4 py-2">{session.startTime} – {session.endTime}</td>
                     <td className="border border-gray-300 px-4 py-2">${session.price.toFixed(2)}</td>
                     <td className="border border-gray-300 px-4 py-2">
-                      <div className="relative inline-block text-left w-full">
+                      <div className="relative inline-block text-left w-full" ref={(el) => (dropdownRefs.current[session.id] = el)}>
                         <button
-                          onClick={() => toggleDropdown(session.id)}
+                          onClick={(e) => {
+                            const buttonRect = e.currentTarget.getBoundingClientRect();
+                            setDropdownPosition({
+                              top: buttonRect.top + window.scrollY - players.length * 40, // Adjusted position
+                              left: buttonRect.left + window.scrollX,
+                            });
+                            toggleDropdown(session.id);
+                          }}
                           className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-300 transition duration-200"
                         >
+
                           <span>
-                            {selectedPlayers[session.id] && selectedPlayers[session.id].length > 0
-                              ? selectedPlayers[session.id].map((p) => p.name).join(", ") // ✅ Only show names
+                            {selectedPlayers[session.id]?.length > 0
+                              ? selectedPlayers[session.id].map((p) => p.name).join(", ") // Show player names
                               : "Select Players"}
                           </span>
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                           </svg>
                         </button>
 
-                        {dropdownOpen[session.id] && (
-                          <div className="absolute left-0 mt-2 w-full max-h-[200px] overflow-visible bg-white border border-gray-300 rounded-lg shadow-lg z-[100]">
+                        {dropdownOpen[session.id] && dropdownPosition && (
+                          <div
+                            className="fixed bg-white border border-gray-300 rounded-lg shadow-lg z-[1000]"
+                            style={{
+                              top: dropdownPosition.top,
+                              left: dropdownPosition.left,
+                            }}
+                          >
                             {players.length > 0 ? (
                               players.map((player) => (
                                 <button
@@ -401,17 +380,19 @@ const CoursePage: React.FC = () => {
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       <button
-                        className={`px-4 py-2 rounded-md text-white ${
-                          isBookedCart(session.id)
-                            ? "bg-gray-500 cursor-not-allowed"
-                            : isAnyBooked && !isBookedCart(session.id)
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-blue-500 hover:bg-blue-600"
-                        }`}
-                        disabled={isBookedCart(session.id) || (isAnyBooked && !isBookedCart(session.id))}
+                        className="px-4 py-2 rounded-md text-white bg-blue-500 hover:bg-blue-600"
+                        // className={`px-4 py-2 rounded-md text-white ${
+                        //   isBookedCart(session.id)
+                        //     ? "bg-gray-500 cursor-not-allowed"
+                        //     : isAnyBooked && !isBookedCart(session.id)
+                        //     ? "bg-gray-400 cursor-not-allowed"
+                        //     : "bg-blue-500 hover:bg-blue-600"
+                        // }`}
+                        // disabled={isBookedCart(session.id) || (isAnyBooked && !isBookedCart(session.id))}
                         onClick={() => handleRegister(session.id!, courses.id!)}
                       >
-                        {isBookedCart(session.id) ? "Booked" : "Register"}
+                        {/* {isBookedCart(session.id) ? "Booked" : "Register"} */}
+                        Register
                       </button>
                     </td>
                   </tr>
@@ -426,127 +407,7 @@ const CoursePage: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div> */}
-      <div ref={sessionRef} className="bg-gray p-6 shadow rounded-lg">
-  <h2 className="text-2xl font-bold mb-4">Session Details:</h2>
-
-  <div className="overflow-x-auto">
-    <table className="w-full table-auto border-collapse border border-gray-300 text-left text-sm">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="border border-gray-300 px-4 py-2">Coach</th>
-          <th className="border border-gray-300 px-4 py-2">Location</th>
-          <th className="border border-gray-300 px-4 py-2">Start Date</th>
-          <th className="border border-gray-300 px-4 py-2">End Date</th>
-          <th className="border border-gray-300 px-4 py-2">Days</th>
-          <th className="border border-gray-300 px-4 py-2">Time</th>
-          <th className="border border-gray-300 px-4 py-2">Price</th>
-          <th className="border border-gray-300 px-4 py-2">Select Players</th>
-          <th className="border border-gray-300 px-4 py-2">Register</th>
-        </tr>
-      </thead>
-      <tbody>
-        {sessions.length > 0 ? (
-          sessions.map((session) => (
-            <tr key={session.id} className="hover:bg-gray-50">
-              <td className="border border-gray-300 px-4 py-2">{session.coachName || "TBD"}</td>
-              <td className="border border-gray-300 px-4 py-2">{session.locationName || "N/A"}</td>
-              <td className="border border-gray-300 px-4 py-2">{session.fromDate}</td>
-              <td className="border border-gray-300 px-4 py-2">{session.toDate}</td>
-              <td className="border border-gray-300 px-4 py-2">{session.days?.join(", ") || "N/A"}</td>
-              <td className="border border-gray-300 px-4 py-2">{session.startTime} – {session.endTime}</td>
-              <td className="border border-gray-300 px-4 py-2">${session.price.toFixed(2)}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                <div className="relative inline-block text-left w-full" ref={(el) => (dropdownRefs.current[session.id] = el)}>
-                <button
-                    onClick={(e) => {
-                      const buttonRect = e.currentTarget.getBoundingClientRect();
-                      setDropdownPosition({
-                        top: buttonRect.top + window.scrollY - players.length * 40, // Adjusted position
-                        left: buttonRect.left + window.scrollX,
-                      });
-                      toggleDropdown(session.id);
-                    }}
-                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-300 transition duration-200"
-                  >
-
-                    <span>
-                      {selectedPlayers[session.id]?.length > 0
-                        ? selectedPlayers[session.id].map((p) => p.name).join(", ") // Show player names
-                        : "Select Players"}
-                    </span>
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                  </button>
-
-                  {dropdownOpen[session.id] && dropdownPosition && (
-                      <div
-                        className="fixed bg-white border border-gray-300 rounded-lg shadow-lg z-[1000]"
-                        style={{
-                          top: dropdownPosition.top,
-                          left: dropdownPosition.left,
-                        }}
-                      >
-                      {players.length > 0 ? (
-                        players.map((player) => (
-                          <button
-                            key={player.id}
-                            onClick={() => handlePlayerSelect(session.id, player.id, player.name)}
-                            className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={selectedPlayers[session.id]?.some((p) => p.id === player.id) || false}
-                              readOnly
-                              className="mr-2"
-                            />
-                            {player.name}
-                          </button>
-                        ))
-                      ) : (
-                        <p className="px-4 py-2 text-gray-500">No players found</p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                <button
-                className="px-4 py-2 rounded-md text-white bg-blue-500 hover:bg-blue-600"
-                  // className={`px-4 py-2 rounded-md text-white ${
-                  //   isBookedCart(session.id)
-                  //     ? "bg-gray-500 cursor-not-allowed"
-                  //     : isAnyBooked && !isBookedCart(session.id)
-                  //     ? "bg-gray-400 cursor-not-allowed"
-                  //     : "bg-blue-500 hover:bg-blue-600"
-                  // }`}
-                  // disabled={isBookedCart(session.id) || (isAnyBooked && !isBookedCart(session.id))}
-                  onClick={() => handleRegister(session.id!, courses.id!)}
-                >
-                  {/* {isBookedCart(session.id) ? "Booked" : "Register"} */}
-                  Register
-                </button>
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan={9} className="text-center py-4 text-gray-500">
-              No sessions found.
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  </div>
-</div>
+      </div>
     </div>
   );
 };
@@ -559,16 +420,16 @@ function setDropdownOpen(arg0: (prev: any) => any) {
 
 function parseItemsJson(itemsString: string) {
   try {
-      //  Fix incorrect key-value formatting (Convert `=` to `:`)
-      let formattedItems = itemsString
-          .replace(/=/g, ':')  // Replace `=` with `:`
-          .replace(/([{,])(\s*)(\w+):/g, '$1"$3":')  // Ensure property names have double quotes
-          .replace(/:\s*([\w\s()]+)/g, ': "$1"'); // Ensure values have double quotes if needed
+    //  Fix incorrect key-value formatting (Convert `=` to `:`)
+    let formattedItems = itemsString
+      .replace(/=/g, ':')  // Replace `=` with `:`
+      .replace(/([{,])(\s*)(\w+):/g, '$1"$3":')  // Ensure property names have double quotes
+      .replace(/:\s*([\w\s()]+)/g, ': "$1"'); // Ensure values have double quotes if needed
 
-      //  Parse the corrected JSON string
-      return JSON.parse(formattedItems);
+    //  Parse the corrected JSON string
+    return JSON.parse(formattedItems);
   } catch (error) {
-      console.error("Error parsing items JSON:", error);
-      return []; // Return an empty array if parsing fails
+    console.error("Error parsing items JSON:", error);
+    return []; // Return an empty array if parsing fails
   }
 }
